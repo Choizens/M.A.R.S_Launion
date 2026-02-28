@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Staff, FileRequest, Strand, DocumentType, PickupSlot, AuditLog, ProcessedDocument
+from .models import (
+    Staff, FileRequest, Strand, DocumentType, PickupSlot, 
+    AuditLog, ProcessedDocument, Student, StudentMasterDocument, StudentDocument
+)
 
 @admin.register(ProcessedDocument)
 class ProcessedDocumentAdmin(admin.ModelAdmin):
@@ -63,3 +66,40 @@ class FileRequestAdmin(admin.ModelAdmin):
     @admin.action(description='Mark selected requests as Processing')
     def mark_as_processing(self, request, queryset):
         queryset.update(status='Processing')
+
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ['lrn_number', 'first_name', 'last_name', 'sex', 'strand_type', 'year_graduated', 'phone_number']
+    search_fields = ['lrn_number', 'first_name', 'last_name', 'email']
+    list_filter = ['sex', 'strand_type', 'year_graduated']
+
+@admin.register(StudentMasterDocument)
+class StudentMasterDocumentAdmin(admin.ModelAdmin):
+    list_display = ['student', 'document_type', 'uploaded_at']
+    search_fields = ['student__first_name', 'student__last_name', 'document_type']
+    list_filter = ['document_type', 'uploaded_at']
+
+@admin.register(StudentDocument)
+class StudentDocumentAdmin(admin.ModelAdmin):
+    list_display = ['request', 'document_type', 'uploaded_at']
+    search_fields = ['request__first_name', 'request__last_name', 'document_type']
+    list_filter = ['document_type', 'uploaded_at']
+
+@admin.register(DocumentType)
+class DocumentTypeAdmin(admin.ModelAdmin):
+    list_display = ['name', 'price', 'is_active']
+    search_fields = ['name']
+    list_filter = ['is_active']
+
+@admin.register(PickupSlot)
+class PickupSlotAdmin(admin.ModelAdmin):
+    list_display = ['date', 'morning_slots', 'afternoon_slots', 'is_blocked', 'reason']
+    list_filter = ['is_blocked', 'date']
+    search_fields = ['reason', 'date']
+
+@admin.register(AuditLog)
+class AuditLogAdmin(admin.ModelAdmin):
+    list_display = ['user', 'action', 'timestamp']
+    list_filter = ['action', 'timestamp']
+    search_fields = ['user__full_name', 'user__username', 'details', 'action']
+    readonly_fields = ['timestamp']

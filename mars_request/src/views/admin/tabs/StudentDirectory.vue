@@ -31,6 +31,15 @@
             <option value="">All Batches</option>
             <option v-for="y in Array.from({length: 11}, (_, i) => 2020 + i)" :key="y" :value="y">{{ y }}</option>
           </select>
+          
+          <button 
+            @click="$emit('update:missingDocsFilter', !missingDocsFilter)" 
+            :class="missingDocsFilter ? 'bg-orange-100 text-orange-700 border-orange-300' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'"
+            class="px-4 py-2 border rounded text-xs font-bold flex items-center gap-2 transition-colors"
+          >
+            <AlertIcon v-if="missingDocsFilter" class="w-4 h-4" />
+            Missing Master Docs
+          </button>
         </div>
       </div>
 
@@ -54,7 +63,7 @@
                   <div class="w-10 h-10 rounded-full bg-[#00334d] text-[#ffca28] flex items-center justify-center font-black text-xs">
                     {{ initials(std.first_name, std.last_name) }}
                   </div>
-                  <div @click="$emit('open-docs', std)" class="flex flex-col cursor-pointer hover:underline group">
+                  <div @click="$emit('open-profile', std)" class="flex flex-col cursor-pointer hover:underline group">
                     <span class="font-bold text-[#00334d] group-hover:text-amber-600">{{ std.first_name }} {{ std.last_name }}</span>
                     <span class="text-[0.65rem] text-slate-400 font-medium">{{ std.email }}</span>
                   </div>
@@ -66,15 +75,12 @@
               </td>
               <td class="px-6 py-4 text-sm font-black text-[#00334d] border-r border-slate-100">{{ std.year_graduated }}</td>
               <td class="px-6 py-4 text-center">
-                <div class="flex items-center justify-center gap-2">
-                  <button @click="$emit('open-docs', std)" class="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="Manage Documents">
-                    <component :is="AttachmentIcon" class="w-5 h-5" />
+                <div class="flex items-center justify-center gap-3">
+                  <button @click="$emit('open-profile', std)" class="px-4 py-1.5 bg-[#00334d] text-white font-bold text-xs rounded hover:bg-[#002233] transition-colors shadow-sm flex items-center gap-2">
+                    <UserIcon class="w-3.5 h-3.5" /> View Profile
                   </button>
-                  <button @click="$emit('edit-student', std)" class="p-2 text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors" title="Edit Profile">
-                    <component :is="CogIcon" class="w-5 h-5" />
-                  </button>
-                  <button @click="$emit('delete-student', std.id)" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Record">
-                    <component :is="XIcon" class="w-5 h-5" />
+                  <button @click="$emit('delete-student', std.id)" class="p-1.5 text-red-500 hover:text-white hover:bg-red-500 rounded transition-colors shadow-sm border border-red-200 hover:border-red-500" title="Delete Record">
+                    <XIcon class="w-4 h-4" />
                   </button>
                 </div>
               </td>
@@ -89,7 +95,7 @@
 <script setup>
 import { 
   Search as SearchIcon, Users as StudentIcon, 
-  Paperclip as AttachmentIcon, Settings as CogIcon, X as XIcon 
+  Paperclip as AttachmentIcon, Settings as CogIcon, X as XIcon, UserCircle as UserIcon, AlertCircle as AlertIcon
 } from 'lucide-vue-next';
 
 defineProps({
@@ -98,9 +104,10 @@ defineProps({
   searchQuery: String,
   strandFilter: [String, Number],
   yearFilter: [String, Number],
+  missingDocsFilter: Boolean,
   strands: Array,
   initials: Function
 });
 
-defineEmits(['update:searchQuery', 'update:strandFilter', 'update:yearFilter', 'open-student-modal', 'open-docs', 'edit-student', 'delete-student']);
+defineEmits(['update:searchQuery', 'update:strandFilter', 'update:yearFilter', 'update:missingDocsFilter', 'open-student-modal', 'open-profile', 'delete-student']);
 </script>

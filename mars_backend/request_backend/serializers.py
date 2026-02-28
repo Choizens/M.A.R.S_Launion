@@ -34,7 +34,7 @@ class StaffSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Staff
-        fields = ['id', 'username', 'password', 'email', 'staff_id', 'department', 'full_name', 'is_staff', 'is_superuser']
+        fields = ['id', 'username', 'password', 'email', 'staff_id', 'department', 'full_name', 'is_staff', 'is_superuser', 'is_active', 'last_login']
         extra_kwargs = {
             'password': {'required': False, 'allow_blank': True}
         }
@@ -118,14 +118,18 @@ class AuditLogSerializer(serializers.ModelSerializer):
 
 
 class PickupSlotSerializer(serializers.ModelSerializer):
-    booked_slots = serializers.SerializerMethodField()
+    booked_morning = serializers.SerializerMethodField()
+    booked_afternoon = serializers.SerializerMethodField()
 
     class Meta:
         model = PickupSlot
-        fields = ['id', 'date', 'max_slots', 'is_blocked', 'reason', 'booked_slots']
+        fields = ['id', 'date', 'morning_slots', 'afternoon_slots', 'is_blocked', 'reason', 'booked_morning', 'booked_afternoon']
 
-    def get_booked_slots(self, obj):
-        return FileRequest.objects.filter(pickup_date=obj.date).count()
+    def get_booked_morning(self, obj):
+        return FileRequest.objects.filter(pickup_date=obj.date, pickup_time='Morning').count()
+
+    def get_booked_afternoon(self, obj):
+        return FileRequest.objects.filter(pickup_date=obj.date, pickup_time='Afternoon').count()
 
 
 class DocumentTypeSerializer(serializers.ModelSerializer):

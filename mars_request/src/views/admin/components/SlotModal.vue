@@ -12,10 +12,14 @@
             <input v-model="form.date" type="date" required class="border px-4 py-2.5 rounded focus:border-[#00334d] outline-none font-bold text-[#00334d]" />
           </div>
           
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-3 gap-4">
             <div class="flex flex-col gap-1">
-              <label class="text-[0.65rem] font-black uppercase text-slate-500 tracking-wider">Max Students</label>
-              <input v-model.number="form.max_slots" type="number" required class="border px-4 py-2.5 rounded focus:border-[#00334d] outline-none font-bold text-[#00334d]" />
+              <label class="text-[0.65rem] font-black uppercase text-slate-500 tracking-wider">Morning Max</label>
+              <input v-model.number="form.morning_slots" type="number" required class="border px-4 py-2.5 text-sm rounded focus:border-[#00334d] outline-none font-bold text-[#00334d]" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-[0.65rem] font-black uppercase text-slate-500 tracking-wider">Afternoon Max</label>
+              <input v-model.number="form.afternoon_slots" type="number" required class="border px-4 py-2.5 text-sm rounded focus:border-[#00334d] outline-none font-bold text-[#00334d]" />
             </div>
             <div class="flex flex-col gap-1">
               <label class="text-[0.65rem] font-black uppercase text-slate-500 tracking-wider text-center">Block Date?</label>

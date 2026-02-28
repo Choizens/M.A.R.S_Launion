@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     RegisterView, CustomTokenObtainPairView, FileRequestCreateView,
     AdminDashboardStatsView, AdminRequestListView, AdminRequestDetailView,
+    AdminRequestBulkUpdateView,
     AdminStaffListView, AdminStaffDetailView, AdminAuditLogListView,
     AdminPickupSlotListView, AdminPickupSlotDetailView, PublicPickupSlotListView,
     AdminDocumentTypeListView, AdminDocumentTypeDetailView, PublicDocumentTypeListView,
@@ -23,6 +24,7 @@ urlpatterns = [
     # Admin endpoints
     path('admin/stats/', AdminDashboardStatsView.as_view(), name='admin_stats'),
     path('admin/requests/', AdminRequestListView.as_view(), name='admin_requests'),
+    path('admin/requests/bulk/', AdminRequestBulkUpdateView.as_view(), name='admin_requests_bulk'),
     path('admin/requests/<int:pk>/', AdminRequestDetailView.as_view(), name='admin_request_detail'),
     
     # Document Type endpoints

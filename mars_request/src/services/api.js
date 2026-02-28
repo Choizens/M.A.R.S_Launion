@@ -60,6 +60,9 @@ export const adminService = {
     getRequests(params = {}) {
         return apiClient.get('admin/requests/', { params });
     },
+    bulkUpdateRequests(data) {
+        return apiClient.post('admin/requests/bulk/', data);
+    },
     // ...
     getStrands() {
         return apiClient.get('admin/strands/');

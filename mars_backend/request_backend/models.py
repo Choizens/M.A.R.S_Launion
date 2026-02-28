@@ -104,12 +104,13 @@ class AuditLog(models.Model):
 
 class PickupSlot(models.Model):
     date = models.DateField(unique=True)
-    max_slots = models.IntegerField(default=20)
+    morning_slots = models.IntegerField(default=10)
+    afternoon_slots = models.IntegerField(default=10)
     is_blocked = models.BooleanField(default=False) # For holidays
     reason = models.CharField(max_length=255, blank=True, default='')
 
     def __str__(self):
-        return f"{self.date} ({'Blocked' if self.is_blocked else f'Max: {self.max_slots}'})"
+        return f"{self.date} ({'Blocked' if self.is_blocked else f'M:{self.morning_slots} A:{self.afternoon_slots}'})"
 class DocumentType(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, default='')

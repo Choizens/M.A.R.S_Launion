@@ -13,23 +13,38 @@
           <tr class="bg-slate-50 border-b-2 border-[#333]">
             <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest">Full Name</th>
             <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest">Username</th>
-            <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest">Staff ID</th>
             <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest">Department</th>
+            <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest">Last Login</th>
+            <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest text-center">Status</th>
             <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest text-center">Action</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-200">
           <tr v-if="staffList.length === 0" class="p-20 text-center"><td colspan="5" class="py-20 italic text-slate-400">No staff records found.</td></tr>
-          <tr v-for="stf in staffList" :key="stf.id" class="hover:bg-slate-50 transition-colors">
-            <td class="px-6 py-4 font-bold text-[#00334d]">{{ stf.full_name }}</td>
+          <tr v-for="stf in staffList" :key="stf.id" class="hover:bg-slate-50 transition-colors" :class="{'opacity-60': !stf.is_active}">
+            <td class="px-6 py-4 font-bold text-[#00334d]">
+              <div class="flex flex-col">
+                <span>{{ stf.full_name }}</span>
+                <span class="text-[0.6rem] font-mono text-slate-400 uppercase tracking-wider">{{ stf.staff_id || 'NO-ID' }}</span>
+              </div>
+            </td>
             <td class="px-6 py-4 text-sm text-slate-600">@{{ stf.username }}</td>
-            <td class="px-6 py-4 text-sm font-mono">{{ stf.staff_id }}</td>
             <td class="px-6 py-4 text-sm font-semibold text-slate-500">{{ stf.department }}</td>
+            <td class="px-6 py-4 text-[0.7rem] font-mono text-slate-500">{{ formatDateTime(stf.last_login) || 'Never logged in' }}</td>
+            <td class="px-6 py-4 text-center">
+              <button 
+                @click="$emit('toggle-status', stf)" 
+                class="px-3 py-1 text-[0.65rem] font-black uppercase tracking-wider rounded-full shadow-sm transition-all"
+                :class="stf.is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-slate-200 text-slate-500 hover:bg-slate-300'"
+              >
+                {{ stf.is_active ? 'Active' : 'Inactive' }}
+              </button>
+            </td>
             <td class="px-6 py-4 text-center flex justify-center gap-2">
-              <button @click="$emit('edit-staff', stf)" class="p-2 text-cyan-600 hover:bg-cyan-50 rounded transition-colors">
+              <button @click="$emit('edit-staff', stf)" class="p-2 text-cyan-600 hover:bg-cyan-50 rounded transition-colors" title="Edit Staff">
                 <component :is="CogIcon" class="w-5 h-5" />
               </button>
-              <button @click="$emit('delete-staff', stf.id)" class="p-2 text-red-600 hover:bg-red-50 rounded transition-colors">
+              <button @click="$emit('delete-staff', stf.id)" class="p-2 text-red-600 hover:bg-red-50 rounded transition-colors" title="Delete Staff">
                 <component :is="XIcon" class="w-5 h-5" />
               </button>
             </td>
@@ -44,8 +59,9 @@
 import { User as UserIcon, Settings as CogIcon, X as XIcon } from 'lucide-vue-next';
 
 defineProps({
-  staffList: Array
+  staffList: Array,
+  formatDateTime: Function
 });
 
-defineEmits(['open-staff-modal', 'edit-staff', 'delete-staff']);
+defineEmits(['open-staff-modal', 'edit-staff', 'delete-staff', 'toggle-status']);
 </script>

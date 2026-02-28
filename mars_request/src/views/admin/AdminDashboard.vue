@@ -174,29 +174,32 @@
             :statusClass="statusClass"
             @refresh="loadRequests"
             @open-modal="openModal"
+            @bulk-action="handleBulkAction"
           />
 
           <StudentDirectory 
             v-if="currentView === 'student_directory'"
-            :students="students"
+            :students="filteredStudents"
             :loadingStudents="loadingStudents"
             v-model:searchQuery="searchQuery"
             v-model:strandFilter="strandFilter"
             v-model:yearFilter="yearFilter"
+            v-model:missingDocsFilter="missingDocsFilter"
             :strands="strands"
             :initials="initials"
             @open-student-modal="openStudentModal()"
-            @open-docs="openStudentDocsModal"
-            @edit-student="openStudentModal"
+            @open-profile="openStudentProfileModal"
             @delete-student="deleteStudent"
           />
 
           <StaffManagement 
             v-if="currentView === 'staff_management'"
             :staffList="staffList"
+            :formatDateTime="formatDateTime"
             @open-staff-modal="openStaffModal()"
             @edit-staff="openStaffModal"
             @delete-staff="deleteStaff"
+            @toggle-status="toggleStaffStatus"
           />
 
           <PickupScheduling 
@@ -296,18 +299,21 @@
       @submit="handleStudentSubmit"
     />
 
-    <StudentDocsModal 
-      :show="showStudentDocsModal"
-      :student="selectedStudentForDocs"
+    <StudentProfileModal 
+      :show="showStudentProfileModal"
+      :student="liveSelectedStudent"
       :form="masterDocForm"
       :docTypes="docTypes"
       :uploading="uploadingMasterDoc"
       :formatDate="formatDate"
-      @close="showStudentDocsModal = false"
+      :initials="initials"
+      ref="studentDocsModalRef"
+      @close="showStudentProfileModal = false"
       @upload="handleMasterDocUpload"
       @file-change="onMasterDocFileChange"
       @update:document_type="masterDocForm.document_type = $event"
       @delete-doc="handleDeleteMasterDoc"
+      @edit-student="openStudentModal"
     />
   </div>
 </template>
@@ -336,7 +342,7 @@ import SlotModal from './components/SlotModal.vue';
 import DocumentModal from './components/DocumentModal.vue';
 import StrandModal from './components/StrandModal.vue';
 import StudentModal from './components/StudentModal.vue';
-import StudentDocsModal from './components/StudentDocsModal.vue';
+import StudentProfileModal from './components/StudentProfileModal.vue';
 
 // Lucide Icons
 import { 
@@ -450,7 +456,7 @@ const staffForm = reactive({ username: '', password: '', full_name: '', staff_id
 const showSlotModal = ref(false);
 const editingSlot = ref(null);
 const submittingSlot = ref(false);
-const slotForm = reactive({ date: '', max_slots: 20, is_blocked: false, reason: '' });
+const slotForm = reactive({ date: '', morning_slots: 10, afternoon_slots: 10, is_blocked: false, reason: '' });
 
 // Strand Modal State
 const showStrandModal = ref(false);
@@ -660,6 +666,19 @@ const toggleAccountability = async () => {
 };
 
 // ── Staff Management ──────────────────────────────────────────────────────────
+const toggleStaffStatus = async (staff) => {
+  if (!confirm(`Are you sure you want to ${staff.is_active ? 'deactivate' : 'activate'} this account?`)) return;
+  try {
+    const res = await adminService.updateStaff(staff.id, { is_active: !staff.is_active });
+    const idx = staffList.value.findIndex(s => s.id === staff.id);
+    if (idx !== -1) staffList.value[idx].is_active = res.data.is_active;
+    loadAuditLogs();
+  } catch (err) {
+    console.error('Toggle status error:', err);
+    alert('Failed to update staff status.');
+  }
+};
+
 const openStaffModal = (stf = null) => {
   editingStaff.value = stf ? stf.id : null;
   if (stf) {
@@ -703,11 +722,12 @@ const openSlotModal = (slot = null) => {
   editingSlot.value = slot ? slot.id : null;
   if (slot) {
     slotForm.date = slot.date;
-    slotForm.max_slots = slot.max_slots;
+    slotForm.morning_slots = slot.morning_slots;
+    slotForm.afternoon_slots = slot.afternoon_slots;
     slotForm.is_blocked = slot.is_blocked;
     slotForm.reason = slot.reason;
   } else {
-    slotForm.date = ''; slotForm.max_slots = 20; slotForm.is_blocked = false; slotForm.reason = '';
+    slotForm.date = ''; slotForm.morning_slots = 10; slotForm.afternoon_slots = 10; slotForm.is_blocked = false; slotForm.reason = '';
   }
   showSlotModal.value = true;
 };
@@ -821,8 +841,19 @@ const loadStudents = async () => {
     console.error('Students error:', err);
   } finally {
     loadingStudents.value = false;
+    loadingStudents.value = false;
   }
 };
+
+const missingDocsFilter = ref(false);
+
+const filteredStudents = computed(() => {
+  if (!students.value) return [];
+  if (missingDocsFilter.value) {
+    return students.value.filter(s => !s.documents || s.documents.length === 0);
+  }
+  return students.value;
+});
 
 const openStudentModal = (student = null) => {
   editingStudent.value = student;
@@ -868,14 +899,23 @@ const deleteStudent = async (id) => {
 
 // ── Student Documents Modal Handlers ──────────────────────────────────────────
 const showStudentDocsModal = ref(false);
-const selectedStudentForDocs = ref(null);
+const selectedStudentForDocs = ref(null); // stores only the student's ID
+const studentDocsModalRef = ref(null);
 const uploadingMasterDoc = ref(false);
 const masterDocForm = reactive({ document_type: '' });
 const masterDocFile = ref(null);
 
-const openStudentDocsModal = (student) => {
-  selectedStudentForDocs.value = { ...student };
-  showStudentDocsModal.value = true;
+// Reactively derive the live student object so the docs list auto-updates
+const liveSelectedStudent = computed(() =>
+  students.value.find(s => s.id === selectedStudentForDocs.value) || null
+);
+
+// ── Unified Student Profile Modal ──────────────────────────────────────────────
+const showStudentProfileModal = ref(false);
+
+const openStudentProfileModal = (student) => {
+  selectedStudentForDocs.value = student.id; // Keep this state for document uploading
+  showStudentProfileModal.value = true;
 };
 
 const masterDocFileInput = ref(null);
@@ -898,23 +938,18 @@ const handleMasterDocUpload = async () => {
     const fd = new FormData();
     fd.append('file', masterDocFile.value);
     fd.append('document_type', masterDocForm.document_type);
-    await adminService.uploadStudentMasterDoc(selectedStudentForDocs.value.id, fd);
+    await adminService.uploadStudentMasterDoc(selectedStudentForDocs.value, fd);
     
-    // Auto-refresh the students list
-    const params = { search: searchQuery.value };
-    if (strandFilter.value) params.strand = strandFilter.value;
-    if (yearFilter.value) params.year = yearFilter.value;
-    const res = await adminService.getStudents(params);
-    students.value = res.data;
-    
-    // Update the local modal data
-    const updated = students.value.find(s => s.id === selectedStudentForDocs.value.id);
-    if (updated) selectedStudentForDocs.value = updated;
+    // Refresh the student list — liveSelectedStudent computed will auto-update the modal
+    await loadStudents();
 
-    // Reset Form
+    // Reset form
     masterDocForm.document_type = '';
     masterDocFile.value = null;
-    if (masterDocFileInput.value) masterDocFileInput.value.value = '';
+    // Reset the file input inside the modal
+    if (studentDocsModalRef.value?.fileInput) {
+      studentDocsModalRef.value.fileInput.value = '';
+    }
     
     alert('Document uploaded successfully!');
   } catch (err) {
@@ -929,17 +964,8 @@ const handleDeleteMasterDoc = async (docId) => {
   if (!confirm('Are you sure you want to delete this document?')) return;
   try {
     await adminService.deleteStudentMasterDoc(docId);
-    
-    // Refresh list
-    const params = { search: searchQuery.value };
-    if (strandFilter.value) params.strand = strandFilter.value;
-    if (yearFilter.value) params.year = yearFilter.value;
-    const res = await adminService.getStudents(params);
-    students.value = res.data;
-    
-    // Update local modal data
-    const updated = students.value.find(s => s.id === selectedStudentForDocs.value.id);
-    if (updated) selectedStudentForDocs.value = updated;
+    // Refresh list — liveSelectedStudent computed will auto-update the modal
+    await loadStudents();
   } catch (err) {
     console.error('Delete error:', err);
     alert('Failed to delete document.');

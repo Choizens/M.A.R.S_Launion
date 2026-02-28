@@ -145,3 +145,15 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+# ── Email Configuration (Gmail SMTP) ──────────────────────────────────────────
+# To enable: replace the values below with your Gmail address and an App Password.
+# Generate an App Password at: https://myaccount.google.com/apppasswords
+# (Requires 2-Step Verification enabled on your Google account)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'jdomelaurente@gmail.com'
+EMAIL_HOST_PASSWORD = 'sddgawyotamhawtn'  # App Password (spaces removed)
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

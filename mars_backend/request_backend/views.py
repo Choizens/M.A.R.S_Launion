@@ -14,7 +14,7 @@ from .serializers import (
 from .models import Staff, FileRequest, AuditLog, PickupSlot, DocumentType, StudentDocument, Strand, ProcessedDocument, Student, StudentMasterDocument
 
 
-from .utils import send_request_notification
+from .utils import send_request_notification, send_submission_confirmation
 
 # ── Logging Helper ─────────────────────────────────────────────────────────────
 
@@ -48,6 +48,11 @@ class FileRequestCreateView(generics.CreateAPIView):
     queryset = FileRequest.objects.all()
     serializer_class = FileRequestSerializer
     permission_classes = (AllowAny,)
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        # Send confirmation email immediately after the request is created
+        send_submission_confirmation(instance)
 
 
 # ── Admin Views ────────────────────────────────────────────────────────────────
@@ -171,6 +176,54 @@ class AdminRequestDetailView(generics.RetrieveUpdateAPIView):
     queryset = FileRequest.objects.all()
     serializer_class = FileRequestSerializer
     permission_classes = (IsAuthenticated,)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        old_status = instance.status
+
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        new_status = instance.status
+        if 'status' in request.data and new_status != old_status:
+            record_log(
+                request.user,
+                "Updated Request Status",
+                f"Changed Request #{instance.id} ({instance.passkey}) from '{old_status}' to '{new_status}'"
+            )
+            send_request_notification(instance)
+
+        return Response(serializer.data)
+
+        return Response(serializer.data)
+
+class AdminRequestBulkUpdateView(APIView):
+    """Admin bulk updates multiple request statuses at once."""
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        action = request.data.get('action') # 'Approved', 'Rejected', etc.
+        request_ids = request.data.get('ids', [])
+
+        if not action or not request_ids:
+            return Response({'error': 'Missing action or ids'}, status=status.HTTP_400_BAD_REQUEST)
+
+        updated_count = FileRequest.objects.filter(id__in=request_ids).update(status=action)
+
+        record_log(
+            request.user, 
+            "Bulk Updated Requests", 
+            f"Set status to {action} for {updated_count} requests."
+        )
+
+        # Trigger email notifications for the updated requests
+        if action in ['Approved', 'Completed', 'Needs Verification', 'Rejected']:
+            updated_requests = FileRequest.objects.filter(id__in=request_ids)
+            for file_request in updated_requests:
+                send_request_notification(file_request)
+
+        return Response({'message': f'Successfully updated {updated_count} requests to {action}'})
 
 
 # ── Student Management Views (Admin only) ──────────────────────────────────────

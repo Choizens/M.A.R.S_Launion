@@ -61,12 +61,24 @@
               <div v-if="date.slot.is_blocked" class="bg-red-500 text-white text-[0.5rem] font-black uppercase px-1.5 py-0.5 rounded leading-tight">
                 Blocked
               </div>
-              <div v-else class="flex flex-col gap-1">
-                <div class="flex justify-between text-[0.55rem] font-bold text-slate-500">
-                  <span>{{ date.slot.booked_slots || 0 }}/{{ date.slot.max_slots }}</span>
+              <div v-else class="flex flex-col gap-2">
+                <!-- Morning Slots -->
+                <div class="flex flex-col gap-0.5">
+                  <div class="flex justify-between text-[0.45rem] font-bold text-slate-500 uppercase tracking-tighter">
+                    <span>Morning</span><span>{{ date.slot.booked_morning || 0 }}/{{ date.slot.morning_slots }}</span>
+                  </div>
+                  <div class="w-full h-1 bg-slate-100 rounded-full">
+                    <div class="h-full bg-amber-400 rounded-full" :style="{ width: ((date.slot.booked_morning || 0) / date.slot.morning_slots) * 100 + '%' }"></div>
+                  </div>
                 </div>
-                <div class="w-full h-1 bg-slate-100 rounded-full">
-                  <div class="h-full bg-amber-400 rounded-full" :style="{ width: (date.slot.booked_slots/date.slot.max_slots)*100 + '%' }"></div>
+                <!-- Afternoon Slots -->
+                <div class="flex flex-col gap-0.5">
+                  <div class="flex justify-between text-[0.45rem] font-bold text-slate-500 uppercase tracking-tighter">
+                    <span>Afternoon</span><span>{{ date.slot.booked_afternoon || 0 }}/{{ date.slot.afternoon_slots }}</span>
+                  </div>
+                  <div class="w-full h-1 bg-slate-100 rounded-full">
+                    <div class="h-full bg-blue-400 rounded-full" :style="{ width: ((date.slot.booked_afternoon || 0) / date.slot.afternoon_slots) * 100 + '%' }"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -114,7 +126,7 @@
                  <td class="px-6 py-4">
                    <div class="flex flex-col">
                      <span class="font-bold text-[#00334d]">{{ formatDate(slot.date) }}</span>
-                     <span class="text-[0.6rem] text-slate-400 font-bold uppercase">{{ slot.booked_slots }} Booked</span>
+                     <span class="text-[0.6rem] text-slate-400 font-bold uppercase">{{ (slot.booked_morning || 0) + (slot.booked_afternoon || 0) }} Booked Total</span>
                    </div>
                  </td>
                  <td class="px-6 py-4 text-center">
