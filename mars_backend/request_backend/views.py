@@ -639,7 +639,4 @@ class PublicRecordCheckView(APIView):
             'has_active_request': False,
             'student_id': student.id,
             'full_name': f"{student.first_name} {student.last_name}",
-            'documents': list(digitized_docs)
-        })
-            'documents': list(digitized_docs)
         })
