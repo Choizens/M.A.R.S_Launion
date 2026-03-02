@@ -98,6 +98,11 @@ DATABASES = {
     )
 }
 
+# Fix for Supabase Pooler (OperationalError: server didn't return client encoding)
+DATABASES['default']['OPTIONS'] = {
+    'prepare_threshold': None,
+}
+
 AUTH_USER_MODEL = 'request_backend.Staff'
 
 
