@@ -466,6 +466,9 @@ const strandForm = reactive({ name: '', description: '' });
 const strands = ref([]);
 
 const docForm = reactive({ name: '', description: '', price: 0, is_active: true });
+const showDocModal = ref(false);
+const editingDoc = ref(null);
+const submittingDoc = ref(false);
 
 // Student Modal State
 const showStudentModal = ref(false);
