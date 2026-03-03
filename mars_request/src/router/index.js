@@ -1,3 +1,4 @@
+// Initializing Vue Router - Triggering fresh Vercel deployment
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
