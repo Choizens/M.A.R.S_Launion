@@ -13,7 +13,7 @@
     <!-- Sidebar -->
     <aside 
       :class="[
-        'bg-[#00334d] text-white flex flex-col transition-all duration-300 ease-in-out z-40 shadow-xl shrink-0',
+        'bg-[#0a3a2a] text-white flex flex-col transition-all duration-300 ease-in-out z-40 shadow-xl shrink-0',
         // Mobile: fixed drawer that slides in/out
         isMobile ? (
           sidebarOpen ? 'fixed inset-y-0 left-0 w-72 translate-x-0' : 'fixed inset-y-0 left-0 w-72 -translate-x-full'
@@ -30,7 +30,7 @@
             <img :src="logoImg" alt="Logo" class="w-8 h-8 object-contain brightness-0 invert shrink-0" />
             <div class="flex flex-col leading-tight">
               <span class="text-xs font-black uppercase tracking-wider whitespace-nowrap">La Union SHS</span>
-              <span class="text-[0.55rem] opacity-60 uppercase tracking-widest">Staff Portal</span>
+              <span class="text-[0.55rem] opacity-60 uppercase tracking-widest text-[#ffd54f]">Staff Portal</span>
             </div>
           </div>
         </Transition>
@@ -108,7 +108,7 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
       <!-- Top Header -->
-      <header class="h-16 bg-[#004d66] text-white flex items-center justify-between px-4 md:px-8 shadow-md z-10 shrink-0">
+      <header class="h-16 bg-[#0c4a35] text-white flex items-center justify-between px-4 md:px-8 shadow-md z-10 shrink-0">
         <div class="flex items-center gap-3">
           <!-- Burger toggle -->
           <button 
@@ -120,20 +120,20 @@
           </button>
           
           <div class="hidden sm:flex flex-col">
-            <h2 class="text-xs md:text-sm font-bold leading-tight uppercase tracking-wide">La Union SHS — Admin</h2>
-            <p class="text-[0.55rem] opacity-60 tracking-widest uppercase">M.A.R.S Dashboard</p>
+            <h2 class="text-xs md:text-sm font-bold leading-tight uppercase tracking-wide">La Union SHS — Staff</h2>
+            <p class="text-[0.55rem] opacity-60 tracking-widest uppercase">M.A.R.S Staff Portal</p>
           </div>
         </div>
 
         <div class="flex items-center gap-4 md:gap-8">
           <div class="hidden md:flex flex-col text-right">
-            <span class="text-xs font-medium opacity-90 italic">Welcome, {{ user?.full_name || 'Admin' }}</span>
-            <span class="text-[0.7rem] font-bold uppercase tracking-wider text-amber-300 mt-0.5">Administrator</span>
+            <span class="text-xs font-medium opacity-90 italic">Signed in as, {{ user?.full_name || 'Staff' }}</span>
+            <span class="text-[0.7rem] font-bold uppercase tracking-wider text-[#ffd54f] mt-0.5">Staff Member</span>
           </div>
           
           <div class="relative cursor-pointer hover:opacity-80 transition-opacity">
             <BellIcon class="w-6 h-6" />
-            <span v-if="stats.pending > 0" class="absolute -top-1.5 -right-1.5 bg-[#ff4d4d] text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#004d66]">
+            <span v-if="stats.pending > 0" class="absolute -top-1.5 -right-1.5 bg-[#ff4d4d] text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#0c4a35]">
               {{ stats.pending }}
             </span>
           </div>
@@ -518,25 +518,18 @@ let searchTimeout = null;
 
 // ── Nav ─────────────────────────────────────────────────────────────────────
 const navItems = [
-  { id: 'overview', label: 'Dashboard', icon: markRaw(DashboardIcon) },
-  { id: 'record_requests', label: 'Request List', icon: markRaw(ListIcon) },
-  { id: 'student_directory', label: 'Student List', icon: markRaw(StudentIcon) },
-  { id: 'strand_settings', label: 'Strand Settings', icon: markRaw(DocsIcon) },
-  { id: 'staff_management', label: 'User Management', icon: markRaw(UserIcon) },
-  { id: 'document_types', label: 'Document Types', icon: markRaw(DocsIcon) },
+  { id: 'overview', label: 'Overview', icon: markRaw(DashboardIcon) },
+  { id: 'record_requests', label: 'Manage Requests', icon: markRaw(ListIcon) },
   { id: 'pickup_scheduling', label: 'Scheduling', icon: markRaw(ClockIcon) },
-  { id: 'audit_logs', label: 'Audit Logs', icon: markRaw(HistoryIcon) },
-  { id: 'admin_settings', label: 'Settings', icon: markRaw(CogIcon) },
 ];
 
 const statCards = computed(() => [
-  { label: 'Total Requests', value: stats.value.total ?? 0, color: '#00334d', icon: markRaw(FileIcon) },
+  { label: 'Total Requests', value: stats.value.total ?? 0, color: '#0a3a2a', icon: markRaw(FileIcon) },
   { label: 'Pending', value: stats.value.pending ?? 0, color: '#f59e0b', icon: markRaw(ClockIcon) },
   { label: 'Processing', value: stats.value.processing ?? 0, color: '#0ea5e9', icon: markRaw(ActivityIcon) },
   { label: 'Approved', value: stats.value.approved ?? 0, color: '#10b981', icon: markRaw(CheckIcon) },
   { label: 'Completed', value: stats.value.completed ?? 0, color: '#8b5cf6', icon: markRaw(CheckIcon) },
   { label: 'Rejected', value: stats.value.rejected ?? 0, color: '#ef4444', icon: markRaw(AlertIcon) },
-  { label: 'Doc Types', value: docTypes.value.length ?? 0, color: '#004d66', icon: markRaw(DocsIcon) },
 ]);
 
 const statusFilters = [
