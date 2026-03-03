@@ -30,7 +30,7 @@ const router = createRouter({
       component: () => import('../views/Staff/StaffDashboard.vue'),
       meta: { requiresAuth: true },
     },
-    // ── Admin routes ──────────────────────────────────────
+    // ── Admin routes (using lowercase 'admin' for Linux compatibility) ────
     {
       path: '/admin/login',
       name: 'admin-login',
