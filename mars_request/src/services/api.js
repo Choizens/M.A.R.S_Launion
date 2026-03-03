@@ -57,6 +57,9 @@ export const requestService = {
     submitRequest(data) {
         return apiClient.post('requests/', data);
     },
+    lookupRequest(code) {
+        return apiClient.get(`requests/lookup/${code}/`);
+    },
     getPublicDocTypes() {
         return apiClient.get('public/document-types/');
     },

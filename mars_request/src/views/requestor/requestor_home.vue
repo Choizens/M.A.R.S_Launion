@@ -1,32 +1,30 @@
 <template>
-  <div class="min-h-screen font-sans">
+  <div id="top" class="min-h-screen font-sans">
     <!-- Navbar -->
     <nav class="flex flex-col md:flex-row justify-between items-center py-4 px-6 md:px-12 bg-white border-b shadow-sm gap-4 md:gap-0">
       <div class="flex items-center gap-2.5">
-        <img :src="logoImg" alt="Logo" class="w-10 h-10 object-contain" />
+        <img :src="logoImg" alt="Logo" class="w-12 h-12 object-contain" />
         <div class="flex flex-col">
-          <span class="font-bold text-slate-800 text-sm leading-tight">StandAlone</span>
-          <span class="text-[0.65rem] text-slate-500 font-medium whitespace-nowrap">La Union Senior High School</span>
+          <span class="font-caveat font-bold text-black text-xl md:text-2xl leading-none tracking-tight">StandAlone</span>
+          <span class="font-caveat text-base md:text-lg text-black leading-none mt-0.5">La Union Senior High School</span>
         </div>
       </div>
-      <div class="flex flex-wrap justify-center items-center gap-4 md:gap-12 text-[0.8rem] md:text-[0.95rem]">
-        <router-link to="/" class="text-cyan-500 font-bold">Home</router-link>
-        <a href="#" class="text-slate-800 font-bold hover:text-cyan-500 transition-colors">Navigation</a>
-        <a href="#" class="text-slate-800 font-bold hover:text-cyan-500 transition-colors">Navigation</a>
-        <a href="#" class="text-slate-800 font-bold hover:text-cyan-500 transition-colors">Navigation</a>
-        <router-link to="/Staff/login" class="px-4 md:px-6 py-2 rounded font-bold text-white bg-[#154252] hover:bg-[#0d2a35] transition-colors whitespace-nowrap">
-          Staff Login
-        </router-link>
+      <div class="flex flex-wrap justify-center items-center gap-4 md:gap-8 lg:gap-12 text-[0.8rem] md:text-[0.95rem]">
+        <a href="#" @click.prevent="scrollToSection('top')" class="text-cyan-500 font-bold transition-colors">Home</a>
+        <a href="#core-values" @click.prevent="scrollToSection('core-values')" class="text-slate-800 font-bold hover:text-cyan-500 transition-colors">Core Values</a>
+        <a href="#how-it-works" @click.prevent="scrollToSection('how-it-works')" class="text-slate-800 font-bold hover:text-cyan-500 transition-colors">How It Works</a>
+        <a href="#track-request" @click.prevent="scrollToSection('track-request')" class="text-slate-800 font-bold hover:text-cyan-500 transition-colors">Track Request</a>
+        <a href="#faq" @click.prevent="scrollToSection('faq')" class="text-slate-800 font-bold hover:text-cyan-500 transition-colors">FAQs</a>
       </div>
     </nav>
 
     <!-- Hero Section -->
-    <div class="relative min-h-[450px] md:min-h-[500px] flex flex-col justify-center bg-[#154252] bg-cover bg-center bg-blend-overlay px-6 md:px-12 lg:px-24 py-16 md:py-0 text-center md:text-left"
-         :style="{ backgroundImage: `linear-gradient(rgba(21, 66, 82, 0.7), rgba(21, 66, 82, 0.7)), url(${bgImg})` }">
+    <div class="relative min-h-[450px] md:min-h-[500px] flex flex-col justify-center bg-cover bg-center px-6 md:px-12 lg:px-24 py-16 md:py-0 text-center md:text-left"
+         :style="{ backgroundImage: `url(${bgImg})` }">
 
       <div class="max-w-4xl relative z-10 mx-auto md:mx-0">
-        <p class="text-slate-300 md:text-slate-200 font-bold mb-2 text-sm md:text-base">La Union Senior High School, Cabadbaran City</p>
-        <h1 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight">
+        <p class="text-slate-300 md:text-slate-200 font-bold mb-2 text-xs md:text-base">La Union Senior High School, Cabadbaran City</p>
+        <h1 class="text-white text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4 leading-tight">
           Request your School Document <span class="text-yellow-400">Online!</span>
         </h1>
         <p class="text-slate-300 md:text-slate-200 max-w-2xl mb-10 leading-relaxed text-sm md:text-base mx-auto md:mx-0">
@@ -35,39 +33,34 @@
         </p>
 
         <!-- CTA Button with character -->
-        <div class="relative inline-block mt-12 group">
-          <div class="absolute -top-12 -right-24 flex items-center gap-2 pointer-events-none z-20">
+        <div class="relative inline-block mt-8 md:mt-12 group">
+          <div class="absolute -top-12 -right-8 md:-right-24 flex items-center gap-2 pointer-events-none z-20 scale-75 md:scale-100 origin-right">
             <!-- Character sitting -->
-            <div class="relative w-12 h-12">
-               <img :src="sittingPersonImg" alt="Sitting" class="absolute bottom-0 right-0 w-14 h-14 object-contain" />
+            <div class="relative w-10 h-10 md:w-12 md:h-12">
+               <img :src="sittingPersonImg" alt="Sitting" class="absolute bottom-0 right-0 w-12 h-12 md:w-14 md:h-14 object-contain" />
             </div>
             <!-- The "HERE!" Bubble -->
             <div class="animate-bounce -mt-4">
-               <div class="bg-white px-3 py-1.5 rounded-md text-[0.8rem] md:text-[0.9rem] font-black text-[#154252] shadow-xl border-2 border-[#154252] relative whitespace-nowrap">
+               <div class="bg-white px-3 py-1.5 rounded-md text-[0.7rem] md:text-[0.9rem] font-black text-[#154252] shadow-xl border-2 border-[#154252] relative whitespace-nowrap">
                  HERE!
                  <!-- Left pointing tail -->
-                 <div class="absolute top-1/2 -left-1.5 w-2.5 h-2.5 bg-white border-l-2 border-b-2 border-[#154252] transform -translate-y-1/2 rotate-45"></div>
+                 <div class="absolute top-1/2 -left-1.5 w-2 w-2.5 h-2.5 bg-white border-l-2 border-b-2 border-[#154252] transform -translate-y-1/2 rotate-45"></div>
                </div>
             </div>
           </div>
           
-          <button @click="openModal" class="px-12 py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-sm shadow-xl transition-all transform hover:scale-105 uppercase tracking-wide text-base min-w-[280px]">
+          <button @click="openModal" class="px-8 md:px-12 py-3 md:py-4 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded-sm shadow-xl transition-all transform hover:scale-105 uppercase tracking-wide text-sm md:text-base min-w-full sm:min-w-[280px]">
             Make a request
           </button>
         </div>
       </div>
 
-      <!-- Decorative circles -->
-      <div class="absolute right-12 lg:right-32 top-1/2 -translate-y-1/2 hidden xl:flex gap-8">
-        <div class="w-40 h-40 rounded-full bg-white opacity-95"></div>
-        <div class="w-40 h-40 rounded-full bg-white opacity-95"></div>
-      </div>
     </div>
 
     <!-- Tracking Section -->
-    <div class="bg-[#f8fafc] border-b">
-      <div class="max-w-7xl mx-auto px-6 md:px-12 py-10">
-        <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl -mt-20 relative z-20 border border-slate-100">
+    <div id="track-request" class="bg-[#f8fafc] border-b">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 py-6 md:py-10">
+        <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl -mt-10 md:-mt-20 relative z-20 border border-slate-100">
           <div class="flex flex-col md:flex-row items-center gap-6">
             <div class="flex-1">
               <h2 class="text-xl font-black text-[#154252] mb-1">Track Your Request</h2>
@@ -87,7 +80,7 @@
     </div>
 
     <!-- Content Sections -->
-    <div class="max-w-7xl mx-auto py-12 md:py-20 px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
+    <div id="core-values" class="max-w-7xl mx-auto py-12 md:py-20 px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
       <div class="flex flex-col gap-12">
         <section>
           <h2 class="text-3xl font-black text-[#154252] mb-6 border-b-4 border-slate-100 pb-2">VISION</h2>
@@ -106,22 +99,144 @@
         </section>
       </div>
 
-      <div>
-        <h2 class="text-3xl font-black text-[#154252] mb-6 border-b-4 border-slate-100 pb-2">LOREM IPSUM</h2>
-        <div class="space-y-8">
-          <p class="text-slate-700 leading-relaxed font-medium">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-            Ut enim ad minim veniam.
-          </p>
-          <p class="text-slate-700 leading-relaxed font-medium">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-          </p>
-          <p class="text-slate-700 leading-relaxed font-medium">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-          </p>
+      <div id="how-it-works">
+        <h2 class="text-3xl font-black text-[#154252] mb-6 border-b-4 border-slate-100 pb-2">HOW IT WORKS</h2>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+             <div class="w-10 h-10 rounded-full bg-[#154252] text-white flex items-center justify-center font-bold shrink-0 text-xl shadow-lg border-2 border-yellow-400">1</div>
+             <div>
+               <h3 class="text-lg font-bold text-slate-800">Submit Request</h3>
+               <p class="text-sm text-slate-600 font-medium">Click "Make a Request" and provide your accurate details and necessary requirements.</p>
+             </div>
+          </div>
+          <div class="flex items-start gap-4">
+             <div class="w-10 h-10 rounded-full bg-[#154252] text-white flex items-center justify-center font-bold shrink-0 text-xl shadow-lg border-2 border-yellow-400">2</div>
+             <div>
+               <h3 class="text-lg font-bold text-slate-800">Save Your Passkey</h3>
+               <p class="text-sm text-slate-600 font-medium">After submitting, copy your generated Passkey. Use this to track your document's status anytime.</p>
+             </div>
+          </div>
+          <div class="flex items-start gap-4">
+             <div class="w-10 h-10 rounded-full bg-[#154252] text-white flex items-center justify-center font-bold shrink-0 text-xl shadow-lg border-2 border-yellow-400">3</div>
+             <div>
+               <h3 class="text-lg font-bold text-slate-800">Wait for Processing</h3>
+               <p class="text-sm text-slate-600 font-medium">We will review and process your request. Check its progress via the Track Request tool.</p>
+             </div>
+          </div>
+          <div class="flex items-start gap-4">
+             <div class="w-10 h-10 rounded-full bg-[#154252] text-white flex items-center justify-center font-bold shrink-0 text-xl shadow-lg border-2 border-yellow-400">4</div>
+             <div>
+               <h3 class="text-lg font-bold text-slate-800">Ready to Pickup</h3>
+               <p class="text-sm text-slate-600 font-medium">Once ready, securely download digital copies or visit the school for physical copies.</p>
+             </div>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- FAQ Section -->
+    <div id="faq" class="bg-slate-50 border-t border-slate-200">
+      <div class="max-w-7xl mx-auto py-16 md:py-20 px-6 md:px-12">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-black text-[#154252] uppercase tracking-tight">Frequently Asked Questions</h2>
+          <p class="text-slate-500 mt-2 font-medium">Everything you need to know about the document request process.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <!-- FAQ Item -->
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <h3 class="font-bold text-lg text-slate-800 mb-2 flex items-center gap-2">
+              <span class="text-yellow-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </span>
+              How long does it take?
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed font-medium">Processing time varies depending on the requested document but generally takes 3 to 5 working days. Track your status anytime with your passkey.</p>
+          </div>
+          <!-- FAQ Item -->
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <h3 class="font-bold text-lg text-slate-800 mb-2 flex items-center gap-2">
+              <span class="text-yellow-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
+              </span>
+              What should I bring?
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed font-medium">When picking up physical documents, please bring a valid ID and a copy of your passkey or email confirmation to the registrar's office on your scheduled date.</p>
+          </div>
+          <!-- FAQ Item -->
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <h3 class="font-bold text-lg text-slate-800 mb-2 flex items-center gap-2">
+              <span class="text-yellow-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              </span>
+              Can someone else pick up my document?
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed font-medium">Yes, but they must present an Authorization Letter signed by you, a photocopy of your valid ID, and their own valid ID upon claim.</p>
+          </div>
+          <!-- FAQ Item -->
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <h3 class="font-bold text-lg text-slate-800 mb-2 flex items-center gap-2">
+              <span class="text-yellow-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+              </span>
+              Will I be emailed updates?
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed font-medium">If your email was provided, you will receive updates when your request is approved and when your documents are ready. You can also track it manually.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== CHECK REQUEST MODAL ===================== -->
+    <Teleport to="body">
+      <div v-if="showCheckModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+        <div class="bg-white w-full max-w-lg rounded-xl shadow-2xl border border-slate-300 overflow-hidden">
+          <!-- Header -->
+          <div class="px-8 pt-8 pb-4 flex items-start justify-between">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900">Review Request Document</h2>
+              <p class="text-slate-500 text-sm mt-1">Enter the given Request Key of the Graduates.</p>
+            </div>
+            <div class="flex gap-2 flex-shrink-0">
+              <div class="w-9 h-9 rounded-full bg-[#99dbce]"></div>
+              <div class="w-9 h-9 rounded-full bg-[#99dbce]"></div>
+            </div>
+          </div>
+          <!-- Input Area -->
+          <div class="px-8 pb-4">
+            <input
+              v-model="checkCode"
+              @keyup.enter="handleCheckRequest"
+              type="text"
+              placeholder=""
+              class="w-full border border-slate-400 rounded-sm px-4 text-4xl font-mono font-black tracking-widest text-[#154252] focus:outline-none focus:border-[#154252] transition-all uppercase text-center"
+              style="height: 130px; display: flex; align-items: center;"
+            />
+            <div v-if="checkError" class="mt-2 text-sm text-red-500 font-medium">
+              {{ checkError }}
+            </div>
+            <p class="text-slate-700 text-sm mt-3 leading-relaxed">
+              <strong>Note:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..
+            </p>
+          </div>
+          <!-- Footer Buttons -->
+          <div class="px-8 pb-8 flex items-center justify-between gap-4 mt-2">
+            <button
+              @click="closeCheckModal"
+              class="px-10 py-2.5 border-2 border-slate-800 text-slate-800 font-bold rounded hover:bg-slate-50 transition-colors text-sm"
+            >Close</button>
+            <button
+              @click="handleCheckRequest"
+              :disabled="checkLoading"
+              class="px-10 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded shadow transition-colors disabled:opacity-60 text-sm"
+            >
+              <span v-if="checkLoading">Searching...</span>
+              <span v-else>Review</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- ===================== REQUEST MODAL ===================== -->
     <Teleport to="body">
@@ -129,11 +244,11 @@
         <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[95vh]">
           
           <!-- Modal Header -->
-          <div class="px-10 pt-10 pb-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50 relative z-10 backdrop-blur-sm">
+          <div class="px-6 md:px-10 pt-8 md:pt-10 pb-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50 relative z-10 backdrop-blur-sm">
             <div>
-              <h2 class="text-3xl font-black text-slate-900 tracking-tight">{{ currentStep === 1 ? 'Applicant Details' : 'Request Processing' }}</h2>
+              <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">{{ currentStep === 1 ? 'Applicant Details' : 'Request Processing' }}</h2>
               <div class="mt-2 text-sm text-slate-600 font-medium">
-                <span class="font-bold text-[#154252] uppercase tracking-wider text-xs">Step {{ currentStep }} of 2 &mdash;</span> Please complete the requested information.
+                <span class="font-bold text-[#154252] uppercase tracking-wider text-xs">Step {{ currentStep }} of 2 &mdash;</span> <span class="hidden xs:inline">Please complete the requested information.</span>
               </div>
             </div>
             <!-- Step Indicator -->
@@ -148,75 +263,83 @@
           </div>
 
           <!-- Modal Body -->
-          <form id="submission-form" ref="requestForm" @submit.prevent="handleSubmit" class="p-6 lg:p-10 flex flex-col gap-10 flex-1 overflow-y-auto">
+          <form id="submission-form" ref="requestForm" @submit.prevent="handleSubmit" class="p-6 md:p-8 lg:p-10 flex flex-col gap-6 md:gap-10 flex-1 overflow-y-auto">
             
             <!-- STEP 1: Personal & School Information -->
-            <div v-show="currentStep === 1" class="flex flex-col gap-8 animate-in fade-in slide-in-from-right-4 duration-500">
+            <div v-show="currentStep === 1" class="flex flex-col gap-6 animate-in fade-in slide-in-from-right-4 duration-500">
 
-              <!-- Name Fields -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-5 rounded-xl border border-slate-100">
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">First Name <span class="text-red-500">*</span></label>
-                  <input v-model="form.first_name" type="text" required class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] shadow-sm font-medium" />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">Last Name <span class="text-red-500">*</span></label>
-                  <input v-model="form.last_name" type="text" required class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] shadow-sm font-medium" />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">Middle Name</label>
-                  <input v-model="form.middle_name" type="text" class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] shadow-sm font-medium" />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">Suffix</label>
-                  <input v-model="form.suffix" type="text" class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] shadow-sm font-medium" placeholder="Jr., Sr., III..." />
+              <!-- Name Details -->
+              <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-xs font-black text-[#154252] uppercase tracking-widest mb-5 pb-2 border-b border-slate-100">Applicant Name</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-5">
+                  <div class="flex flex-col sm:col-span-2 text-left">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">First Name <span class="text-red-500">*</span></label>
+                    <input v-model="form.first_name" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                  </div>
+                  <div class="flex flex-col sm:col-span-2 text-left">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Last Name <span class="text-red-500">*</span></label>
+                    <input v-model="form.last_name" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                  </div>
+                  <div class="flex flex-col sm:col-span-3 text-left">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Middle Name</label>
+                    <input v-model="form.middle_name" type="text" class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" placeholder="Optional" />
+                  </div>
+                  <div class="flex flex-col sm:col-span-1 text-left">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Suffix</label>
+                    <input v-model="form.suffix" type="text" class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" placeholder="Jr., III..." />
+                  </div>
                 </div>
               </div>
 
-              <!-- School Fields -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-5 rounded-xl border border-slate-100">
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">Sex <span class="text-red-500">*</span></label>
-                  <select v-model="form.sex" required class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] bg-white shadow-sm font-medium">
-                    <option value="" disabled>Select...</option>
-                    <option>Male</option>
-                    <option>Female</option>
-                  </select>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">Birthdate <span class="text-red-500">*</span></label>
-                  <input v-model="form.birthdate" type="date" required class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] shadow-sm font-medium" />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">Year Graduated <span class="text-red-500">*</span></label>
-                  <input v-model="form.year_graduated" type="text" required class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] shadow-sm font-medium" placeholder="e.g. 2023" />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">Strand <span class="text-red-500">*</span></label>
-                  <select v-model="form.strand_type" required class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] bg-white shadow-sm font-medium">
-                    <option value="" disabled>Select Strand</option>
-                    <option v-for="s in strands" :key="s.id" :value="s.id">{{ s.name }}</option>
-                  </select>
+              <!-- Academic Details -->
+              <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-xs font-black text-[#154252] uppercase tracking-widest mb-5 pb-2 border-b border-slate-100">Personal & Academic Profile</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div class="flex flex-col text-left">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Sex <span class="text-red-500">*</span></label>
+                    <select v-model="form.sex" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors appearance-none cursor-pointer">
+                      <option value="" disabled>Select...</option>
+                      <option>Male</option>
+                      <option>Female</option>
+                    </select>
+                  </div>
+                  <div class="flex flex-col text-left">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Year Graduated <span class="text-red-500">*</span></label>
+                    <input v-model="form.year_graduated" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" placeholder="e.g. 2023" />
+                  </div>
+                  <div class="flex flex-col text-left">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Strand <span class="text-red-500">*</span></label>
+                    <select v-model="form.strand_type" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors appearance-none cursor-pointer">
+                      <option value="" disabled>Select Strand</option>
+                      <option v-for="s in strands" :key="s.id" :value="s.id">{{ s.name }}</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
-              <!-- Contact Fields -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-5 rounded-xl border border-slate-100">
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">LRN Number <span class="text-[0.6rem] normal-case text-slate-400 font-normal">(Optional)</span></label>
-                  <input v-model="form.lrn_number" type="text" class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] shadow-sm font-medium" />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">Active Email <span class="text-red-500">*</span></label>
-                  <input v-model="form.email" type="email" required class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] shadow-sm font-medium" />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">Phone No. <span class="text-red-500">*</span></label>
-                  <input v-model="form.phone_number" type="text" required class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] shadow-sm font-medium" />
-                </div>
-                <div class="flex flex-col gap-1 sm:col-span-2">
-                  <label class="text-xs font-bold text-slate-600 uppercase tracking-wider">Permanent Address <span class="text-red-500">*</span></label>
-                  <input v-model="form.permanent_address" type="text" required class="border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] shadow-sm font-medium" />
+              <!-- Contact & Identity Details -->
+              <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-xs font-black text-[#154252] uppercase tracking-widest mb-5 pb-2 border-b border-slate-100">Contact Information</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div class="flex flex-col text-left">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">LRN Number <span class="text-[0.55rem] normal-case text-slate-400 font-normal tracking-normal">(Optional)</span></label>
+                    <input v-model="form.lrn_number" type="text" class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                  </div>
+                  <div class="hidden sm:block"></div> <!-- Empty column beside LRN -->
+                  
+                  <div class="flex flex-col text-left">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Phone No. <span class="text-red-500">*</span></label>
+                    <input v-model="form.phone_number" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                  </div>
+                  <div class="flex flex-col text-left">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Active Email <span class="text-red-500">*</span></label>
+                    <input v-model="form.email" type="email" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                  </div>
+
+                  <div class="flex flex-col sm:col-span-2 text-left mt-2">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Permanent Address <span class="text-red-500">*</span></label>
+                    <input v-model="form.permanent_address" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -225,7 +348,7 @@
             <div v-show="currentStep === 2" class="flex flex-col gap-8 animate-in fade-in slide-in-from-right-4 duration-500">
               
               <!-- Record Verification Info -->
-              <div class="p-5 rounded-xl border-2 flex items-center justify-between" 
+              <div class="p-4 md:p-5 rounded-xl border-2 flex flex-col sm:flex-row items-center justify-between gap-4" 
                   :class="recordStatus === 'found' ? 'bg-blue-50 border-blue-200' : 
                           recordStatus === 'duplicate' ? 'bg-amber-50 border-amber-200' :
                           recordStatus === 'not_found' ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-200'">
@@ -394,7 +517,7 @@
           </form>
 
           <!-- Modal Footer -->
-          <div class="px-10 py-6 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50 sticky bottom-0 z-10 backdrop-blur-sm">
+          <div class="px-6 md:px-10 py-6 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50 sticky bottom-0 z-10 backdrop-blur-sm">
             <!-- Branding -->
             <div class="flex items-center gap-3">
               <div class="w-9 h-9 rounded-full bg-[#99dbce] flex items-center justify-center shadow-inner">
@@ -535,18 +658,130 @@
         </div>
       </div>
     </Teleport>
+    <!-- Footer -->
+    <footer class="bg-[#0D3971] text-slate-300 py-12 md:py-16 border-t-4 border-yellow-400">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16">
+        
+        <!-- Brand Info -->
+        <div class="flex flex-col gap-4">
+          <div class="flex items-center gap-3 bg-white/10 p-4 rounded-xl w-fit backdrop-blur-sm border border-white/10">
+            <img :src="logoImg" alt="Logo" class="w-12 h-12 object-contain" />
+            <div class="flex flex-col -gap-1">
+              <span class="font-caveat font-bold text-white text-2xl leading-none">StandAlone</span>
+              <span class="font-caveat text-yellow-400 text-lg leading-none whitespace-nowrap mt-0.5">La Union Senior High School</span>
+            </div>
+          </div>
+          <p class="text-[0.8rem] text-slate-400 leading-relaxed max-w-sm mt-2">
+            Providing accessible and streamlined document request services for our alumni and current students. We aim for efficiency, transparency, and convenience.
+          </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="flex flex-col gap-5">
+          <h4 class="text-white font-black uppercase tracking-widest text-sm mb-1">Quick Links</h4>
+          <div class="flex flex-col gap-3 text-sm">
+            <a href="#" @click.prevent="scrollToSection('top')" class="hover:text-yellow-400 transition-colors w-fit flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-yellow-400"></span> Home
+            </a>
+            <a href="#core-values" @click.prevent="scrollToSection('core-values')" class="hover:text-yellow-400 transition-colors w-fit flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-yellow-400"></span> Core Values
+            </a>
+            <a href="#how-it-works" @click.prevent="scrollToSection('how-it-works')" class="hover:text-yellow-400 transition-colors w-fit flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-yellow-400"></span> How It Works
+            </a>
+            <a href="#track-request" @click.prevent="scrollToSection('track-request')" class="hover:text-yellow-400 transition-colors w-fit flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-yellow-400"></span> Track Request
+            </a>
+            <a href="#faq" @click.prevent="scrollToSection('faq')" class="hover:text-yellow-400 transition-colors w-fit flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-yellow-400"></span> FAQs
+            </a>
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="flex flex-col gap-4">
+          <h4 class="text-white font-black uppercase tracking-widest text-sm mb-1">Contact Us</h4>
+          <div class="flex items-start gap-3 mt-1 text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            <span class="text-slate-400">La Union Senior High School<br/>Cabadbaran City, Agusan del Norte, Philippines</span>
+          </div>
+          <div class="flex items-center gap-3 text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+            <span class="text-slate-400">registrar@launion.edu.ph</span>
+          </div>
+          <div class="flex items-center gap-3 text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+            <span class="text-slate-400">+63 912 345 6789</span>
+          </div>
+        </div>
+
+      </div>
+      
+      <!-- Copyright -->
+      <div class="max-w-7xl mx-auto px-6 md:px-12 mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+        <p>&copy; {{ new Date().getFullYear() }} StandAlone - La Union Senior High School. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted, computed, watch } from 'vue';
-import bgImg from '@/assets/launion.png';
-import logoImg from '@/assets/logo-launion.png';
+import { useRouter } from 'vue-router';
+import bgImg from '@/assets/Launion_backend.svg';
+import logoImg from '@/assets/form_logo.png';
 import sittingPersonImg from '@/assets/sitting_person.png';
 import { requestService, publicService } from '@/services/api';
 
 // Lucide Icons
 import { X as XIcon, CheckCircle as CheckIcon, AlertCircle as AlertIcon, Search as SearchIcon, Calendar as CalendarIcon, Clock as ClockIcon, FileText as FileTextIcon } from 'lucide-vue-next';
+
+const router = useRouter();
+
+// Check Request Modal State
+const showCheckModal = ref(false);
+const checkCode = ref('');
+const checkError = ref('');
+const checkLoading = ref(false);
+
+const scrollToSection = (id) => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+};
+
+function openCheckModal() {
+  showCheckModal.value = true;
+  checkCode.value = '';
+  checkError.value = '';
+}
+
+function closeCheckModal() {
+  showCheckModal.value = false;
+}
+
+async function handleCheckRequest() {
+  if (!checkCode.value.trim()) {
+    checkError.value = 'Please enter your request code.';
+    return;
+  }
+  checkLoading.value = true;
+  checkError.value = '';
+  try {
+    await requestService.lookupRequest(checkCode.value.trim());
+    closeCheckModal();
+    router.push({ name: 'request-details', params: { code: checkCode.value.trim().toUpperCase() } });
+  } catch (err) {
+    checkError.value = err.response?.data?.error || 'Invalid code. Please try again.';
+  } finally {
+    checkLoading.value = false;
+  }
+}
 
 // Modal State
 const showModal = ref(false);
@@ -562,6 +797,7 @@ const submitError = ref('');
 const fileError = ref('');
 const fileSelectValue = ref('');
 const selectedFiles = ref([]);
+const requestCode = ref('');
 const docTypes = ref([]);
 const strands = ref([]);
 
@@ -587,7 +823,6 @@ const form = reactive({
   sex: '',
   year_graduated: '',
   strand_type: '',
-  birthdate: '',
   lrn_number: '',
   email: '',
   phone_number: '',
@@ -684,19 +919,22 @@ async function handleSubmit() {
 
   submitting.value = true;
   try {
-    const res = await requestService.submitRequest({
+    const response = await requestService.submitRequest({
       ...form,
       requested_files: selectedFiles.value,
     });
-    submittedRequestId.value = res.data.passkey;
+    // Check which branch's logic we should use based on the ID response. Let's use passkey logic from doms since it's the newer flow.
+    submittedRequestId.value = response.data.passkey || response.data.request_code;
     showModal.value = false;
     showSuccess.value = true;
     resetForm();
   } catch (err) {
     const data = err.response?.data;
-    if (data) {
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
       const firstKey = Object.keys(data)[0];
       submitError.value = Array.isArray(data[firstKey]) ? data[firstKey][0] : data[firstKey];
+    } else if (typeof data === 'string') {
+      submitError.value = 'An error occurred on the server. Please try again later.';
     } else {
       submitError.value = 'Something went wrong. Please try again.';
     }
@@ -814,6 +1052,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&display=swap');
+
+.font-caveat {
+  font-family: 'Caveat', cursive;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   height: 6px;
 }

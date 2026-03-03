@@ -322,7 +322,7 @@
 import { ref, computed, onMounted, onUnmounted, watch, markRaw, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { authService, adminService } from '@/services/api';
-import logoImg from '@/assets/logo-launion.png';
+import logoImg from '@/assets/form_logo.png';
 
 // Tab Components
 import DashboardOverview from './tabs/DashboardOverview.vue';
@@ -481,7 +481,6 @@ const studentForm = reactive({
   last_name: '',
   suffix: '',
   sex: 'Male',
-  birthdate: '',
   year_graduated: '',
   strand_type: '',
   email: '',
@@ -941,20 +940,24 @@ const handleMasterDocUpload = async () => {
     const fd = new FormData();
     fd.append('file', masterDocFile.value);
     fd.append('document_type', masterDocForm.document_type);
-    await adminService.uploadStudentMasterDoc(selectedStudentForDocs.value, fd);
+    const res = await adminService.uploadStudentMasterDoc(selectedStudentForDocs.value, fd);
     
-    // Refresh the student list — liveSelectedStudent computed will auto-update the modal
-    await loadStudents();
+    // Update local state immediately for instant feedback
+    const student = students.value.find(s => s.id === selectedStudentForDocs.value);
+    if (student) {
+      if (!student.documents) student.documents = [];
+      student.documents.unshift(res.data); // Add to the top of the list
+    }
 
     // Reset form
     masterDocForm.document_type = '';
     masterDocFile.value = null;
-    // Reset the file input inside the modal
     if (studentDocsModalRef.value?.fileInput) {
       studentDocsModalRef.value.fileInput.value = '';
     }
     
-    alert('Document uploaded successfully!');
+    // Also background refresh to ensure full sync
+    loadStudents();
   } catch (err) {
     console.error('Upload error:', err);
     alert('Failed to upload document.');
@@ -967,8 +970,15 @@ const handleDeleteMasterDoc = async (docId) => {
   if (!confirm('Are you sure you want to delete this document?')) return;
   try {
     await adminService.deleteStudentMasterDoc(docId);
-    // Refresh list — liveSelectedStudent computed will auto-update the modal
-    await loadStudents();
+    
+    // Update local state immediately
+    const student = students.value.find(s => s.id === selectedStudentForDocs.value);
+    if (student && student.documents) {
+      student.documents = student.documents.filter(d => d.id !== docId);
+    }
+    
+    // Background refresh
+    loadStudents();
   } catch (err) {
     console.error('Delete error:', err);
     alert('Failed to delete document.');

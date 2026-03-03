@@ -7,7 +7,7 @@ import random
 
 
 class Staff(AbstractUser):
-    staff_id = models.CharField(max_length=20, unique=True, blank=True, default='')
+    staff_id = models.CharField(max_length=20, unique=True, blank=True, null=True)
     department = models.CharField(max_length=100, blank=True, null=True)
     full_name = models.CharField(max_length=255, blank=True, default='')
 
@@ -33,7 +33,6 @@ class Student(models.Model):
     last_name = models.CharField(max_length=100)
     suffix = models.CharField(max_length=20, blank=True, default='')
     sex = models.CharField(max_length=10, choices=SEX_CHOICES)
-    birthdate = models.DateField()
     year_graduated = models.CharField(max_length=10)
     strand_type = models.ForeignKey(Strand, on_delete=models.SET_NULL, null=True, blank=True)
     email = models.EmailField()
@@ -56,8 +55,8 @@ class FileRequest(models.Model):
     year_graduated = models.CharField(max_length=10)
     strand = models.CharField(max_length=100, blank=True, default='') # Keep for legacy/string storage
     strand_type = models.ForeignKey(Strand, on_delete=models.SET_NULL, null=True, blank=True)
-    birthdate = models.DateField()
     lrn_number = models.CharField(max_length=20, blank=True, default='')
+    request_code = models.CharField(max_length=20, unique=True, blank=True, null=True)
     email = models.EmailField()
     phone_number = models.CharField(max_length=20)
     permanent_address = models.TextField()

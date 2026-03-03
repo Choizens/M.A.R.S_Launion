@@ -1,16 +1,16 @@
 <template>
-  <div class="min-h-screen flex flex-col font-sans text-white bg-[#004f71] bg-cover bg-center bg-blend-overlay"
-       :style="{ backgroundImage: `linear-gradient(rgba(0, 79, 113, 0.35), rgba(0, 79, 113, 0.35)), url(${bgImg})` }">
+  <div class="min-h-screen flex flex-col font-sans text-white bg-cover bg-center"
+       :style="{ backgroundImage: `url(${bgImg})` }">
     <!-- Navbar -->
     <nav class="flex flex-col md:flex-row justify-between items-center py-4 px-6 md:px-12 bg-[#0a243a] border-b-2 border-white gap-4 md:gap-0">
       <div class="flex items-center gap-3">
-        <img :src="logoImg" alt="Logo" class="w-8 h-8 object-contain" />
+        <img :src="formLogoImg" alt="Logo" class="w-8 h-8 object-contain" />
         <span class="font-bold text-sm tracking-tight text-slate-100 italic">La Union Senior High School</span>
       </div>
       <div class="flex flex-wrap justify-center items-center gap-4 md:gap-6 text-xs md:text-sm">
-        <a href="#" class="text-white font-medium transition-opacity hover:opacity-80">Home</a>
-        <a href="#" class="text-white font-medium transition-opacity hover:opacity-80">About us</a>
-        <a href="#" class="text-white font-medium transition-opacity hover:opacity-80">Contact</a>
+        <router-link to="/Staff/home" class="text-white font-medium transition-opacity hover:opacity-80">Home</router-link>
+        <a href="#" class="hidden sm:inline text-white font-medium transition-opacity hover:opacity-80">About us</a>
+        <a href="#" class="hidden sm:inline text-white font-medium transition-opacity hover:opacity-80">Contact</a>
         <div class="flex gap-2.5">
           <router-link to="/Staff/login" class="px-3 md:px-5 py-1.5 rounded font-semibold text-slate-900 bg-amber-300 hover:bg-amber-400 transition-colors pointer shadow-sm cursor-pointer whitespace-nowrap">Login</router-link>
           <router-link to="/Staff/register" class="px-3 md:px-5 py-1.5 rounded font-semibold text-slate-900 bg-amber-300 hover:bg-amber-400 transition-colors pointer shadow-sm cursor-pointer whitespace-nowrap">Register</router-link>
@@ -28,11 +28,9 @@
         </div>
         
         <div class="flex flex-col items-center text-center">
-          <div class="flex gap-4 md:gap-6 mb-4 md:mb-5">
-            <div class="w-16 h-16 md:w-20 md:h-20 bg-[#99dbce] rounded-full"></div>
-            <div class="w-16 h-16 md:w-20 md:h-20 bg-[#99dbce] rounded-full"></div>
+          <div class="flex justify-center mb-4 md:mb-5">
+            <img :src="formLogoImg" alt="La Union Senior High School" class="w-40 h-40 md:w-56 md:h-56 object-contain drop-shadow-lg" />
           </div>
-          <h2 class="text-amber-300 text-[1.1rem] md:text-[1.3rem] font-bold leading-relaxed">La Union Senior High School,<br>Cabadbaran City</h2>
         </div>
  
         <div class="flex-1 max-w-[320px] text-center lg:text-left lg:mt-6">
@@ -43,8 +41,8 @@
  
       <!-- Register Form -->
       <div class="w-full flex justify-center mt-2 md:mt-4 pb-8 relative">
-        <div class="bg-white text-slate-800 py-8 md:py-12 px-6 md:px-16 rounded-md w-full max-w-[850px] shadow-[0_10px_30px_rgba(0,0,0,0.35)] relative z-10">
-          <h1 class="text-3xl md:text-4xl font-extrabold text-center mb-8 md:mb-10 text-slate-900 tracking-wide uppercase italic">Register</h1>
+        <div class="bg-white text-slate-800 py-8 md:py-12 px-6 md:px-12 lg:px-16 rounded-md w-full max-w-[850px] shadow-[0_10px_30px_rgba(0,0,0,0.35)] relative z-10">
+          <h1 class="text-2xl md:text-4xl font-extrabold text-center mb-8 md:mb-10 text-slate-900 tracking-wide uppercase italic">Register</h1>
           <form @submit.prevent="handleRegister" class="flex flex-col gap-6">
             <!-- Row 1: Name Breakdown -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -115,8 +113,8 @@
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { authService } from '@/services/api';
-import bgImg from '@/assets/launion.png';
-import logoImg from '@/assets/logo-launion.png';
+import bgImg from '@/assets/Launion_backend.svg';
+import formLogoImg from '@/assets/form_logo.png';
 
 const router = useRouter();
 const loading = ref(false);

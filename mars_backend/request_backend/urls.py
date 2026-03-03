@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    RegisterView, CustomTokenObtainPairView, FileRequestCreateView,
+    RegisterView, CustomTokenObtainPairView, FileRequestCreateView, FileRequestLookupView,
     AdminDashboardStatsView, AdminRequestListView, AdminRequestDetailView,
     AdminRequestBulkUpdateView,
     AdminStaffListView, AdminStaffDetailView, AdminAuditLogListView,
@@ -20,6 +20,7 @@ urlpatterns = [
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('requests/', FileRequestCreateView.as_view(), name='file_request_create'),
+    path('requests/lookup/<str:code>/', FileRequestLookupView.as_view(), name='file_request_lookup'),
     
     # Admin endpoints
     path('admin/stats/', AdminDashboardStatsView.as_view(), name='admin_stats'),

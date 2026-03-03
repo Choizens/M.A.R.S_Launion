@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen flex flex-col font-sans text-white bg-[#004f71] bg-cover bg-center bg-blend-overlay"
-       :style="{ backgroundImage: `linear-gradient(rgba(0, 79, 113, 0.35), rgba(0, 79, 113, 0.35)), url(${bgImg})` }">
+  <div class="min-h-screen flex flex-col font-sans text-white bg-cover bg-center"
+       :style="{ backgroundImage: `url(${bgImg})` }">
     <!-- Navbar -->
     <nav class="flex flex-col md:flex-row justify-between items-center py-4 px-6 md:px-12 bg-[#0a243a] border-b-2 border-white gap-4 md:gap-0">
       <div class="flex items-center gap-3">
@@ -8,9 +8,9 @@
         <span class="font-bold text-sm tracking-tight text-slate-100 italic">La Union Senior High School</span>
       </div>
       <div class="flex flex-wrap justify-center items-center gap-4 md:gap-6 text-xs md:text-sm">
-        <a href="#" class="text-white font-medium transition-opacity hover:opacity-80">Home</a>
-        <a href="#" class="text-white font-medium transition-opacity hover:opacity-80">About us</a>
-        <a href="#" class="text-white font-medium transition-opacity hover:opacity-80">Contact</a>
+        <router-link to="/Staff/home" class="text-white font-medium transition-opacity hover:opacity-80">Home</router-link>
+        <a href="#" class="hidden sm:inline text-white font-medium transition-opacity hover:opacity-80">About us</a>
+        <a href="#" class="hidden sm:inline text-white font-medium transition-opacity hover:opacity-80">Contact</a>
         <div class="flex gap-2.5">
           <router-link to="/Staff/login" class="px-3 md:px-5 py-1.5 rounded font-semibold text-slate-900 bg-amber-300 hover:bg-amber-400 transition-colors pointer shadow-sm cursor-pointer whitespace-nowrap">Login</router-link>
           <router-link to="/Staff/register" class="px-3 md:px-5 py-1.5 rounded font-semibold text-slate-900 bg-amber-300 hover:bg-amber-400 transition-colors pointer shadow-sm cursor-pointer whitespace-nowrap">Register</router-link>
@@ -20,14 +20,12 @@
 
     <!-- Main Content -->
     <div class="flex-1 flex items-center justify-center p-6 md:p-12">
-      <div class="flex flex-col-reverse lg:flex-row w-full max-w-6xl gap-10 lg:gap-16 items-center">
+      <div class="flex flex-col lg:flex-row w-full max-w-6xl gap-12 lg:gap-16 items-center">
         <!-- Left Info Content -->
         <div class="flex-1 flex flex-col items-center text-center pb-8">
-          <div class="flex gap-6 mb-6 md:mb-8">
-            <div class="w-16 h-16 md:w-20 md:h-20 bg-[#99dbce] rounded-full"></div>
-            <div class="w-16 h-16 md:w-20 md:h-20 bg-[#99dbce] rounded-full"></div>
+          <div class="mb-6 md:mb-8 flex justify-center">
+            <img :src="formLogoImg" alt="La Union Senior High School" class="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-lg" />
           </div>
-          <h2 class="text-amber-300 text-[1.2rem] md:text-[1.6rem] font-bold mb-8 md:mb-12 leading-relaxed">La Union Senior High School,<br>Cabadbaran City</h2>
           
           <div class="flex flex-col gap-8 md:gap-10 max-w-[420px]">
             <div>
@@ -42,8 +40,8 @@
         </div>
 
         <!-- Right Form Content -->
-        <div class="flex-1 flex justify-center relative">
-          <div class="bg-white py-10 px-10 rounded shadow-xl w-full max-w-[380px] relative z-10">
+        <div class="flex-1 flex justify-center relative w-full">
+          <div class="bg-white py-8 md:py-10 px-6 md:px-10 rounded shadow-xl w-full max-w-[380px] relative z-10">
             <h1 class="text-[1.8rem] font-black text-center mb-8 text-[#111827] tracking-wide">LOGIN</h1>
             <form @submit.prevent="handleLogin" class="flex flex-col gap-6">
               <div class="flex flex-col gap-1.5">
@@ -89,8 +87,9 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { authService } from '@/services/api';
-import bgImg from '@/assets/launion.png';
-import logoImg from '@/assets/logo-launion.png';
+import bgImg from '@/assets/Launion_backend.svg';
+import logoImg from '@/assets/form_logo.png';
+import formLogoImg from '@/assets/form_logo.png';
 
 const router = useRouter();
 const username = ref('');

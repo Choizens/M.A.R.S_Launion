@@ -13,45 +13,87 @@
         </div>
 
         <!-- Body -->
-        <div class="flex flex-col md:flex-row flex-1 overflow-hidden">
+        <div class="flex flex-col md:flex-row flex-1 overflow-y-auto custom-scrollbar">
           
           <!-- Left Column: Student Details -->
-          <div class="w-full md:w-1/2 p-6 border-r border-slate-100 overflow-y-auto bg-slate-50 relative">
+          <div class="w-full md:w-1/2 p-6 border-r border-slate-100 bg-white relative">
             
-            <div class="flex items-center justify-between mb-6 border-b border-slate-200 pb-2">
-              <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                <UserIcon class="w-4 h-4"/> Personal Information
-              </h3>
-              <button @click="$emit('edit-student', student)" class="text-xs font-black text-cyan-600 bg-cyan-50 px-3 py-1 rounded hover:bg-cyan-100 flex items-center gap-1 transition-colors">
-                <EditIcon class="w-3 h-3"/> Edit
-              </button>
-            </div>
-
-            <div v-if="student" class="flex flex-col gap-6">
-              <!-- Name identity -->
-              <div class="flex items-center gap-4">
-                 <div class="w-16 h-16 rounded-full bg-[#00334d] text-[#ffca28] flex items-center justify-center font-black text-xl shadow-inner border-2 border-slate-200">
+            <div v-if="student" class="flex flex-col gap-5">
+              <!-- Minimalist Profile Header -->
+              <div class="flex items-center gap-4 bg-[#f8fafc] p-3 rounded-lg border border-slate-200 shadow-sm">
+                 <div class="w-12 h-12 rounded-full bg-[#00334d] text-[#ffca28] flex items-center justify-center font-black text-base shadow-inner border-2 border-slate-100 shrink-0">
                     {{ initials(student.first_name, student.last_name) }}
                   </div>
-                  <div class="flex flex-col">
-                    <span class="text-2xl font-black text-[#00334d]">{{ student.first_name }} {{ student.last_name }} {{ student.suffix }}</span>
-                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ student.strand_display }} • Batch {{ student.year_graduated }}</span>
+                  <div class="flex flex-col min-w-0">
+                    <h4 class="text-[0.6rem] font-bold text-amber-600 uppercase tracking-widest leading-none mb-0.5">RECORD ID: #{{ student.id }}</h4>
+                    <span class="text-lg font-black text-[#00334d] leading-none truncate uppercase">{{ student.first_name }} {{ student.last_name }}</span>
+                    <span class="text-[0.6rem] font-bold text-slate-400 uppercase tracking-widest mt-1">{{ student.strand_display }} • GRADUATED {{ student.year_graduated }}</span>
                   </div>
               </div>
 
-              <!-- Data Grid -->
-              <div class="grid grid-cols-2 gap-4">
-                 <InfoItem label="First Name" :value="student.first_name" />
-                 <InfoItem label="Last Name" :value="student.last_name" />
-                 <InfoItem label="Middle Name" :value="student.middle_name || '—'" />
-                 <InfoItem label="Sex" :value="student.sex" />
-                 <InfoItem label="Birthdate" :value="formatDate(student.birthdate)" />
-                 <InfoItem label="LRN Number" :value="student.lrn_number" isMono />
-                 <InfoItem label="Email Space" :value="student.email" class="col-span-2" />
-                 <InfoItem label="Phone" :value="student.phone_number" class="col-span-2" />
-                 <InfoItem label="Permanent Address" :value="student.permanent_address" class="col-span-2" />
-              </div>
+              <!-- Compact Information Display -->
+              <div class="grid grid-cols-2 gap-x-4 gap-y-3 px-1">
+                
+                <!-- LRN -->
+                <div class="flex flex-col">
+                  <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">LRN Number</span>
+                  <span class="text-[0.75rem] font-bold text-[#00334d] font-mono select-all">{{ student.lrn_number }}</span>
+                </div>
 
+                <!-- Gender -->
+                <div class="flex flex-col">
+                  <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Gender / Sex</span>
+                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.sex || 'Not Specified' }}</span>
+                </div>
+
+                <!-- Name Details -->
+                <div class="flex flex-col">
+                  <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">First Name</span>
+                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.first_name }}</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Last Name</span>
+                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.last_name }}</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Middle Name</span>
+                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.middle_name || '—' }}</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Suffix</span>
+                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.suffix || '—' }}</span>
+                </div>
+
+                <!-- Academic -->
+                <div class="flex flex-col">
+                  <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Strand / Track</span>
+                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.strand_display }}</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Batch Year</span>
+                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.year_graduated }}</span>
+                </div>
+
+                <!-- Contact Info - Compacted -->
+                <div class="flex flex-col col-span-2">
+                  <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Email Address</span>
+                  <span class="text-[0.75rem] font-bold text-[#00334d] truncate">{{ student.email }}</span>
+                </div>
+                <div class="flex flex-col col-span-2">
+                  <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Phone Number</span>
+                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.phone_number }}</span>
+                </div>
+                <div class="flex flex-col col-span-2">
+                  <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Permanent Address</span>
+                  <span class="text-[0.7rem] font-bold text-[#00334d] leading-tight">{{ student.permanent_address }}</span>
+                </div>
+
+                <!-- Footer Meta - Very Minimal -->
+                <div class="col-span-2 pt-3 mt-1 border-t border-slate-100 flex items-center justify-between text-[0.55rem] font-bold text-slate-300 uppercase tracking-widest">
+                    <span>RECORD CREATED</span>
+                    <span>{{ formatDate(student.created_at) }}</span>
+                </div>
+              </div>
             </div>
             
             <div v-else class="py-20 text-center italic text-slate-400">Loading student details...</div>
@@ -59,7 +101,7 @@
           </div>
 
           <!-- Right Column: Documents -->
-          <div class="w-full md:w-1/2 p-6 flex flex-col bg-white overflow-y-auto">
+          <div class="w-full md:w-1/2 p-6 flex flex-col bg-white">
             <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-2 mb-6 flex items-center gap-2">
               <FolderIcon class="w-4 h-4"/> Master Documents
             </h3>
@@ -91,22 +133,23 @@
                 <p class="text-[0.65rem] text-slate-400 mt-1 max-w-[250px]">Upload scanned master records here to permanently attach them to the student's profile.</p>
               </div>
               
-              <div v-else class="grid grid-cols-1 gap-2 border-t border-slate-100 pt-2">
-                <div v-for="doc in student.documents" :key="doc.id" class="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg hover:border-slate-300 hover:shadow-sm transition-all group">
-                  <div class="flex items-center gap-3">
-                    <div class="p-2.5 bg-[#f1f5f9] rounded-lg text-[#00334d] group-hover:bg-[#00334d] group-hover:text-white transition-colors">
-                       <FileIcon class="w-4 h-4" />
+              <div v-else class="flex overflow-x-auto gap-4 border-t border-slate-100 pt-4 pb-4 custom-scrollbar">
+                <div v-for="doc in student.documents" :key="doc.id" class="flex-shrink-0 w-72 flex flex-col justify-between p-4 bg-[#f8fafc] border-2 border-slate-200 rounded-xl hover:border-[#00334d] hover:bg-white hover:shadow-md transition-all group">
+                  <div class="flex items-center gap-4 mb-4">
+                    <div class="p-3 bg-white border border-slate-200 rounded-lg text-[#00334d] group-hover:bg-[#00334d] group-hover:text-white transition-colors shadow-sm">
+                       <FileIcon class="w-5 h-5" />
                     </div>
-                    <div class="flex flex-col">
-                      <span class="font-black text-[#00334d] text-xs uppercase">{{ doc.document_type }}</span>
-                      <span class="text-[0.6rem] font-bold text-slate-400 uppercase tracking-widest">Added {{ formatDate(doc.uploaded_at) }}</span>
+                    <div class="flex flex-col min-w-0">
+                      <span class="font-black text-[#00334d] text-[0.8rem] uppercase leading-tight truncate">{{ doc.document_type }}</span>
+                      <span class="text-[0.6rem] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Added {{ formatDate(doc.uploaded_at) }}</span>
                     </div>
                   </div>
-                  <div class="flex items-center gap-1.5">
-                    <a :href="doc.file" target="_blank" class="p-1.5 bg-slate-100 text-slate-600 rounded hover:bg-[#00334d] hover:text-white transition-colors" title="View Document">
+                  <div class="flex items-center justify-end gap-2">
+                    <a :href="doc.file" target="_blank" class="flex-1 flex items-center justify-center gap-2 p-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-[#00334d] hover:text-white hover:border-[#00334d] transition-all shadow-sm text-[0.65rem] font-black uppercase" title="View Document">
                       <EyeIcon class="w-4 h-4" />
+                      VIEW
                     </a>
-                    <button @click="$emit('delete-doc', doc.id)" class="p-1.5 bg-red-50 text-red-600 rounded hover:bg-red-500 hover:text-white transition-colors" title="Delete Document">
+                    <button @click="$emit('delete-doc', doc.id)" class="p-2 bg-white border border-red-100 text-red-500 rounded-lg hover:bg-red-500 hover:text-white hover:border-red-500 transition-all shadow-sm" title="Delete Document">
                       <TrashIcon class="w-4 h-4" />
                     </button>
                   </div>
@@ -126,7 +169,7 @@
 import { 
   X as XIcon, User as UserIcon, Folder as FolderIcon,
   UploadCloud as UploadCloudIcon, FileText as FileIcon,
-  Eye as EyeIcon, Trash as TrashIcon, Edit as EditIcon
+  Eye as EyeIcon, Trash as TrashIcon
 } from 'lucide-vue-next';
 import { ref } from 'vue';
 
@@ -147,15 +190,24 @@ const emit = defineEmits(['close', 'upload', 'file-change', 'update:document_typ
 </script>
 
 <script>
-// Helper component for info grid
-const InfoItem = {
-  props: { label: String, value: [String, Number], isMono: Boolean },
-  template: `
-    <div class="flex flex-col gap-0.5">
-      <span class="text-[0.6rem] font-black text-slate-400 uppercase tracking-widest">{{ label }}</span>
-      <span class="text-sm font-bold text-[#002233]" :class="{'font-mono tracking-tight': isMono}">{{ value || '—' }}</span>
-    </div>
-  `
+export default {
+  // Any legacy Options API if needed, but currently empty
 }
-export default { components: { InfoItem } }
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #00334d;
+}
+</style>

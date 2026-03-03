@@ -158,7 +158,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { authService } from '@/services/api';
-import logoImg from '@/assets/logo-launion.png';
+import logoImg from '@/assets/form_logo.png';
 
 const router = useRouter();
 const username = ref('');

@@ -64,7 +64,10 @@
                     {{ initials(std.first_name, std.last_name) }}
                   </div>
                   <div @click="$emit('open-profile', std)" class="flex flex-col cursor-pointer hover:underline group">
-                    <span class="font-bold text-[#00334d] group-hover:text-amber-600">{{ std.first_name }} {{ std.last_name }}</span>
+                    <div class="flex items-center gap-2">
+                      <span class="font-bold text-[#00334d] group-hover:text-amber-600">{{ std.first_name }} {{ std.last_name }}</span>
+                      <PaperclipIcon v-if="std.documents?.length > 0" class="w-3.5 h-3.5 text-amber-500" title="Has Scanned Documents" />
+                    </div>
                     <span class="text-[0.65rem] text-slate-400 font-medium">{{ std.email }}</span>
                   </div>
                 </div>
@@ -95,7 +98,7 @@
 <script setup>
 import { 
   Search as SearchIcon, Users as StudentIcon, 
-  Paperclip as AttachmentIcon, Settings as CogIcon, X as XIcon, UserCircle as UserIcon, AlertCircle as AlertIcon
+  Paperclip as PaperclipIcon, Settings as CogIcon, X as XIcon, UserCircle as UserIcon, AlertCircle as AlertIcon
 } from 'lucide-vue-next';
 
 defineProps({

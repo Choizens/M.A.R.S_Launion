@@ -25,7 +25,7 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
         fields = [
             'id', 'lrn_number', 'first_name', 'middle_name', 'last_name', 'suffix',
-            'sex', 'birthdate', 'year_graduated', 'strand_type', 'strand_display',
+            'sex', 'year_graduated', 'strand_type', 'strand_display',
             'email', 'phone_number', 'permanent_address', 'created_at', 'documents'
         ]
 
@@ -70,14 +70,15 @@ class FileRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileRequest
         fields = [
-            'id', 'passkey', 'student', 'student_record', 'first_name', 'middle_name', 'last_name', 'suffix',
+            'id', 'passkey', 'student', 'student_record', 'request_code',
+            'first_name', 'middle_name', 'last_name', 'suffix',
             'sex', 'year_graduated', 'strand', 'strand_type', 'strand_display',
-            'birthdate', 'lrn_number', 'email', 'phone_number', 'permanent_address',
+            'lrn_number', 'email', 'phone_number', 'permanent_address',
             'requested_files', 'submitted_at', 'status',
             'pickup_date', 'pickup_time', 'no_accountabilities',
             'documents', 'processed_documents'
         ]
-        read_only_fields = ['id', 'passkey', 'submitted_at', 'documents', 'processed_documents', 'strand_display', 'student_record']
+        read_only_fields = ['id', 'passkey', 'submitted_at', 'status', 'request_code', 'documents', 'processed_documents', 'strand_display', 'student_record']
 
     def get_student_record(self, obj):
         # 1. If explicitly linked via ForeignKey

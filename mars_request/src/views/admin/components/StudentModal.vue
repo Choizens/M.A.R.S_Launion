@@ -43,10 +43,6 @@
                   </select>
                 </div>
               </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-[0.6rem] font-black uppercase text-slate-500">Birthdate</label>
-                <input v-model="form.birthdate" type="date" required class="border px-4 py-2.5 rounded focus:border-[#00334d] outline-none font-bold" />
-              </div>
             </div>
 
             <!-- Academic -->

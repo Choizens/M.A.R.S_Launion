@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Notification</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            color: #333333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #154252;
+            color: #ffffff;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #a3c2c2;
+        }
+
+        .content {
+            padding: 30px 40px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #154252;
+        }
+
+        .notification-box {
+            background-color: #f8fbfb;
+            border-left: 4px solid #154252;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .notification-box p {
+            margin: 0 0 10px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .notification-box p:last-child {
+            margin: 0;
+        }
+
+        .code-block {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f0f4f4;
+            border-radius: 6px;
+            border: 1px dashed #154252;
+        }
+
+        .code-block h3 {
+            margin: 0 0 10px;
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .code-value {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 32px;
+            font-weight: bold;
+            color: #154252;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        .details-table th,
+        .details-table td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .details-table th {
+            width: 40%;
+            color: #666666;
+            font-weight: normal;
+            font-size: 14px;
+        }
+
+        .details-table td {
+            font-weight: bold;
+            color: #333333;
+            font-size: 14px;
+        }
+
+        .files-list {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .files-list li {
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            background-color: #f0f4f4;
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #888888;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>StandAlone</h1>
+            <p>La Union Senior High School</p>
+        </div>
+        <div class="content">
+            <div class="greeting">
+                Hello {{ instance.first_name }} {{ instance.last_name }},
+            </div>
+
+            <div class="notification-box">
+                <p><strong>Your file request has been successfully sent!</strong></p>
+                <p>We have received your request and it is currently being processed. You can use your unique Request
+                    Code below to track the status of your request on our website.</p>
+            </div>
+
+            <div class="code-block">
+                <h3>Your Request Code</h3>
+                <p class="code-value">{{ instance.request_code }}</p>
+            </div>
+
+            <h3
+                style="color: #154252; font-size: 16px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px;">
+                Request Details</h3>
+
+            <table class="details-table">
+                <tr>
+                    <th>Date Sent</th>
+                    <td>{{ instance.submitted_at|date:"F j, Y, g:i a" }}</td>
+                </tr>
+                <tr>
+                    <th>Email Address</th>
+                    <td>{{ instance.email }}</td>
+                </tr>
+                <tr>
+                    <th>Requested Files</th>
+                    <td>
+                        <ul class="files-list">
+                            {% for file in instance.requested_files %}
+                            <li>{{ file }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+
+            <p style="font-size: 14px; line-height: 1.5; color: #555;">
+                If you have any questions or need to make changes to your request, please contact our administrative
+                office with your request code handy.
+            </p>
+        </div>
+        <div class="footer">
+            <p>&copy; {% now "Y" %} La Union Senior High School. All rights reserved.</p>
+            <p>This is an automated message, please do not reply directly to this email.</p>
+        </div>
+    </div>
+</body>
+
+</html>
