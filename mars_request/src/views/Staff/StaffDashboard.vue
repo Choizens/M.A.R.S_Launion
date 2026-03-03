@@ -132,6 +132,9 @@
             @open-request="openModal"
             ref="requestsTab"
           />
+          <StaffScheduling
+            v-if="currentView === 'scheduling'"
+          />
           <StaffDirectory
             v-if="currentView === 'directory'"
           />
@@ -161,6 +164,7 @@ import logoImg from '@/assets/form_logo.png';
 // Tab Components
 import StaffOverview from './tabs/StaffOverview.vue';
 import StaffRequests from './tabs/StaffRequests.vue';
+import StaffScheduling from './tabs/StaffScheduling.vue';
 import StaffDirectory from './tabs/StaffDirectory.vue';
 import StaffProfile from './tabs/StaffProfile.vue';
 import DetailsModal from './components/RequestDetailModal.vue';
@@ -168,7 +172,7 @@ import DetailsModal from './components/RequestDetailModal.vue';
 import {
   Menu as MenuIcon, LayoutDashboard as DashboardIcon,
   List as ListIcon, Users as UsersIcon, User as AccountIcon,
-  LogOut as LogOutIcon, Bell as BellIcon
+  LogOut as LogOutIcon, Bell as BellIcon, Calendar as CalendarIcon
 } from 'lucide-vue-next';
 
 const router = useRouter();
@@ -197,10 +201,11 @@ const selectedRequest = ref(null);
 const requestsTab = ref(null);
 
 const menuItems = [
-  { id: 'overview',   label: 'Summary',    icon: markRaw(DashboardIcon) },
-  { id: 'requests',   label: 'Requests',   icon: markRaw(ListIcon) },
-  { id: 'directory',  label: 'Directory',  icon: markRaw(UsersIcon) },
-  { id: 'profile',    label: 'My Profile', icon: markRaw(AccountIcon) },
+  { id: 'overview',    label: 'Summary',    icon: markRaw(DashboardIcon) },
+  { id: 'requests',    label: 'Requests',   icon: markRaw(ListIcon) },
+  { id: 'scheduling',  label: 'Scheduling', icon: markRaw(CalendarIcon) },
+  { id: 'directory',   label: 'Directory',  icon: markRaw(UsersIcon) },
+  { id: 'profile',     label: 'My Profile', icon: markRaw(AccountIcon) },
 ];
 
 const currentView = computed({
