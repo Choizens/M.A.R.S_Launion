@@ -272,11 +272,11 @@
     />
 
     <DocumentModal 
-      :show="isDocumentModalVisible"
-      :editingId="documentIdBeingEdited"
+      :show="showDocModal"
+      :editingId="editingDoc"
       :form="docForm"
-      :submitting="isDocumentSubmitting"
-      @close="isDocumentModalVisible = false"
+      :submitting="submittingDoc"
+      @close="showDocModal = false"
       @submit="handleDocSubmit"
     />
 
@@ -466,9 +466,6 @@ const strandForm = reactive({ name: '', description: '' });
 const strands = ref([]);
 
 const docForm = reactive({ name: '', description: '', price: 0, is_active: true });
-const isDocumentModalVisible = ref(false);
-const documentIdBeingEdited = ref(null);
-const isDocumentSubmitting = ref(false);
 
 // Student Modal State
 const showStudentModal = ref(false);
@@ -760,7 +757,7 @@ const loadDocTypes = async () => {
 };
 
 const openDocModal = (doc = null) => {
-  documentIdBeingEdited.value = doc ? doc.id : null;
+  editingDoc.value = doc ? doc.id : null;
   if (doc) {
     docForm.name = doc.name;
     docForm.description = doc.description;
@@ -769,22 +766,22 @@ const openDocModal = (doc = null) => {
   } else {
     docForm.name = ''; docForm.description = ''; docForm.price = 0; docForm.is_active = true;
   }
-  isDocumentModalVisible.value = true;
+  showDocModal.value = true;
 };
 
 const handleDocSubmit = async () => {
-  isDocumentSubmitting.value = true;
+  submittingDoc.value = true;
   try {
-    if (documentIdBeingEdited.value) {
-      await adminService.updateDocType(documentIdBeingEdited.value, docForm);
+    if (editingDoc.value) {
+      await adminService.updateDocType(editingDoc.value, docForm);
     } else {
       await adminService.createDocType(docForm);
     }
-    isDocumentModalVisible.value = false;
+    showDocModal.value = false;
     await loadDocTypes();
     loadAuditLogs();
   } catch (err) { alert('Error saving document type.'); }
-  finally { isDocumentSubmitting.value = false; }
+  finally { submittingDoc.value = false; }
 };
 
 const deleteDoc = async (id) => {

@@ -18,7 +18,7 @@ class StudentMasterDocumentSerializer(serializers.ModelSerializer):
         fields = ['id', 'document_type', 'file', 'uploaded_at']
 
 class StudentSerializer(serializers.ModelSerializer):
-    strand_display = serializers.CharField(source='strand_type.name', read_only=True)
+    strand_display = serializers.SerializerMethodField()
     documents = StudentMasterDocumentSerializer(many=True, read_only=True)
     
     class Meta:
@@ -28,6 +28,12 @@ class StudentSerializer(serializers.ModelSerializer):
             'sex', 'year_graduated', 'strand_type', 'strand_display',
             'email', 'phone_number', 'permanent_address', 'created_at', 'documents'
         ]
+
+    def get_strand_display(self, obj):
+        try:
+            return obj.strand_type.name if obj.strand_type else "N/A"
+        except:
+            return "N/A"
 
 class StaffSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)

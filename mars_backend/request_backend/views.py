@@ -286,23 +286,28 @@ class AdminStudentListView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)  # Assuming both admin and staff might need to see student list
 
     def get_queryset(self):
-        qs = Student.objects.all().order_by('-created_at')
-        search = self.request.query_params.get('search')
-        strand = self.request.query_params.get('strand')
-        year = self.request.query_params.get('year')
+        try:
+            qs = Student.objects.all().order_by('-created_at')
+            search = self.request.query_params.get('search')
+            strand = self.request.query_params.get('strand')
+            year = self.request.query_params.get('year')
 
-        if strand:
-            qs = qs.filter(strand_type_id=strand)
-        if year:
-            qs = qs.filter(year_graduated=year)
-        if search:
-            qs = qs.filter(
-                Q(first_name__icontains=search) |
-                Q(last_name__icontains=search) |
-                Q(lrn_number__icontains=search) |
-                Q(email__icontains=search)
-            )
-        return qs
+            if strand and str(strand).isdigit():
+                qs = qs.filter(strand_type_id=strand)
+            if year and str(year).strip():
+                qs = qs.filter(year_graduated=year)
+            if search:
+                qs = qs.filter(
+                    Q(first_name__icontains=search) |
+                    Q(last_name__icontains=search) |
+                    Q(lrn_number__icontains=search) |
+                    Q(email__icontains=search)
+                )
+            return qs
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            raise e
 
     def perform_create(self, serializer):
         student = serializer.save()
