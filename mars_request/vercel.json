@@ -1,13 +1,13 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "routes": [
+  "github": {
+    "silent": true
+  },
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
     {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/.*",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
