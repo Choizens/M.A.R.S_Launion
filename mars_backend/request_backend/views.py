@@ -14,7 +14,7 @@ from .serializers import (
 from .models import Staff, FileRequest, AuditLog, PickupSlot, DocumentType, StudentDocument, Strand, ProcessedDocument, Student, StudentMasterDocument
 
 
-from .utils import send_request_notification, send_submission_confirmation, notify_staff_new_request
+from .utils import send_request_notification, send_submission_confirmation
 
 # ── Logging Helper ─────────────────────────────────────────────────────────────
 
@@ -39,7 +39,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 'staff_id': user.staff_id,
                 'department': user.department,
                 'is_admin': user.is_superuser or user.is_staff,
-                'is_superuser': user.is_superuser,
             }
             record_log(user, "User Login", f"User {user.username} logged in successfully.")
         return response
@@ -66,18 +65,26 @@ class FileRequestCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         request_code = self.generate_unique_code()
-        instance = serializer.save(request_code=request_code, status='Pending')
+        instance = serializer.save(request_code=request_code)
         
-        # Fetch the latest instance from DB to get auto-generated fields (like submitted_at)
-        instance.refresh_from_db()
-        print(f"DEBUG: Processing Request {instance.passkey} for {instance.email}")
+        # Send Email Notification
+        subject = 'Your File Request has been Sent'
+        html_content = render_to_string('emails/request_notification.html', {
+            'instance': instance,
+        })
+        text_content = strip_tags(html_content)
         
+        from django.conf import settings
+        email = EmailMultiAlternatives(
+            subject,
+            text_content,
+            settings.EMAIL_HOST_USER,
+            [instance.email]
+        )
+        email.attach_alternative(html_content, "text/html")
+        email.send(fail_silently=False)
         # Send confirmation email immediately after the request is created
         send_submission_confirmation(instance)
-        print(f"DEBUG: Email task triggered for {instance.passkey}")
-        
-        # Notify staff members
-        notify_staff_new_request(instance)
 
 
 class FileRequestLookupView(APIView):
@@ -87,28 +94,11 @@ class FileRequestLookupView(APIView):
 
     def get(self, request, code, *args, **kwargs):
         try:
-            # Strip whitespace and normalize
-            code = code.strip()
-            print(f"DEBUG LOOKUP: Searching for code='{code}'")
-            
-            # Try passkey first (exact match, case-insensitive), then request_code
-            file_request = FileRequest.objects.filter(passkey__iexact=code).first()
-            if not file_request:
-                file_request = FileRequest.objects.filter(request_code__iexact=code).first()
-            
-            print(f"DEBUG LOOKUP: Found={file_request}")
-            
-            if not file_request:
-                # List all passkeys for debug
-                all_keys = list(FileRequest.objects.values_list('passkey', flat=True))
-                print(f"DEBUG LOOKUP: Available passkeys = {all_keys}")
-                return Response({'error': f'No request found for passkey: {code}'}, status=status.HTTP_404_NOT_FOUND)
-            
-            serializer = FileRequestSerializer(file_request, context={'request': request})
+            file_request = FileRequest.objects.get(request_code=code.upper())
+            serializer = FileRequestSerializer(file_request)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            print(f"DEBUG LOOKUP ERROR: {str(e)}")
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except FileRequest.DoesNotExist:
+            return Response({'error': 'Invalid request code. No request found.'}, status=status.HTTP_404_NOT_FOUND)
 
     def perform_create(self, serializer):
         instance = serializer.save()
@@ -185,10 +175,6 @@ class AdminDashboardStatsView(APIView):
             many=True
         ).data
 
-        # User counts
-        admin_count = Staff.objects.filter(is_superuser=True).count()
-        staff_count = Staff.objects.filter(is_superuser=False).count()
-
         return Response({
             'total': total,
             'pending': pending,
@@ -196,8 +182,6 @@ class AdminDashboardStatsView(APIView):
             'processing': processing,
             'completed': completed,
             'rejected': rejected,
-            'admin_count': admin_count,
-            'staff_count': staff_count,
             'strand_breakdown': list(strand_data),
             'doc_breakdown': doc_breakdown,
             'monthly_trend': list(monthly_data),
@@ -260,6 +244,8 @@ class AdminRequestDetailView(generics.RetrieveUpdateAPIView):
                 f"Changed Request #{instance.id} ({instance.passkey}) from '{old_status}' to '{new_status}'"
             )
             send_request_notification(instance)
+
+        return Response(serializer.data)
 
         return Response(serializer.data)
 
@@ -504,56 +490,11 @@ class AdminPickupSlotDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance.delete()
 
 
-class PublicPickupSlotListView(APIView):
+class PublicPickupSlotListView(generics.ListAPIView):
     """View for students to see available slots on the calendar."""
+    queryset = PickupSlot.objects.filter(is_blocked=False).order_by('date')
+    serializer_class = PickupSlotSerializer
     permission_classes = (AllowAny,)
-
-    def get(self, request):
-        from datetime import date, timedelta
-        
-        # 1. Get existing slots from DB for next 30 days
-        today = date.today()
-        end_date = today + timedelta(days=30)
-        existing_slots = PickupSlot.objects.filter(date__gte=today, date__lte=end_date)
-        
-        # Map them by date for easy lookup
-        slots_map = {s.date: s for s in existing_slots}
-        
-        all_slots_data = []
-        
-        # 2. Iterate for the next 30 days
-        for i in range(31):
-            curr_date = today + timedelta(days=i)
-            # Skip weekends (5=Sat, 6=Sun)
-            if curr_date.weekday() >= 5:
-                continue
-                
-            if curr_date in slots_map:
-                slot = slots_map[curr_date]
-                if not slot.is_blocked:
-                    all_slots_data.append(PickupSlotSerializer(slot).data)
-            else:
-                # 3. Create a "Virtual" slot for weekdays not in DB
-                # These use the default capacity of 5
-                booked_m = FileRequest.objects.filter(pickup_date=curr_date, pickup_time='Morning').count()
-                booked_a = FileRequest.objects.filter(pickup_date=curr_date, pickup_time='Afternoon').count()
-                
-                virtual_slot = {
-                    'id': f"v-{curr_date}",
-                    'date': str(curr_date),
-                    'morning_slots': 5,
-                    'afternoon_slots': 5,
-                    'is_blocked': False,
-                    'reason': '',
-                    'booked_morning': booked_m,
-                    'booked_afternoon': booked_a
-                }
-                all_slots_data.append(virtual_slot)
-        
-        # Sort by date
-        all_slots_data.sort(key=lambda x: x['date'])
-        
-        return Response(all_slots_data)
 
 
 # ── Student Document Management ────────────────────────────────────────────────
@@ -659,67 +600,55 @@ class PublicRecordCheckView(APIView):
         lrn = request.query_params.get('lrn', '').strip()
         first_name = request.query_params.get('first_name', '').strip()
         last_name = request.query_params.get('last_name', '').strip()
-        middle_name = request.query_params.get('middle_name', '').strip()
-        suffix = request.query_params.get('suffix', '').strip()
-        sex = request.query_params.get('sex', '').strip()
-        strand_id = request.query_params.get('strand', '').strip()
-        year_graduated = request.query_params.get('year_graduated', '').strip()
 
         student = None
         if lrn:
             student = Student.objects.filter(lrn_number=lrn).first()
         
         if not student and first_name and last_name:
-            filters = {
-                'first_name__iexact': first_name,
-                'last_name__iexact': last_name,
-            }
-            if middle_name:
-                filters['middle_name__iexact'] = middle_name
-            if suffix:
-                filters['suffix__iexact'] = suffix
-            if sex:
-                filters['sex__iexact'] = sex
-            if strand_id:
-                filters['strand_type_id'] = strand_id
-            if year_graduated:
-                filters['year_graduated'] = year_graduated
-
-            student = Student.objects.filter(**filters).first()
+            student = Student.objects.filter(
+                first_name__iexact=first_name,
+                last_name__iexact=last_name
+            ).first()
 
         if not student:
             return Response({
                 'exists': False,
-                'message': 'No digital record found. Please check your details or visit the school office for manual processing.',
+                'message': 'No digital record found. Please visit the school office for manual processing.',
                 'documents': []
             })
 
-        # Check for existing requests (Pending, Approved, Needs Verification)
-        # 'Completed' and 'Rejected' requests allow a new submission. 
+        # Check for existing active requests for THIS specific student.
+        # Allow new requests if previous requests are 'Completed' or 'Rejected'
         active_request = FileRequest.objects.filter(
-            email__iexact=student.email,
+            student=student,
             status__in=['Pending', 'Approved', 'Needs Verification']
         ).first()
+        
+        # Fallback for older database entries that might not have the foreign key linked
+        if not active_request:
+            active_request = FileRequest.objects.filter(
+                email__iexact=student.email,
+                first_name__iexact=student.first_name,
+                last_name__iexact=student.last_name,
+                status__in=['Pending', 'Approved', 'Needs Verification']
+            ).first()
 
         if active_request:
             return Response({
                 'exists': True,
                 'has_active_request': True,
                 'active_request_id': active_request.passkey,
-                'message': f'You already have an active request being processed (Passkey: {active_request.passkey}). Please wait for it to be completed or rejected before submitting a new one.',
-                'documents': [],
-                'lrn_number': student.lrn_number,
-                'full_name': f"{student.first_name} {student.last_name}",
+                'message': f'You already have an active request being processed (Passkey: {active_request.passkey}). Please wait until it is Completed or Rejected before requesting again.',
+                'documents': []
             })
 
         # Get names of digitized documents
-        digitized_docs = list(student.documents.values_list('document_type', flat=True))
+        digitized_docs = student.documents.values_list('document_type', flat=True)
         
         return Response({
             'exists': True,
             'has_active_request': False,
             'student_id': student.id,
-            'lrn_number': student.lrn_number,
             'full_name': f"{student.first_name} {student.last_name}",
-            'documents': digitized_docs
         })
