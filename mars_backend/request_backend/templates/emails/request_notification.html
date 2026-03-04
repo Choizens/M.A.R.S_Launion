@@ -39,7 +39,7 @@
                                 style="border-radius: 4px; border: 1px solid {% if instance.status == 'Approved' or instance.status == 'Completed' %}#bbf7d0; background-color: #f0fdf4;{% elif instance.status == 'Needs Verification' %}#fed7aa; background-color: #fff7ed;{% elif instance.status == 'Rejected' %}#fecaca; background-color: #fef2f2;{% else %}#e2e8f0; background-color: #f8fafc;{% endif %}">
                                 <tr>
                                     <td
-                                        style="font-size: 14px; text-align: center; font-weight: bold; color: {% if instance.status == 'Approved' or instance.status == 'Completed' %}#166534;{% elif instance.status == 'Needs Verification' %}#9a3412;{% elif instance.status == 'Rejected' %}#991b1b;{% else %}#334155;{% endif %};">
+                                        style="font-size: 14px; text-align: center; font-weight: bold; color: {% if instance.status == 'Approved' or instance.status == 'Completed' %}#166534{% elif instance.status == 'Needs Verification' %}#9a3412{% elif instance.status == 'Rejected' %}#991b1b{% else %}#334155{% endif %};">
                                         {{ status_message }}
                                     </td>
                                 </tr>
