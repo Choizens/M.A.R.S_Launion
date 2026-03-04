@@ -834,8 +834,11 @@ const form = reactive({
 
 const filteredDocTypes = computed(() => {
   if (!['found', 'duplicate'].includes(recordStatus.value) || !availableDocs.value) return [];
-  // Only show document types that exist for this student in the master database
-  return docTypes.value.filter(dt => Array.isArray(availableDocs.value) && availableDocs.value.includes(dt.name));
+  // Only show document types that exist for this student in the master database (case-insensitive)
+  return docTypes.value.filter(dt => 
+    Array.isArray(availableDocs.value) && 
+    availableDocs.value.some(docName => docName.toLowerCase() === dt.name.toLowerCase())
+  );
 });
 
 const slots = ref([]);

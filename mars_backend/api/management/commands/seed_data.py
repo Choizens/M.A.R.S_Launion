@@ -85,17 +85,18 @@ class Command(BaseCommand):
             student_objs.append(student)
             if created: 
                 self.stdout.write(f"Created Student: {f} {l}")
-                # Create master documents for new students so they have records to request
-                # We'll create "Form 137", "Diploma", and "Graduation Certificate" for everyone
-                for doc_type_name in ["Form 137", "Diploma", "Graduation Certificate"]:
-                    # Using a dummy file content
+            
+            # Ensure sample students have digitized records for testing
+            needed_docs = ["Form 137", "Diploma", "Graduation Certificate"]
+            for doc_type_name in needed_docs:
+                if not StudentMasterDocument.objects.filter(student=student, document_type__iexact=doc_type_name).exists():
                     dummy_file = ContentFile(b"Dummy document content", name=f"{doc_type_name.replace(' ', '_')}.pdf")
                     StudentMasterDocument.objects.create(
                         student=student,
                         document_type=doc_type_name,
                         file=dummy_file
                     )
-                self.stdout.write(f"Digitized master records for {f} {l}")
+                    self.stdout.write(f"Digitized {doc_type_name} for {f} {l}")
 
         # 5. FileRequest
         for i, student in enumerate(student_objs):
