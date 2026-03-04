@@ -23,7 +23,7 @@ const router = createRouter({
     {
       path: '/Staff/home',
       name: 'staff-home',
-      component: () => import('../views/Staff/Staff_Home.vue'),
+      component: () => import('../views/staff/Staff_Home.vue'),
     },
     {
       path: '/Staff/login',
@@ -38,19 +38,19 @@ const router = createRouter({
     {
       path: '/Staff/dashboard/:tab?',
       name: 'staff-dashboard',
-      component: () => import('../views/Staff/StaffDashboard.vue'),
+      component: () => import('../views/staff/StaffDashboard.vue'),
       meta: { requiresAuth: true },
     },
     // ── Admin routes ──────────────────────────────────────
     {
       path: '/admin/login',
       name: 'admin-login',
-      component: () => import('../views/Admin/AdminLogin.vue'),
+      component: () => import('../views/admin/AdminLogin.vue'),
     },
     {
       path: '/admin/dashboard/:tab?',
       name: 'admin-dashboard',
-      component: () => import('../views/Admin/AdminDashboard.vue'),
+      component: () => import('../views/admin/AdminDashboard.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
     },
     {
