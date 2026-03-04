@@ -149,8 +149,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import logoImg from '@/assets/logo-launion 2.png';
-import logo_launion from '@/assets/logo-launion 2.png';
+import logoImg from '@/assets/logo_launion.svg';
+import logo_launion from '@/assets/logo_launion.svg';
 
 const logoImgFoot = logoImg;
 
