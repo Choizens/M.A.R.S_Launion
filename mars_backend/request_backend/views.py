@@ -66,7 +66,7 @@ class FileRequestCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         request_code = self.generate_unique_code()
-        instance = serializer.save(request_code=request_code)
+        instance = serializer.save(request_code=request_code, status='Pending')
         
         # Fetch the latest instance from DB to get auto-generated fields (like submitted_at)
         instance.refresh_from_db()
@@ -243,8 +243,6 @@ class AdminRequestDetailView(generics.RetrieveUpdateAPIView):
                 f"Changed Request #{instance.id} ({instance.passkey}) from '{old_status}' to '{new_status}'"
             )
             send_request_notification(instance)
-
-        return Response(serializer.data)
 
         return Response(serializer.data)
 

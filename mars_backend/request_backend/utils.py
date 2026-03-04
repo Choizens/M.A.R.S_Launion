@@ -84,7 +84,11 @@ def notify_staff_new_request(file_request):
     Alerts all staff members when a new request is submitted.
     """
     from .models import Staff
-    staff_emails = Staff.objects.filter(is_active=True, is_staff=True).values_list('email', flat=True)
+    # Notify ALL active accounts with administrative or staff privileges
+    from django.db.models import Q
+    staff_emails = Staff.objects.filter(
+        Q(is_active=True) & (Q(is_staff=True) | Q(is_superuser=True))
+    ).exclude(email='').values_list('email', flat=True)
     
     if not staff_emails:
         return
@@ -107,13 +111,18 @@ Best regards,
 M.A.R.S Automated System
     """
 
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', None) or getattr(settings, 'EMAIL_HOST_USER', None) or 'noreply@mars.gov.ph'
+    
+    print(f"DEBUG: Notifying staff of new request {file_request.passkey}. Recipients found: {len(staff_emails)}")
+    
     try:
         send_mail(
             subject,
             message,
-            settings.DEFAULT_FROM_EMAIL,
+            from_email,
             list(staff_emails),
             fail_silently=False,
         )
+        print(f"Successfully notified {len(staff_emails)} staff members about new request.")
     except Exception as e:
-        print(f"Error notifying staff of new request: {e}")
+        print(f"ERROR: Failed to notify staff of new request: {e}")

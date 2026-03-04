@@ -13,6 +13,7 @@
           <tr class="bg-slate-50 border-b-2 border-[#333]">
             <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest">Full Name</th>
             <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest">Username</th>
+            <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest">Email</th>
             <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest">Department</th>
             <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest">Last Login</th>
             <th class="px-6 py-4 text-[0.75rem] font-black text-slate-700 uppercase tracking-widest text-center">Status</th>
@@ -21,7 +22,7 @@
         </thead>
         <tbody class="divide-y divide-slate-200">
           <tr v-if="staffList.length === 0" class="p-20 text-center">
-            <td colspan="6" class="py-20 italic text-slate-400">No staff members found.</td>
+            <td colspan="7" class="py-20 italic text-slate-400">No staff members found.</td>
           </tr>
           <tr v-for="stf in staffList" :key="stf.id" class="hover:bg-slate-50 transition-colors" :class="{'opacity-60': !stf.is_active}">
             <td class="px-6 py-4 font-bold text-[#00334d]">
@@ -34,6 +35,7 @@
               </div>
             </td>
             <td class="px-6 py-4 text-sm text-slate-600">@{{ stf.username }}</td>
+            <td class="px-6 py-4 text-sm text-slate-500 italic">{{ stf.email || 'no email' }}</td>
             <td class="px-6 py-4 text-sm font-semibold text-slate-500">{{ stf.department }}</td>
             <td class="px-6 py-4 text-[0.7rem] font-mono text-slate-500">{{ formatDateTime(stf.last_login) || 'Never logged in' }}</td>
             <td class="px-6 py-4 text-center">
