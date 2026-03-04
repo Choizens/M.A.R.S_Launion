@@ -833,12 +833,17 @@ const form = reactive({
 });
 
 const filteredDocTypes = computed(() => {
-  if (!['found', 'duplicate'].includes(recordStatus.value) || !availableDocs.value) return [];
-  // Only show document types that exist for this student in the master database (case-insensitive)
-  return docTypes.value.filter(dt => 
-    Array.isArray(availableDocs.value) && 
-    availableDocs.value.some(docName => docName.toLowerCase() === dt.name.toLowerCase())
-  );
+  if (!['found', 'duplicate'].includes(recordStatus.value) || !availableDocs.value || !Array.isArray(availableDocs.value)) return [];
+  
+  // Use availableDocs as the source of truth
+  return availableDocs.value.map((docName, index) => {
+    // Try to find matching info in global docTypes for consistency
+    const matchingDoc = docTypes.value.find(dt => dt.name.toLowerCase() === docName.toLowerCase());
+    return {
+      id: matchingDoc?.id || `ext-${index}`,
+      name: matchingDoc?.name || docName
+    };
+  });
 });
 
 const slots = ref([]);

@@ -86,8 +86,13 @@ class Command(BaseCommand):
             if created: 
                 self.stdout.write(f"Created Student: {f} {l}")
             
-            # Ensure sample students have digitized records for testing
-            needed_docs = ["Form 137", "Diploma", "Graduation Certificate"]
+        # Ensure ALL students in the database have sample digitized records for testing
+        all_students = Student.objects.all()
+        self.stdout.write(f"Verifying digitized records for {all_students.count()} students...")
+        
+        needed_docs = ["Form 137", "Diploma", "Graduation Certificate"]
+        for student in all_students:
+            seeded_any = False
             for doc_type_name in needed_docs:
                 if not StudentMasterDocument.objects.filter(student=student, document_type__iexact=doc_type_name).exists():
                     dummy_file = ContentFile(b"Dummy document content", name=f"{doc_type_name.replace(' ', '_')}.pdf")
@@ -96,7 +101,9 @@ class Command(BaseCommand):
                         document_type=doc_type_name,
                         file=dummy_file
                     )
-                    self.stdout.write(f"Digitized {doc_type_name} for {f} {l}")
+                    seeded_any = True
+            if seeded_any:
+                self.stdout.write(f"Digitized sample records for {student.first_name} {student.last_name}")
 
         # 5. FileRequest
         for i, student in enumerate(student_objs):
