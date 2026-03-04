@@ -550,7 +550,7 @@
                   </svg>
                   Back
                 </button>
-                <button type="submit" form="submission-form" :disabled="submitting || recordStatus !== 'found'" class="flex-1 sm:flex-none px-8 py-2.5 bg-yellow-400 hover:bg-yellow-500 font-black text-slate-900 rounded-lg shadow-md transition-all hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                <button type="submit" form="submission-form" :disabled="submitting || !['found', 'duplicate'].includes(recordStatus)" class="flex-1 sm:flex-none px-8 py-2.5 bg-yellow-400 hover:bg-yellow-500 font-black text-slate-900 rounded-lg shadow-md transition-all hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                   <span v-if="submitting">Submitting...</span>
                   <span v-else-if="recordStatus === 'not_found'">Unavailable</span>
                   <span v-else>Submit Request</span>
@@ -841,7 +841,8 @@ const filteredDocTypes = computed(() => {
     const matchingDoc = docTypes.value.find(dt => dt.name.toLowerCase() === docName.toLowerCase());
     return {
       id: matchingDoc?.id || `ext-${index}`,
-      name: matchingDoc?.name || docName
+      name: matchingDoc?.name || docName,
+      price: matchingDoc?.price || 0
     };
   });
 });
