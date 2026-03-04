@@ -63,6 +63,11 @@ const router = createRouter({
       name: 'request-details',
       component: () => import('../views/requestor/request_details.vue'),
     },
+    {
+      path: '/requestor/find-lrn',
+      name: 'find-lrn',
+      component: () => import('../views/requestor/Find_lrn.vue'),
+    },
   ],
 })
 

@@ -88,6 +88,7 @@
           <a href="#core-values" @click.prevent="scrollToSection('core-values')" class="hover:text-cyan-500 hover:scale-105 transition-all duration-300 transform inline-block">Core Values</a>
           <a href="#how-it-works" @click.prevent="scrollToSection('how-it-works')" class="hover:text-cyan-500 hover:scale-105 transition-all duration-300 transform inline-block">How It Works</a>
           <a href="#track-request" @click.prevent="scrollToSection('track-request')" class="hover:text-cyan-500 hover:scale-105 transition-all duration-300 transform inline-block">Track Request</a>
+          <router-link to="/requestor/find-lrn" class="hover:text-cyan-500 hover:scale-105 transition-all duration-300 transform inline-block">FIND-LRN</router-link>
           <a href="#faq" @click.prevent="scrollToSection('faq')" class="hover:text-cyan-500 hover:scale-105 transition-all duration-300 transform inline-block">FAQs</a>
         </div>
       </div>
