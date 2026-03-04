@@ -1,7 +1,14 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ||
-    (import.meta.env.PROD ? 'https://mars-launion-production.up.railway.app/api/' : 'http://localhost:8000/api/');
+let base_url = import.meta.env.VITE_API_URL ||
+    (import.meta.env.PROD ? 'https://marslaunion-production.up.railway.app/api/' : 'http://localhost:8000/api/');
+
+// Ensure base_url ends with /api/ for consistency
+if (!base_url.includes('/api/')) {
+    base_url = base_url.endsWith('/') ? `${base_url}api/` : `${base_url}/api/`;
+}
+
+const API_BASE_URL = base_url;
 
 const apiClient = axios.create({
     baseURL: API_BASE_URL,
