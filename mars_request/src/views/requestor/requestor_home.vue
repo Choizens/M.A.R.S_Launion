@@ -141,10 +141,10 @@
           <div class="flex flex-col md:flex-row items-center justify-center gap-6">
             <div class="flex-1">
               <h2 class="text-xl font-bold text-[#154252] mb-1">Track Your Request</h2>
-              <p class="text-xs font-medium text-slate-400  ">Enter your details to check status & download files</p>
+              <p class="text-xs font-medium text-slate-400">Enter your Passkey to check status & download files</p>
             </div>
             <div class="flex flex-row items-center gap-5 w-full md:w-auto">
-              <input v-model="trackId" type="text" placeholder="Passkey (e.g. 15)" class="w-full  border border rounded-sm px-4 py-3 text-sm focus:ring-2 focus:ring-[#154252] outline-none font-bold" />
+              <input v-model="trackId" type="text" placeholder="e.g. PASS-2026-001" class="w-full border border rounded-sm px-4 py-3 text-sm focus:ring-2 focus:ring-[#154252] outline-none font-bold" />
               <button @click="handleTrack" :disabled="tracking" class="w-full min-w-30 cursor-pointer sm:w-auto px-6 py-3 bg-[#103059] text-white rounded-md hover:bg-[#143f76] text-sm shadow-[#154252]/20 flex items-center justify-center gap-2">
                 <span v-if="tracking" class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
                 <span>{{ tracking ? 'Checking...' : 'Track Now' }}</span>
@@ -1053,8 +1053,8 @@ async function loadStrands() {
 }
 
 async function handleTrack() {
-  if (!trackId.value || !trackEmail.value) {
-    trackError.value = 'Please provide both Passkey and Email.';
+  if (!trackId.value || !trackId.value.trim()) {
+    trackError.value = 'Please provide your Passkey.';
     return;
   }
 
@@ -1063,11 +1063,11 @@ async function handleTrack() {
   trackedRequest.value = null;
 
   try {
-    const res = await publicService.getMyRequest(trackEmail.value, trackId.value);
+    const res = await requestService.lookupRequest(trackId.value.trim());
     trackedRequest.value = res.data;
     showTrackModal.value = true;
   } catch (err) {
-    trackError.value = err.response?.data?.error || 'No matching request found. Please check your Passkey and Email.';
+    trackError.value = err.response?.data?.error || 'No matching request found. Please check your Passkey.';
   } finally {
     tracking.value = false;
   }
