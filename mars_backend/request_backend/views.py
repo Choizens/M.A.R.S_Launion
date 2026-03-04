@@ -618,21 +618,19 @@ class PublicRecordCheckView(APIView):
                 'documents': []
             })
 
-        # Check for existing requests (Pending, Approved, Needs Verification, Completed)
-        # Only 'Rejected' requests allow a new submission. 
-        # 'Completed' is blocked because the school has already given the physical file.
+        # Check for existing requests (Pending, Approved, Needs Verification)
+        # 'Completed' and 'Rejected' requests allow a new submission. 
         active_request = FileRequest.objects.filter(
             email__iexact=student.email,
-            status__in=['Pending', 'Approved', 'Needs Verification', 'Completed']
+            status__in=['Pending', 'Approved', 'Needs Verification']
         ).first()
 
         if active_request:
-            status_msg = "is being processed" if active_request.status != 'Completed' else "has already been completed and the file was issued"
             return Response({
                 'exists': True,
                 'has_active_request': True,
                 'active_request_id': active_request.passkey,
-                'message': f'You already have a request that {status_msg} (Passkey: {active_request.passkey}). Duplicate requests are not allowed.',
+                'message': f'You already have an active request being processed (Passkey: {active_request.passkey}). Please wait for it to be completed or rejected before submitting a new one.',
                 'documents': []
             })
 
