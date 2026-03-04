@@ -162,52 +162,60 @@
                   </div>
                 </div>
 
-                <!-- Document Viewer Panel -->
-                <div v-if="viewingDoc" class="flex-1 flex flex-col border-2 border-[#103059] rounded-xl overflow-hidden" style="min-height: 420px;">
-                  <div class="flex items-center justify-between px-4 py-2 bg-[#103059] text-white shrink-0">
-                    <span class="text-[0.65rem] font-black uppercase tracking-widest truncate">📄 {{ viewingDoc.document_type }}</span>
-                    <div class="flex items-center gap-3">
-                      <button @click="printDocument(getFullUrl(viewingDoc.file))" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1">
-                        <PrinterIcon class="w-3 h-3" /> Print
-                      </button>
-                      <button @click="downloadDocument(getFullUrl(viewingDoc.file), viewingDoc.document_type)" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1">
-                        <DownloadIcon class="w-3 h-3" /> Download
-                      </button>
-                      <div class="h-3 w-[1px] bg-white/20 mx-1"></div>
-                      <a :href="getFullUrl(viewingDoc.file)" target="_blank" rel="noopener noreferrer" class="text-white hover:text-amber-300 transition-colors text-[0.65rem] font-black uppercase">↗ Full Screen</a>
-                      <button @click="viewingDoc = null" class="text-white opacity-70 hover:opacity-100 transition-opacity text-xs font-black uppercase ml-2">✕ Close</button>
+                  <!-- Document Viewer Panel with Click-to-Open -->
+                  <div 
+                    v-if="viewingDoc" 
+                    class="flex-1 flex flex-col border-2 border-[#103059] rounded-xl overflow-hidden group/preview relative" 
+                    style="min-height: 420px;"
+                  >
+                    <div class="flex items-center justify-between px-4 py-2 bg-[#103059] text-white shrink-0 relative z-20">
+                      <span class="text-[0.65rem] font-black uppercase tracking-widest truncate">📄 {{ viewingDoc.document_type }}</span>
+                      <div class="flex items-center gap-3">
+                        <button @click="printDocument(getFullUrl(viewingDoc.file))" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1">
+                          <PrinterIcon class="w-3 h-3" /> Print
+                        </button>
+                        <button @click="downloadDocument(getFullUrl(viewingDoc.file), viewingDoc.document_type)" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1">
+                          <DownloadIcon class="w-3 h-3" /> Download
+                        </button>
+                        <div class="h-3 w-[1px] bg-white/20 mx-1"></div>
+                        <a :href="getFullUrl(viewingDoc.file)" target="_blank" rel="noopener noreferrer" class="text-white hover:text-amber-300 transition-colors text-[0.65rem] font-black uppercase">↗ Full Screen</a>
+                        <button @click="viewingDoc = null" class="text-white opacity-70 hover:opacity-100 transition-opacity text-xs font-black uppercase ml-2">✕ Close</button>
+                      </div>
+                    </div>
+
+                    <!-- Clickable Preview Area -->
+                    <div 
+                      class="flex-1 w-full bg-slate-50 relative cursor-pointer overflow-hidden"
+                      @click="window.open(getFullUrl(viewingDoc.file), '_blank')"
+                      title="Click to open in new tab"
+                    >
+                      <!-- Hover Overlay -->
+                      <div class="absolute inset-0 bg-[#103059]/0 group-hover/preview:bg-[#103059]/5 transition-colors z-10 flex items-center justify-center">
+                        <div class="opacity-0 group-hover/preview:opacity-100 transition-opacity bg-white/90 text-[#103059] px-4 py-2 rounded-full shadow-lg font-black text-[0.6rem] uppercase tracking-widest flex items-center gap-2">
+                          <EyeIcon class="w-3 h-3" /> Click to View Full Screen
+                        </div>
+                      </div>
+
+                      <!-- Image viewer -->
+                      <img
+                        v-if="viewingDoc.file && (viewingDoc.file.toLowerCase().endsWith('.jpg') || viewingDoc.file.toLowerCase().endsWith('.jpeg') || viewingDoc.file.toLowerCase().endsWith('.png'))"
+                        :key="`img-${viewingDoc.id}`"
+                        :src="getFullUrl(viewingDoc.file)"
+                        class="w-full h-full object-contain pointer-events-none"
+                        style="min-height: 380px;"
+                        alt="Document Preview"
+                      />
+                      <!-- PDF viewer (Standardized iframe) -->
+                      <div v-else class="w-full h-full flex flex-col" style="min-height: 380px;">
+                        <iframe
+                          :key="`pdf-ifrm-${viewingDoc.id}`"
+                          :src="getFullUrl(viewingDoc.file)"
+                          class="w-full h-full border-none pointer-events-none"
+                        >
+                        </iframe>
+                      </div>
                     </div>
                   </div>
-                  <!-- Image viewer -->
-                  <img
-                    v-if="viewingDoc.file && (viewingDoc.file.toLowerCase().endsWith('.jpg') || viewingDoc.file.toLowerCase().endsWith('.jpeg') || viewingDoc.file.toLowerCase().endsWith('.png'))"
-                    :key="`img-${viewingDoc.id}`"
-                    :src="getFullUrl(viewingDoc.file)"
-                    class="w-full h-full object-contain bg-slate-100 flex-1"
-                    style="min-height: 380px;"
-                    alt="Document Preview"
-                  />
-                  <!-- PDF viewer -->
-                  <div v-else class="flex-1 w-full bg-slate-100 flex flex-col" style="min-height: 380px;">
-                    <object
-                      :key="`pdf-obj-${viewingDoc.id}`"
-                      :data="getFullUrl(viewingDoc.file)"
-                      type="application/pdf"
-                      class="flex-1 w-full h-full"
-                    >
-                      <iframe
-                        :key="`pdf-ifrm-${viewingDoc.id}`"
-                        :src="getFullUrl(viewingDoc.file)"
-                        class="w-full h-full border-none"
-                      >
-                        <div class="p-10 text-center">
-                          <p class="text-xs font-bold text-slate-500 mb-4 uppercase">PDF Preview not supported by browser</p>
-                          <a :href="getFullUrl(viewingDoc.file)" target="_blank" class="px-4 py-2 bg-[#103059] text-white rounded font-black text-[0.6rem] uppercase">Download to View</a>
-                        </div>
-                      </iframe>
-                    </object>
-                  </div>
-                </div>
               </div>
             </div>
 

@@ -114,9 +114,13 @@
               </div>
             </div>
 
-            <!-- New Inline Document Viewer Panel -->
-            <div v-if="viewingDoc" class="mt-8 flex flex-col border-2 border-[#103059] rounded-xl overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-300" style="min-height: 500px;">
-              <div class="flex items-center justify-between px-4 py-3 bg-[#103059] text-white shrink-0">
+            <!-- New Inline Document Viewer Panel with Click-to-Open -->
+            <div 
+              v-if="viewingDoc" 
+              class="mt-8 flex flex-col border-2 border-[#103059] rounded-xl overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-300 group/preview relative" 
+              style="min-height: 500px;"
+            >
+              <div class="flex items-center justify-between px-4 py-3 bg-[#103059] text-white shrink-0 relative z-20">
                 <div class="flex items-center gap-2">
                   <FileIcon class="w-4 h-4 text-amber-400" />
                   <span class="text-[0.7rem] font-black uppercase tracking-widest truncate">{{ viewingDoc.document_type }}</span>
@@ -134,9 +138,20 @@
                 </div>
               </div>
               
-              <div class="flex-1 bg-slate-100 relative">
-                <!-- Loader -->
-                <div class="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+              <div 
+                class="flex-1 bg-slate-50 relative cursor-pointer overflow-hidden"
+                @click="window.open(getFullUrl(viewingDoc.file), '_blank')"
+                title="Click to open in new tab"
+              >
+                <!-- Hover Overlay -->
+                <div class="absolute inset-0 bg-[#103059]/0 group-hover/preview:bg-[#103059]/5 transition-colors z-10 flex items-center justify-center">
+                  <div class="opacity-0 group-hover/preview:opacity-100 transition-opacity bg-white/90 text-[#103059] px-6 py-3 rounded-full shadow-xl font-black text-[0.7rem] uppercase tracking-widest flex items-center gap-3 border-2 border-slate-100">
+                    <EyeIcon class="w-4 h-4" /> Click to View Full Screen
+                  </div>
+                </div>
+
+                <!-- Loader 背景 -->
+                <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
                   <FileIcon class="w-20 h-20 text-[#103059] animate-pulse" />
                 </div>
                 
@@ -145,29 +160,17 @@
                   v-if="viewingDoc.file && (viewingDoc.file.toLowerCase().endsWith('.jpg') || viewingDoc.file.toLowerCase().endsWith('.jpeg') || viewingDoc.file.toLowerCase().endsWith('.png'))"
                   :key="`img-${viewingDoc.id}`"
                   :src="getFullUrl(viewingDoc.file)"
-                  class="w-full h-full object-contain relative z-10"
+                  class="w-full h-full object-contain relative z-10 pointer-events-none"
                   alt="Document Preview"
                 />
-                <!-- PDF viewer -->
+                <!-- PDF viewer (Standardized iframe) -->
                 <div v-else class="w-full h-full relative z-10">
-                  <object
-                    :key="`pdf-obj-${viewingDoc.id}`"
-                    :data="getFullUrl(viewingDoc.file)"
-                    type="application/pdf"
-                    class="w-full h-full"
+                  <iframe
+                    :key="`pdf-ifrm-${viewingDoc.id}`"
+                    :src="getFullUrl(viewingDoc.file)"
+                    class="w-full h-full border-none pointer-events-none"
                   >
-                    <iframe
-                      :key="`pdf-ifrm-${viewingDoc.id}`"
-                      :src="getFullUrl(viewingDoc.file)"
-                      class="w-full h-full border-none"
-                    >
-                      <div class="p-10 text-center flex flex-col items-center justify-center h-full">
-                        <AlertIcon class="w-12 h-12 text-slate-300 mb-4" />
-                        <p class="text-xs font-bold text-slate-500 mb-4 uppercase tracking-widest">PDF Preview not supported by browser</p>
-                        <a :href="getFullUrl(viewingDoc.file)" target="_blank" class="px-6 py-2.5 bg-[#103059] text-white rounded-lg font-black text-[0.7rem] uppercase tracking-wider shadow-md hover:bg-[#1a4a8a] transition-colors">Download to View</a>
-                      </div>
-                    </iframe>
-                  </object>
+                  </iframe>
                 </div>
               </div>
             </div>
