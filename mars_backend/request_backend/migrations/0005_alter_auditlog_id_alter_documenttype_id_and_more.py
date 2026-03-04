@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('request_backend', '0017_remove_filerequest_birthdate_and_more'),
+        ('request_backend', '0004_alter_pickupslot_afternoon_slots_and_more'),
     ]
 
     operations = [
