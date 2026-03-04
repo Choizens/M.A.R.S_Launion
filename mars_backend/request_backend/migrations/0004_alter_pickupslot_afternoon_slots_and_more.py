@@ -10,14 +10,19 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='pickupslot',
-            name='afternoon_slots',
-            field=models.IntegerField(default=5),
-        ),
-        migrations.AlterField(
-            model_name='pickupslot',
-            name='morning_slots',
-            field=models.IntegerField(default=5),
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.AlterField(
+                    model_name='pickupslot',
+                    name='afternoon_slots',
+                    field=models.IntegerField(default=5),
+                ),
+                migrations.AlterField(
+                    model_name='pickupslot',
+                    name='morning_slots',
+                    field=models.IntegerField(default=5),
+                ),
+            ],
+            database_operations=[]
         ),
     ]

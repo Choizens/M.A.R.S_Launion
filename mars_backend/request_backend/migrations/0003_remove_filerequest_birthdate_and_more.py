@@ -10,22 +10,27 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='filerequest',
-            name='birthdate',
-        ),
-        migrations.RemoveField(
-            model_name='student',
-            name='birthdate',
-        ),
-        migrations.AddField(
-            model_name='filerequest',
-            name='request_code',
-            field=models.CharField(blank=True, max_length=20, null=True, unique=True),
-        ),
-        migrations.AlterField(
-            model_name='staff',
-            name='staff_id',
-            field=models.CharField(blank=True, max_length=20, null=True, unique=True),
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.RemoveField(
+                    model_name='filerequest',
+                    name='birthdate',
+                ),
+                migrations.RemoveField(
+                    model_name='student',
+                    name='birthdate',
+                ),
+                migrations.AddField(
+                    model_name='filerequest',
+                    name='request_code',
+                    field=models.CharField(blank=True, max_length=20, null=True, unique=True),
+                ),
+                migrations.AlterField(
+                    model_name='staff',
+                    name='staff_id',
+                    field=models.CharField(blank=True, max_length=20, null=True, unique=True),
+                ),
+            ],
+            database_operations=[]
         ),
     ]
