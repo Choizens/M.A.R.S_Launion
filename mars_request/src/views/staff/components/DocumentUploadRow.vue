@@ -19,7 +19,7 @@
       <div>
         <p class="text-[0.6rem] font-bold text-slate-400 uppercase mb-1">Student Scan:</p>
         <div v-if="studentDoc">
-          <a :href="'http://127.0.0.1:8000' + studentDoc.file" target="_blank" class="flex items-center gap-1 text-[0.6rem] font-bold text-amber-600 bg-white px-2 py-1 rounded border border-amber-200 shadow-sm w-max hover:bg-amber-50 transition-colors">
+          <a :href="getFullUrl(studentDoc.file)" target="_blank" class="flex items-center gap-1 text-[0.6rem] font-bold text-amber-600 bg-white px-2 py-1 rounded border border-amber-200 shadow-sm w-max hover:bg-amber-50 transition-colors">
             <AttachmentIcon class="w-3 h-3" /> View Scan
           </a>
         </div>
@@ -28,7 +28,7 @@
       <div>
         <p class="text-[0.6rem] font-bold text-slate-400 uppercase mb-1">Staff Ready Doc:</p>
         <div v-if="processedDoc" class="flex items-center gap-2">
-          <a :href="'http://127.0.0.1:8000' + processedDoc.file" target="_blank" class="flex items-center gap-1.5 text-[0.6rem] font-bold text-green-600 bg-white px-2 py-1 rounded border border-green-200 shadow-sm hover:bg-green-50 transition-colors">
+          <a :href="getFullUrl(processedDoc.file)" target="_blank" class="flex items-center gap-1.5 text-[0.6rem] font-bold text-green-600 bg-white px-2 py-1 rounded border border-green-200 shadow-sm hover:bg-green-50 transition-colors">
             <FileIcon class="w-3 h-3" /> Download
           </a>
           <button @click="deleteDoc(processedDoc.id)" class="text-[0.6rem] font-bold text-red-500 px-2 py-1 rounded border border-red-200 hover:bg-red-50 transition-colors">X</button>
@@ -46,7 +46,7 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import { adminService } from '@/services/api';
+import { adminService, getFullUrl } from '@/services/api';
 import { FileText as FileIcon, Paperclip as AttachmentIcon, AlertCircle as AlertIcon } from 'lucide-vue-next';
 
 const props = defineProps(['filename', 'request']);

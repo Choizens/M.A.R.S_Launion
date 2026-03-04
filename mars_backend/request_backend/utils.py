@@ -1,3 +1,4 @@
+import threading
 from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -34,12 +35,21 @@ def send_submission_confirmation(file_request):
             [file_request.email]
         )
         email.attach_alternative(html_content, "text/html")
-        print("DEBUG: Email object created, sending...")
-        email.send(fail_silently=False)
-        print(f"Successfully sent confirmation email to {file_request.email}")
+        
+        def send_email_thread():
+            try:
+                print("DEBUG: (Thread) Email sending started...")
+                email.send(fail_silently=False)
+                print(f"DEBUG: (Thread) Successfully sent confirmation email to {file_request.email}")
+            except Exception as thread_err:
+                print(f"DEBUG: (Thread) ERROR sending email: {thread_err}")
+
+        threading.Thread(target=send_email_thread, daemon=True).start()
+        print(f"DEBUG: Background thread started for {file_request.email}")
+
     except Exception as e:
         import traceback
-        print(f"ERROR: Failed to provide confirmation email: {str(e)}")
+        print(f"ERROR: Failed to prepare confirmation email: {str(e)}")
         traceback.print_exc()
 
 def send_request_notification(file_request):
@@ -80,10 +90,17 @@ def send_request_notification(file_request):
             [file_request.email]
         )
         email.attach_alternative(html_content, "text/html")
-        email.send(fail_silently=False)
-        print(f"Successfully sent {file_request.status} notification to {file_request.email}")
+        
+        def send_update_thread():
+            try:
+                email.send(fail_silently=False)
+                print(f"Successfully sent {file_request.status} notification to {file_request.email}")
+            except Exception as thread_err:
+                print(f"ERROR in status update thread: {thread_err}")
+
+        threading.Thread(target=send_update_thread, daemon=True).start()
     except Exception as e:
-        print(f"ERROR: Failed to send status update email: {e}")
+        print(f"ERROR: Failed to prepare status update email: {e}")
 
 def notify_staff_new_request(file_request):
     """
@@ -122,13 +139,19 @@ M.A.R.S Automated System
     print(f"DEBUG: Notifying staff of new request {file_request.passkey}. Recipients found: {len(staff_emails)}")
     
     try:
-        send_mail(
-            subject,
-            message,
-            from_email,
-            list(staff_emails),
-            fail_silently=False,
-        )
-        print(f"Successfully notified {len(staff_emails)} staff members about new request.")
+        def notify_staff_thread():
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    from_email,
+                    list(staff_emails),
+                    fail_silently=False,
+                )
+                print(f"Successfully notified {len(staff_emails)} staff members about new request.")
+            except Exception as thread_err:
+                print(f"ERROR in notify staff thread: {thread_err}")
+
+        threading.Thread(target=notify_staff_thread, daemon=True).start()
     except Exception as e:
-        print(f"ERROR: Failed to notify staff of new request: {e}")
+        print(f"ERROR: Failed to prepare staff notification: {e}")

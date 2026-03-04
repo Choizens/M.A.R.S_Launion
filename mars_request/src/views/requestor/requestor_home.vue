@@ -145,8 +145,9 @@
             </div>
             <div class="flex flex-row items-center gap-5 w-full md:w-auto">
               <input v-model="trackId" type="text" placeholder="Passkey (e.g. 15)" class="w-full  border border rounded-sm px-4 py-3 text-sm focus:ring-2 focus:ring-[#154252] outline-none font-bold" />
-              <button @click="handleTrack" :disabled="tracking" class="w-full min-w-30 cursor-pointer sm:w-auto px-6 py-3 bg-[#103059] text-white rounded-md hover:bg-[#143f76] text-sm shadow-[#154252]/20">
-                {{ tracking ? 'Checking...' : 'Track Now' }}
+              <button @click="handleTrack" :disabled="tracking" class="w-full min-w-30 cursor-pointer sm:w-auto px-6 py-3 bg-[#103059] text-white rounded-md hover:bg-[#143f76] text-sm shadow-[#154252]/20 flex items-center justify-center gap-2">
+                <span v-if="tracking" class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+                <span>{{ tracking ? 'Checking...' : 'Track Now' }}</span>
               </button>
             </div>
           </div>
@@ -304,8 +305,9 @@
             <button
               @click="handleCheckRequest"
               :disabled="checkLoading"
-              class="px-10 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded shadow transition-colors disabled:opacity-60 text-sm"
+              class="px-10 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black rounded shadow transition-colors disabled:opacity-60 text-sm flex items-center justify-center gap-2"
             >
+              <span v-if="checkLoading" class="animate-spin rounded-full h-4 w-4 border-2 border-slate-900 border-t-transparent"></span>
               <span v-if="checkLoading">Searching...</span>
               <span v-else>Review</span>
             </button>
@@ -626,7 +628,8 @@
                   </svg>
                   Back
                 </button>
-                <button type="submit" form="submission-form" :disabled="submitting || recordStatus !== 'found'" class="flex-1 sm:flex-none px-8 py-2.5 bg-yellow-400 hover:bg-yellow-500 font-black text-slate-900 rounded-lg shadow-md transition-all hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                <button type="submit" form="submission-form" :disabled="submitting || recordStatus !== 'found'" class="flex-1 sm:flex-none px-8 py-2.5 bg-yellow-400 hover:bg-yellow-500 font-black text-slate-900 rounded-lg shadow-md transition-all hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                  <span v-if="submitting" class="animate-spin rounded-full h-4 w-4 border-2 border-slate-900 border-t-transparent"></span>
                   <span v-if="submitting">Submitting...</span>
                   <span v-else-if="recordStatus === 'not_found'">Unavailable</span>
                   <span v-else>Submit Request</span>
