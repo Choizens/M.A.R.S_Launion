@@ -142,9 +142,6 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-<<<<<<< HEAD
-/* Inherited consistent design with Staff login */
-=======
 * {
   box-sizing: border-box;
   margin: 0;
@@ -548,5 +545,4 @@ const handleLogin = async () => {
     background: #0a0f1a;
   }
 }
->>>>>>> Choizen
 </style>
