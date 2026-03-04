@@ -148,10 +148,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { useRouter } from 'vue-router';
+import { publicService, requestService } from '@/services/api';
 import logoImg from '@/assets/logo_launion.svg';
-import logo_launion from '@/assets/logo_launion.svg';
 
+const router = useRouter();
 const logoImgFoot = logoImg;
 
 const strands = ref([]);
@@ -173,9 +174,7 @@ const form = ref({
 
 onMounted(async () => {
   try {
-    const res = await axios.get('http://127.0.0.1:8000/api/public/strands/');
-    strands.ref = res.data;
-    // Fix: access data correctly
+    const res = await requestService.getPublicStrands();
     strands.value = res.data;
   } catch (e) {
     console.error('Error fetching strands:', e);
@@ -197,7 +196,7 @@ const handleFindLrn = async () => {
       year_graduated: form.value.year_graduated
     };
     
-    const res = await axios.get('http://127.0.0.1:8000/api/public/check-record/', { params });
+    const res = await publicService.checkRecord(params);
     
     if (res.data.exists) {
       foundLrn.value = res.data.lrn_number;
