@@ -16,8 +16,8 @@
             <input v-model="form.username" type="text" required class="border px-4 py-2 rounded focus:border-[#00334d] outline-none" />
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-[0.6rem] font-bold uppercase text-slate-500">Email Address</label>
-            <input v-model="form.email" type="email" required class="border px-4 py-2 rounded focus:border-[#00334d] outline-none" />
+            <label class="text-[0.6rem] font-bold uppercase text-slate-500">Email Address (for notifications)</label>
+            <input v-model="form.email" type="email" required placeholder="e.g. staff@gmail.com" class="border px-4 py-2 rounded focus:border-[#00334d] outline-none" />
           </div>
           <div v-if="!editingId" class="flex flex-col gap-1">
             <label class="text-[0.6rem] font-bold uppercase text-slate-500">Password</label>
@@ -31,6 +31,12 @@
             <div class="flex flex-col gap-1">
               <label class="text-[0.6rem] font-bold uppercase text-slate-500">Department</label>
               <input v-model="form.department" type="text" required class="border px-4 py-2 rounded focus:border-[#00334d] outline-none" />
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-[0.6rem] font-bold uppercase text-slate-500">Account Type (Automatic)</label>
+            <div class="px-4 py-2 bg-slate-50 border rounded font-bold text-[#00334d]">
+              {{ form.is_superuser ? 'Administrator' : 'Staff Member' }}
             </div>
           </div>
           <button type="submit" :disabled="submitting" class="mt-4 py-3 bg-[#ffca28] text-[#00334d] font-black uppercase tracking-widest rounded border-2 border-[#00334d] hover:bg-white transition-all">

@@ -26,11 +26,10 @@
             </span>
           </div>
           <h3 class="font-black text-[#00334d] text-lg mb-2 uppercase tracking-tight">{{ doc.name }}</h3>
-          <p class="text-slate-500 text-xs leading-relaxed mb-4 line-clamp-2 italic">{{ doc.description || 'No description provided.' }}</p>
+          <p class="text-slate-500 text-xs leading-relaxed mb-4 line-clamp-2 italic">{{ doc.description || 'wala' }}</p>
           
           <div class="flex items-center gap-2 mt-auto">
-            <component :is="MoneyIcon" class="w-4 h-4 text-green-600" />
-            <span class="font-black text-xl text-[#00334d]">\u20b1{{ parseFloat(doc.price).toLocaleString() }}</span>
+            <span class="font-black text-xl text-[#00334d]">₱{{ parseFloat(doc.price).toLocaleString() }}</span>
           </div>
         </div>
         <div class="px-6 py-4 bg-slate-50 border-t flex justify-end gap-2">

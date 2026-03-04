@@ -115,6 +115,35 @@ class FileRequestSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Please provide a valid phone number (at least 10 digits).")
         return value
 
+    def validate(self, data):
+        pickup_date = data.get('pickup_date')
+        pickup_time = data.get('pickup_time')
+
+        if pickup_date and pickup_time:
+            # 1. Check if it's a weekend
+            if pickup_date.weekday() >= 5:
+                raise serializers.ValidationError({"pickup_date": "Pickups are only available from Monday to Friday."})
+
+            # 2. Check if the date is blocked in PickupSlot
+            slot = PickupSlot.objects.filter(date=pickup_date).first()
+            if slot and slot.is_blocked:
+                raise serializers.ValidationError({"pickup_date": f"This date is not available for pickup: {slot.reason or 'Blocked'}"})
+
+            # 3. Check capacity
+            max_slots = 5
+            if slot:
+                max_slots = slot.morning_slots if pickup_time == 'Morning' else slot.afternoon_slots
+
+            current_bookings = FileRequest.objects.filter(
+                pickup_date=pickup_date, 
+                pickup_time=pickup_time
+            ).count()
+
+            if current_bookings >= max_slots:
+                raise serializers.ValidationError({"pickup_time": f"The {pickup_time} slot for this date is already full."})
+
+        return data
+
 
 class AuditLogSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user.full_name', read_only=True)

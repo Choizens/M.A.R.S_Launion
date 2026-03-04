@@ -832,8 +832,9 @@ const form = reactive({
 
 const filteredDocTypes = computed(() => {
   if (recordStatus.value !== 'found') return [];
-  // Only show document types that exist for this student in the master database
-  return docTypes.value.filter(dt => availableDocs.value.includes(dt.name));
+  // Once the record is found, allow user to request any active document type.
+  // This ensures the dropdown shows everything added via the admin dashboard.
+  return docTypes.value || [];
 });
 
 const slots = ref([]);

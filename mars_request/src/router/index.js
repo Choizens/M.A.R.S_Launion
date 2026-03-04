@@ -10,21 +10,13 @@ const router = createRouter({
       component: () => import('../views/requestor/requestor_home.vue'),
     },
     // ── Staff routes ──────────────────────────────────────
-    {
-      path: '/Staff/home',
-      name: 'staff-home',
-      component: () => import('../views/Staff/Staff_Home.vue'),
-    },
+
     {
       path: '/Staff/login',
       name: 'login',
       component: () => import('../views/auth/login.vue'),
     },
-    {
-      path: '/Staff/register',
-      name: 'register',
-      component: () => import('../views/auth/register.vue'),
-    },
+
     {
       path: '/Staff/dashboard/:tab?',
       name: 'staff-dashboard',
@@ -56,32 +48,32 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   const token = localStorage.getItem('token');
   const isAuthenticated = !!token;
-  const isAdmin = localStorage.getItem('is_admin') === 'true';
+  const isSuperuser = localStorage.getItem('is_superuser') === 'true';
+  const isAdminOrStaff = localStorage.getItem('is_admin') === 'true';
 
   // Redirect unauthenticated users away from protected pages
   if (to.meta.requiresAuth && !isAuthenticated) {
-    return next(to.meta.requiresAdmin ? '/admin/login' : '/Staff/login');
+    return to.meta.requiresAdmin ? '/admin/login' : '/Staff/login';
   }
 
-  // Redirect non-admins away from admin dashboard
-  if (to.meta.requiresAdmin && !isAdmin) {
-    return next('/admin/login');
+  // Redirect non-superusers away from the specific Admin Dashboard
+  if (to.meta.requiresAdmin && !isSuperuser) {
+    return '/admin/login'; // or access-denied
   }
 
-  // Redirect already-authenticated admin away from admin login
-  if (to.name === 'admin-login' && isAuthenticated && isAdmin) {
-    return next('/admin/dashboard');
+  // Redirect already-authenticated users AWAY from login pages
+  if (to.name === 'admin-login' && isAuthenticated) {
+    return isSuperuser ? '/admin/dashboard' : '/Staff/dashboard';
   }
 
-  // Redirect already-authenticated staff away from staff login/register
-  if ((to.name === 'login' || to.name === 'register') && isAuthenticated && !isAdmin) {
-    return next('/Staff/dashboard');
+  if (to.name === 'login' && isAuthenticated) {
+    return isSuperuser ? '/admin/dashboard' : '/Staff/dashboard';
   }
 
-  next();
+  return true;
 });
 
 export default router

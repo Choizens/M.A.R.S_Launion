@@ -1,208 +1,165 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Request Notification</title>
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 0;
-            color: #333333;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background-color: #154252;
-            color: #ffffff;
-            text-align: center;
-            padding: 30px 20px;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
-
-        .header p {
-            margin: 5px 0 0;
-            font-size: 14px;
-            color: #a3c2c2;
-        }
-
-        .content {
-            padding: 30px 40px;
-        }
-
-        .greeting {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #154252;
-        }
-
-        .notification-box {
-            background-color: #f8fbfb;
-            border-left: 4px solid #154252;
-            padding: 15px 20px;
-            margin-bottom: 25px;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .notification-box p {
-            margin: 0 0 10px;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-
-        .notification-box p:last-child {
-            margin: 0;
-        }
-
-        .code-block {
-            text-align: center;
-            margin: 30px 0;
-            padding: 20px;
-            background-color: #f0f4f4;
-            border-radius: 6px;
-            border: 1px dashed #154252;
-        }
-
-        .code-block h3 {
-            margin: 0 0 10px;
-            font-size: 14px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .code-value {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 32px;
-            font-weight: bold;
-            color: #154252;
-            letter-spacing: 2px;
-            margin: 0;
-        }
-
-        .details-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 25px;
-        }
-
-        .details-table th,
-        .details-table td {
-            text-align: left;
-            padding: 12px 15px;
-            border-bottom: 1px solid #eeeeee;
-        }
-
-        .details-table th {
-            width: 40%;
-            color: #666666;
-            font-weight: normal;
-            font-size: 14px;
-        }
-
-        .details-table td {
-            font-weight: bold;
-            color: #333333;
-            font-size: 14px;
-        }
-
-        .files-list {
-            margin: 0;
-            padding-left: 20px;
-        }
-
-        .files-list li {
-            margin-bottom: 5px;
-        }
-
-        .footer {
-            background-color: #f0f4f4;
-            text-align: center;
-            padding: 20px;
-            font-size: 12px;
-            color: #888888;
-        }
-
-        .footer p {
-            margin: 5px 0;
-        }
-    </style>
 </head>
 
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>StandAlone</h1>
-            <p>La Union Senior High School</p>
-        </div>
-        <div class="content">
-            <div class="greeting">
-                Hello {{ instance.first_name }} {{ instance.last_name }},
-            </div>
+<body style="margin: 0; padding: 0; background-color: #f6f9f9; font-family: Arial, sans-serif;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f6f9f9; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="700"
+                    style="background-color: #ffffff; border: 1px solid #cccccc; padding: 30px; color: #000000;">
+                    <!-- Reference Header -->
+                    <tr>
+                        <td>
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%"
+                                style="font-size: 10px; text-transform: uppercase;">
+                                <tr>
+                                    <td width="33%" align="left">REFERENCE: <strong>{{ instance.passkey }}</strong></td>
+                                    <td width="34%" align="center">DATE SENT: <strong>{{ instance.submitted_at|date:"F
+                                            j, Y" }}</strong></td>
+                                    <td width="33%" align="right">APPOINTMENT: <strong>{{ instance.pickup_date|date:"F
+                                            j, Y" }}</strong></td>
+                                </tr>
+                            </table>
+                            <div style="border-bottom: 2px solid #000000; margin-top: 5px; margin-bottom: 15px;"></div>
+                        </td>
+                    </tr>
 
-            <div class="notification-box">
-                <p><strong>Your file request has been successfully sent!</strong></p>
-                <p>We have received your request and it is currently being processed. You can use your unique Request
-                    Code below to track the status of your request on our website.</p>
-            </div>
+                    <!-- Logo and Title Table -->
+                    <tr>
+                        <td>
+                            <table border="1" cellpadding="0" cellspacing="0" width="100%"
+                                style="border-collapse: collapse; margin-bottom: 20px;">
+                                <tr>
+                                    <td width="20%" align="center" style="padding: 10px; background-color: #ffffff;">
+                                        <img src="https://mars-launion.vercel.app/logo.png" alt="LU SHS Logo" width="80"
+                                            style="display: block; margin: 0 auto;" />
+                                    </td>
+                                    <td width="80%" align="center" style="padding: 0;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td align="center"
+                                                    style="padding: 10px; font-size: 18px; font-weight: bold; text-transform: uppercase;">
+                                                    Manual and Automated Records System (M.A.R.S)</td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center"
+                                                    style="padding: 5px; background-color: #dbeafe; border-top: 1px solid #000000; font-size: 14px; font-weight: bold; text-transform: uppercase;">
+                                                    La Union Senior High School Document Request Form</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
 
-            <div class="code-block">
-                <h3>Your Request Code</h3>
-                <p class="code-value">{{ instance.request_code }}</p>
-            </div>
+                    <!-- Personal Details Grid -->
+                    <tr>
+                        <td>
+                            <table border="0" cellpadding="5" cellspacing="0" width="100%"
+                                style="font-size: 11px; margin-bottom: 20px;">
+                                <tr>
+                                    <td width="20%" style="font-weight: bold;">APPOINTMENT DATE:</td>
+                                    <td width="30%">{{ instance.pickup_date|date:"F j, Y" }} - {{ instance.pickup_time
+                                        }}</td>
+                                    <td width="20%" style="font-weight: bold;">LRN NO. / PASSKEY:</td>
+                                    <td width="30%">{{ instance.lrn_number|default:"N/A" }} / {{ instance.passkey }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;">LAST NAME:</td>
+                                    <td style="font-weight: bold; font-size: 13px;">{{ instance.last_name|upper }}</td>
+                                    <td style="font-weight: bold;">TEL No./CP No.:</td>
+                                    <td>{{ instance.phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;">FIRST NAME:</td>
+                                    <td>{{ instance.first_name|upper }}</td>
+                                    <td style="font-weight: bold;">EMAIL ADDRESS:</td>
+                                    <td style="text-transform: none;">{{ instance.email }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;">MIDDLE NAME:</td>
+                                    <td>{{ instance.middle_name|upper|default:"—" }}</td>
+                                    <td style="font-weight: bold;">GRADUATION YEAR:</td>
+                                    <td>{{ instance.year_graduated }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;">STRAND:</td>
+                                    <td>{{ instance.strand|upper }}</td>
+                                    <td style="font-weight: bold;">STATUS:</td>
+                                    <td style="font-weight: bold; color: #154252;">{{ instance.status|upper }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
 
-            <h3
-                style="color: #154252; font-size: 16px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px;">
-                Request Details</h3>
+                    <!-- Statements -->
+                    <tr>
+                        <td style="font-size: 13px; line-height: 1.6; padding-bottom: 15px; text-align: justify;">I
+                            agree to the M.A.R.S Privacy Notice and give my consent to the collection and processing of
+                            my personal data in accordance with the Data Privacy Act of 2012.</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 13px; line-height: 1.6; padding-bottom: 25px; text-align: justify;">I
+                            further attest that all particulars and supporting documents provided by me are correct and
+                            complete. I am aware that any false statement or fraudulent document will lead to the
+                            rejection of my application or to the cancellation of my requested documents, and may also
+                            render me liable under applicable administrative and criminal laws.</td>
+                    </tr>
 
-            <table class="details-table">
-                <tr>
-                    <th>Date Sent</th>
-                    <td>{{ instance.submitted_at|date:"F j, Y, g:i a" }}</td>
-                </tr>
-                <tr>
-                    <th>Email Address</th>
-                    <td>{{ instance.email }}</td>
-                </tr>
-                <tr>
-                    <th>Requested Files</th>
-                    <td>
-                        <ul class="files-list">
-                            {% for file in instance.requested_files %}
-                            <li>{{ file }}</li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                </tr>
-            </table>
+                    <!-- Requested Files Section -->
+                    <tr>
+                        <td>
+                            <div
+                                style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #eeeeee; padding-bottom: 5px; margin-bottom: 10px;">
+                                Requested Documents:</div>
+                            <ul style="font-size: 12px; margin: 0; padding-left: 20px;">
+                                {% for file in instance.requested_files %}<li style="margin-bottom: 5px;">{{ file }}
+                                </li>{% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
 
-            <p style="font-size: 14px; line-height: 1.5; color: #555;">
-                If you have any questions or need to make changes to your request, please contact our administrative
-                office with your request code handy.
-            </p>
-        </div>
-        <div class="footer">
-            <p>&copy; {% now "Y" %} La Union Senior High School. All rights reserved.</p>
-            <p>This is an automated message, please do not reply directly to this email.</p>
-        </div>
-    </div>
+                    <!-- Requirements Section -->
+                    <tr>
+                        <td>
+                            <div
+                                style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #eeeeee; padding-bottom: 5px; margin-top: 20px; margin-bottom: 10px;">
+                                Procedures for Pickup:</div>
+                            <ol style="font-size: 12px; margin: 0; padding-left: 20px;">
+                                <li style="margin-bottom: 8px;">Present a printed copy of this system-generated request
+                                    form at the Registrar Window on your appointment date.</li>
+                                <li style="margin-bottom: 8px;">Bring at least one (1) valid ID for identification and
+                                    verification purposes.</li>
+                                <li style="margin-bottom: 8px;">Proceed to the designated school window for payment and
+                                    processing.</li>
+                                <li style="margin-bottom: 8px;">Wait for the releasing officer to issue the documents
+                                    and sign the log sheet.</li>
+                            </ol>
+                        </td>
+                    </tr>
+
+                    <!-- Footer Note -->
+                    <tr>
+                        <td align="center"
+                            style="font-size: 10px; color: #777777; border-top: 1px solid #eeeeee; padding-top: 15px; margin-top: 30px;">
+                            &copy; {{ instance.submitted_at|date:"Y" }} La Union Senior High School Registrar's Office.
+                            <br />This is a system-generated document. No manual signature is required for electronic
+                            verification.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>

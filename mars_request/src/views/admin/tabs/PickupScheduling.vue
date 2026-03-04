@@ -55,6 +55,7 @@
                 {{ date.day }}
               </span>
               <span v-if="date.isWeekend" class="text-[0.45rem] font-black uppercase text-slate-400 border border-slate-200 px-1 rounded bg-white">Closed</span>
+              <span v-else-if="date.slot?.is_virtual" class="text-[0.45rem] font-black uppercase text-amber-500 border border-amber-100 px-1 rounded bg-amber-50">Default</span>
             </div>
             
             <div v-if="date.slot" class="mt-2 flex flex-col gap-1.5">

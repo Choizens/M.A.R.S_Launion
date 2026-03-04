@@ -94,14 +94,14 @@
                 <td class="px-6 py-3 font-bold text-slate-800 text-xs">{{ doc.document }}</td>
                 <td class="px-6 py-3 text-center font-bold">{{ doc.count }}</td>
                 <td class="px-6 py-3 text-right pr-6 font-mono text-xs text-green-600 font-bold">
-                  \u20b1{{ (doc.count * (doc.price || 0)).toLocaleString() }}
+                  ₱{{ (doc.count * (doc.price || 0)).toLocaleString() }}
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="p-3 bg-slate-50 border-t mt-auto">
-           <p class="text-[0.6rem] text-slate-500 font-bold text-center">Total Estimated Revenue: <span class="text-green-600">\u20b1{{ stats.doc_breakdown?.reduce((acc, d) => acc + (d.count * d.price), 0).toLocaleString() }}</span></p>
+           <p class="text-[0.6rem] text-slate-500 font-bold text-center">Total Estimated Revenue: <span class="text-green-600">₱{{ stats.doc_breakdown?.reduce((acc, d) => acc + (d.count * d.price), 0).toLocaleString() }}</span></p>
         </div>
       </div>
 

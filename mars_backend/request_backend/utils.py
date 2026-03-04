@@ -2,39 +2,41 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
+
 def send_submission_confirmation(file_request):
     """
-    Sends an email to the student confirming their request submission.
-    Includes the passkey for tracking.
+    Sends a rich HTML email to the student confirming their request submission.
+    Includes the Passkey for tracking.
     """
     subject = f"Request Received - M.A.R.S [Passkey: {file_request.passkey}]"
     
-    # Formulate the message
-    message = f"""
-Dear {file_request.first_name} {file_request.last_name},
-
-Thank you for your request. We have received your submission for the following documents:
-{', '.join(file_request.requested_files)}
-
-Your Passkey is: {file_request.passkey}
-Please keep this passkey safe as you will need it to check your request status at: https://mars-launion.vercel.app/
-
-Status: {file_request.status}
-
-Best regards,
-La Union SHS M.A.R.S Team
-    """
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', None) or getattr(settings, 'EMAIL_HOST_USER', None) or 'noreply@mars.gov.ph'
+    print(f"DEBUG: Attempting to send confirmation to {file_request.email} from {from_email}")
     
     try:
-        send_mail(
+        print("DEBUG: Rendering template...")
+        html_content = render_to_string('emails/request_notification.html', {
+            'instance': file_request,
+        })
+        print(f"DEBUG: Template rendered (length: {len(html_content)})")
+        text_content = strip_tags(html_content)
+        
+        email = EmailMultiAlternatives(
             subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [file_request.email],
-            fail_silently=False,
+            text_content,
+            from_email,
+            [file_request.email]
         )
+        email.attach_alternative(html_content, "text/html")
+        print("DEBUG: Email object created, sending...")
+        email.send(fail_silently=False)
+        print(f"Successfully sent confirmation email to {file_request.email}")
     except Exception as e:
-        print(f"Error sending submission confirmation: {e}")
+        import traceback
+        print(f"ERROR: Failed to provide confirmation email: {str(e)}")
+        traceback.print_exc()
 
 def send_request_notification(file_request):
     """
@@ -76,3 +78,42 @@ La Union SHS M.A.R.S Team
         )
     except Exception as e:
         print(f"Error sending request notification: {e}")
+
+def notify_staff_new_request(file_request):
+    """
+    Alerts all staff members when a new request is submitted.
+    """
+    from .models import Staff
+    staff_emails = Staff.objects.filter(is_active=True, is_staff=True).values_list('email', flat=True)
+    
+    if not staff_emails:
+        return
+
+    subject = f"NEW Request Alert: {file_request.first_name} {file_request.last_name}"
+    
+    message = f"""
+Attention Staff,
+
+A new document request has been submitted to M.A.R.S.
+
+APPLICANT: {file_request.first_name} {file_request.last_name}
+STRAND: {file_request.strand}
+DOCUMENTS: {', '.join(file_request.requested_files)}
+PICKUP DATE: {file_request.pickup_date} ({file_request.pickup_time})
+
+Please log in to the Admin Dashboard to review and begin processing this request.
+
+Best regards,
+M.A.R.S Automated System
+    """
+
+    try:
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            list(staff_emails),
+            fail_silently=False,
+        )
+    except Exception as e:
+        print(f"Error notifying staff of new request: {e}")

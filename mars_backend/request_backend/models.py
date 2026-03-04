@@ -103,8 +103,8 @@ class AuditLog(models.Model):
 
 class PickupSlot(models.Model):
     date = models.DateField(unique=True)
-    morning_slots = models.IntegerField(default=10)
-    afternoon_slots = models.IntegerField(default=10)
+    morning_slots = models.IntegerField(default=5)
+    afternoon_slots = models.IntegerField(default=5)
     is_blocked = models.BooleanField(default=False) # For holidays
     reason = models.CharField(max_length=255, blank=True, default='')
 

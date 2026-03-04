@@ -14,7 +14,7 @@ from .serializers import (
 from .models import Staff, FileRequest, AuditLog, PickupSlot, DocumentType, StudentDocument, Strand, ProcessedDocument, Student, StudentMasterDocument
 
 
-from .utils import send_request_notification, send_submission_confirmation
+from .utils import send_request_notification, send_submission_confirmation, notify_staff_new_request
 
 # ── Logging Helper ─────────────────────────────────────────────────────────────
 
@@ -39,6 +39,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 'staff_id': user.staff_id,
                 'department': user.department,
                 'is_admin': user.is_superuser or user.is_staff,
+                'is_superuser': user.is_superuser,
             }
             record_log(user, "User Login", f"User {user.username} logged in successfully.")
         return response
@@ -67,24 +68,16 @@ class FileRequestCreateView(generics.CreateAPIView):
         request_code = self.generate_unique_code()
         instance = serializer.save(request_code=request_code)
         
-        # Send Email Notification
-        subject = 'Your File Request has been Sent'
-        html_content = render_to_string('emails/request_notification.html', {
-            'instance': instance,
-        })
-        text_content = strip_tags(html_content)
+        # Fetch the latest instance from DB to get auto-generated fields (like submitted_at)
+        instance.refresh_from_db()
+        print(f"DEBUG: Processing Request {instance.passkey} for {instance.email}")
         
-        from django.conf import settings
-        email = EmailMultiAlternatives(
-            subject,
-            text_content,
-            settings.EMAIL_HOST_USER,
-            [instance.email]
-        )
-        email.attach_alternative(html_content, "text/html")
-        email.send(fail_silently=False)
         # Send confirmation email immediately after the request is created
         send_submission_confirmation(instance)
+        print(f"DEBUG: Email task triggered for {instance.passkey}")
+        
+        # Notify staff members
+        notify_staff_new_request(instance)
 
 
 class FileRequestLookupView(APIView):
@@ -175,6 +168,10 @@ class AdminDashboardStatsView(APIView):
             many=True
         ).data
 
+        # User counts
+        admin_count = Staff.objects.filter(is_superuser=True).count()
+        staff_count = Staff.objects.filter(is_superuser=False).count()
+
         return Response({
             'total': total,
             'pending': pending,
@@ -182,6 +179,8 @@ class AdminDashboardStatsView(APIView):
             'processing': processing,
             'completed': completed,
             'rejected': rejected,
+            'admin_count': admin_count,
+            'staff_count': staff_count,
             'strand_breakdown': list(strand_data),
             'doc_breakdown': doc_breakdown,
             'monthly_trend': list(monthly_data),
@@ -490,11 +489,56 @@ class AdminPickupSlotDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance.delete()
 
 
-class PublicPickupSlotListView(generics.ListAPIView):
+class PublicPickupSlotListView(APIView):
     """View for students to see available slots on the calendar."""
-    queryset = PickupSlot.objects.filter(is_blocked=False).order_by('date')
-    serializer_class = PickupSlotSerializer
     permission_classes = (AllowAny,)
+
+    def get(self, request):
+        from datetime import date, timedelta
+        
+        # 1. Get existing slots from DB for next 30 days
+        today = date.today()
+        end_date = today + timedelta(days=30)
+        existing_slots = PickupSlot.objects.filter(date__gte=today, date__lte=end_date)
+        
+        # Map them by date for easy lookup
+        slots_map = {s.date: s for s in existing_slots}
+        
+        all_slots_data = []
+        
+        # 2. Iterate for the next 30 days
+        for i in range(31):
+            curr_date = today + timedelta(days=i)
+            # Skip weekends (5=Sat, 6=Sun)
+            if curr_date.weekday() >= 5:
+                continue
+                
+            if curr_date in slots_map:
+                slot = slots_map[curr_date]
+                if not slot.is_blocked:
+                    all_slots_data.append(PickupSlotSerializer(slot).data)
+            else:
+                # 3. Create a "Virtual" slot for weekdays not in DB
+                # These use the default capacity of 5
+                booked_m = FileRequest.objects.filter(pickup_date=curr_date, pickup_time='Morning').count()
+                booked_a = FileRequest.objects.filter(pickup_date=curr_date, pickup_time='Afternoon').count()
+                
+                virtual_slot = {
+                    'id': f"v-{curr_date}",
+                    'date': str(curr_date),
+                    'morning_slots': 5,
+                    'afternoon_slots': 5,
+                    'is_blocked': False,
+                    'reason': '',
+                    'booked_morning': booked_m,
+                    'booked_afternoon': booked_a
+                }
+                all_slots_data.append(virtual_slot)
+        
+        # Sort by date
+        all_slots_data.sort(key=lambda x: x['date'])
+        
+        return Response(all_slots_data)
 
 
 # ── Student Document Management ────────────────────────────────────────────────
@@ -634,11 +678,12 @@ class PublicRecordCheckView(APIView):
             })
 
         # Get names of digitized documents
-        digitized_docs = student.documents.values_list('document_type', flat=True)
+        digitized_docs = list(student.documents.values_list('document_type', flat=True))
         
         return Response({
             'exists': True,
             'has_active_request': False,
             'student_id': student.id,
             'full_name': f"{student.first_name} {student.last_name}",
+            'documents': digitized_docs
         })

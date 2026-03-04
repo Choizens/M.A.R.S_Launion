@@ -192,26 +192,27 @@
             @delete-student="deleteStudent"
           />
 
-          <StaffManagement 
+          <StaffTable 
             v-if="currentView === 'staff_management'"
-            :staffList="staffList"
+            :staffList="staffOnlyUsers"
             :formatDateTime="formatDateTime"
-            @open-staff-modal="openStaffModal()"
-            @edit-staff="openStaffModal"
-            @delete-staff="deleteStaff"
+            @open-modal="openStaffModal(null, false)"
+            @edit="openStaffModal"
+            @delete="deleteStaff"
             @toggle-status="toggleStaffStatus"
           />
 
-          <PickupScheduling 
-            v-if="currentView === 'pickup_scheduling'"
-            :pickupSlots="pickupSlots"
-            :calendarDays="calendarDays"
-            :formatMonthLabel="formatMonthLabel"
-            :formatDate="formatDate"
-            @open-slot-modal="openSlotModal"
-            @prev-month="prevMonth"
-            @next-month="nextMonth"
+          <AdminTable 
+            v-if="currentView === 'admin_management'"
+            :adminList="adminUsers"
+            :formatDateTime="formatDateTime"
+            @open-modal="openStaffModal(null, true)"
+            @edit="openStaffModal"
+            @delete="deleteStaff"
+            @toggle-status="toggleStaffStatus"
           />
+
+
 
           <AdminSettings 
             v-if="currentView === 'admin_settings'"
@@ -262,14 +263,7 @@
       @submit="handleStaffSubmit"
     />
 
-    <SlotModal 
-      :show="showSlotModal"
-      :editingId="editingSlot"
-      :form="slotForm"
-      :submitting="submittingSlot"
-      @close="showSlotModal = false"
-      @submit="handleSlotSubmit"
-    />
+
 
     <DocumentModal 
       :show="showDocModal"
@@ -328,8 +322,8 @@ import logoImg from '@/assets/form_logo.png';
 import DashboardOverview from './tabs/DashboardOverview.vue';
 import RequestsList from './tabs/RequestsList.vue';
 import StudentDirectory from './tabs/StudentDirectory.vue';
-import StaffManagement from './tabs/StaffManagement.vue';
-import PickupScheduling from './tabs/PickupScheduling.vue';
+import StaffTable from './tabs/StaffTable.vue';
+import AdminTable from './tabs/AdminTable.vue';
 import AdminSettings from './tabs/AdminSettings.vue';
 import SystemAuditLogs from './tabs/SystemAuditLogs.vue';
 import StrandSettings from './tabs/StrandSettings.vue';
@@ -338,7 +332,7 @@ import DocumentTypes from './tabs/DocumentTypes.vue';
 // Modal Components
 import RequestDetailModal from './components/RequestDetailModal.vue';
 import StaffModal from './components/StaffModal.vue';
-import SlotModal from './components/SlotModal.vue';
+
 import DocumentModal from './components/DocumentModal.vue';
 import StrandModal from './components/StrandModal.vue';
 import StudentModal from './components/StudentModal.vue';
@@ -347,13 +341,13 @@ import StudentProfileModal from './components/StudentProfileModal.vue';
 // Lucide Icons
 import { 
   Menu as MenuIcon, X as XIcon, LayoutDashboard as DashboardIcon, 
-  List as ListIcon, Users as StudentIcon, User as UserIcon, 
+  List as ListIcon, Users as UsersIcon, User as UserIcon, 
   LogOut as LogOutIcon, Bell as BellIcon, Search as SearchIcon,
   FileText as FileIcon, Clock as ClockIcon, CheckCircle as CheckIcon,
   AlertCircle as AlertIcon, Settings as CogIcon, History as HistoryIcon,
   Activity as ActivityIcon, Copy as CopyIcon, ChevronLeft as ChevronLeftIcon, 
   ChevronRight as ChevronRightIcon, FileStack as DocsIcon, DollarSign as MoneyIcon,
-  Paperclip as AttachmentIcon
+  Paperclip as AttachmentIcon, ShieldCheck as AdminIcon
 } from 'lucide-vue-next';
 
 const router = useRouter();
@@ -391,72 +385,30 @@ const stats = ref({
 });
 const requests = ref([]);
 const staffList = ref([]);
+const adminUsers = computed(() => staffList.value.filter(u => u.is_superuser));
+const staffOnlyUsers = computed(() => staffList.value.filter(u => !u.is_superuser));
 const auditLogs = ref([]);
-const pickupSlots = ref([]);
+const updatingStatus = ref(false);
+const targetStatus = ref('');
+const updateError = ref('');
+
 const docTypes = ref([]);
 const students = ref([]);
 const loadingStats = ref(false);
 const loadingRequests = ref(false);
 const loadingStudents = ref(false);
-
-const currentMonth = ref(new Date());
-
-const calendarDays = computed(() => {
-  const year = currentMonth.value.getFullYear();
-  const month = currentMonth.value.getMonth();
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  
-  const days = [];
-  const startOffset = firstDay.getDay(); // 0(Sun) to 6(Sat)
-  
-  // Padding from prev month
-  for (let i = 0; i < startOffset; i++) {
-    days.push({ date: null, type: 'padding' });
-  }
-  
-  // Actual days
-  for (let d = 1; d <= lastDay.getDate(); d++) {
-    const dateObj = new Date(year, month, d);
-    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const slot = pickupSlots.value.find(s => s.date === dateStr);
-    const dayOfWeek = dateObj.getDay(); // 0 = Sunday, 6 = Saturday
-    
-    days.push({
-      day: d,
-      date: dateStr,
-      type: 'day',
-      isToday: new Date().toDateString() === dateObj.toDateString(),
-      isWeekend: dayOfWeek === 0 || dayOfWeek === 6,
-      slot: slot
-    });
-  }
-  return days;
-});
-
-const prevMonth = () => { currentMonth.value = new Date(currentMonth.value.getFullYear(), currentMonth.value.getMonth() - 1, 1); };
-const nextMonth = () => { currentMonth.value = new Date(currentMonth.value.getFullYear(), currentMonth.value.getMonth() + 1, 1); };
-const formatMonthLabel = computed(() => {
-  return currentMonth.value.toLocaleDateString('en-PH', { month: 'long', year: 'numeric' });
-});
-
 const showModal = ref(false);
 const selectedRequest = ref(null);
-const updatingStatus = ref(false);
-const targetStatus = ref('');
-const updateError = ref('');
+
+
 
 // Staff Modal State
 const showStaffModal = ref(false);
 const editingStaff = ref(null);
 const submittingStaff = ref(false);
-const staffForm = reactive({ username: '', password: '', full_name: '', staff_id: '', department: '', email: '' });
+const staffForm = reactive({ username: '', password: '', full_name: '', staff_id: '', department: '', email: '', is_staff: true, is_superuser: false });
 
-// Slot Modal State
-const showSlotModal = ref(false);
-const editingSlot = ref(null);
-const submittingSlot = ref(false);
-const slotForm = reactive({ date: '', morning_slots: 10, afternoon_slots: 10, is_blocked: false, reason: '' });
+
 
 // Strand Modal State
 const showStrandModal = ref(false);
@@ -516,23 +468,22 @@ let searchTimeout = null;
 const navItems = [
   { id: 'overview', label: 'Dashboard', icon: markRaw(DashboardIcon) },
   { id: 'record_requests', label: 'Request List', icon: markRaw(ListIcon) },
-  { id: 'student_directory', label: 'Student List', icon: markRaw(StudentIcon) },
+  { id: 'student_directory', label: 'Student List', icon: markRaw(UsersIcon) },
   { id: 'strand_settings', label: 'Strand Settings', icon: markRaw(DocsIcon) },
-  { id: 'staff_management', label: 'User Management', icon: markRaw(UserIcon) },
+  { id: 'admin_management', label: 'Administrators', icon: markRaw(AdminIcon) },
+  { id: 'staff_management', label: 'Staff Members', icon: markRaw(UserIcon) },
   { id: 'document_types', label: 'Document Types', icon: markRaw(DocsIcon) },
-  { id: 'pickup_scheduling', label: 'Scheduling', icon: markRaw(ClockIcon) },
   { id: 'audit_logs', label: 'Audit Logs', icon: markRaw(HistoryIcon) },
   { id: 'admin_settings', label: 'Settings', icon: markRaw(CogIcon) },
 ];
 
 const statCards = computed(() => [
   { label: 'Total Requests', value: stats.value.total ?? 0, color: '#00334d', icon: markRaw(FileIcon) },
+  { label: 'Active Admins', value: stats.value.admin_count ?? 0, color: '#b45309', icon: markRaw(AdminIcon) },
+  { label: 'Staff Members', value: stats.value.staff_count ?? 0, color: '#1d4ed8', icon: markRaw(UserIcon) },
   { label: 'Pending', value: stats.value.pending ?? 0, color: '#f59e0b', icon: markRaw(ClockIcon) },
-  { label: 'Processing', value: stats.value.processing ?? 0, color: '#0ea5e9', icon: markRaw(ActivityIcon) },
   { label: 'Approved', value: stats.value.approved ?? 0, color: '#10b981', icon: markRaw(CheckIcon) },
   { label: 'Completed', value: stats.value.completed ?? 0, color: '#8b5cf6', icon: markRaw(CheckIcon) },
-  { label: 'Rejected', value: stats.value.rejected ?? 0, color: '#ef4444', icon: markRaw(AlertIcon) },
-  { label: 'Doc Types', value: docTypes.value.length ?? 0, color: '#004d66', icon: markRaw(DocsIcon) },
 ]);
 
 const statusFilters = [
@@ -580,9 +531,7 @@ const loadAuditLogs = async () => {
   try { const res = await adminService.getAuditLogs(); auditLogs.value = res.data; } catch (err) { console.error('Logs error:', err); }
 };
 
-const loadPickupSlots = async () => {
-  try { const res = await adminService.getSlots(); pickupSlots.value = res.data; } catch (err) { console.error('Slots error:', err); }
-};
+
 
 const loadStrands = async () => {
   try { const res = await adminService.getStrands(); strands.value = res.data; } catch (err) { console.error('Strands error:', err); }
@@ -678,7 +627,7 @@ const toggleStaffStatus = async (staff) => {
   }
 };
 
-const openStaffModal = (stf = null) => {
+const openStaffModal = (stf = null, preferAdmin = false) => {
   editingStaff.value = stf ? stf.id : null;
   if (stf) {
     staffForm.username = stf.username;
@@ -686,9 +635,13 @@ const openStaffModal = (stf = null) => {
     staffForm.staff_id = stf.staff_id;
     staffForm.department = stf.department;
     staffForm.email = stf.email;
+    staffForm.is_staff = stf.is_staff;
+    staffForm.is_superuser = stf.is_superuser;
     staffForm.password = '';
   } else {
     staffForm.username = ''; staffForm.full_name = ''; staffForm.staff_id = ''; staffForm.department = ''; staffForm.password = ''; staffForm.email = '';
+    staffForm.is_staff = true;
+    staffForm.is_superuser = preferAdmin;
   }
   showStaffModal.value = true;
 };
@@ -716,40 +669,7 @@ const deleteStaff = async (id) => {
   try { await adminService.deleteStaff(id); await loadStaffList(); loadAuditLogs(); } catch (err) { alert('Failed to delete staff.'); }
 };
 
-// ── Slot Management ──────────────────────────────────────────────────────────
-const openSlotModal = (slot = null) => {
-  editingSlot.value = slot ? slot.id : null;
-  if (slot) {
-    slotForm.date = slot.date;
-    slotForm.morning_slots = slot.morning_slots;
-    slotForm.afternoon_slots = slot.afternoon_slots;
-    slotForm.is_blocked = slot.is_blocked;
-    slotForm.reason = slot.reason;
-  } else {
-    slotForm.date = ''; slotForm.morning_slots = 10; slotForm.afternoon_slots = 10; slotForm.is_blocked = false; slotForm.reason = '';
-  }
-  showSlotModal.value = true;
-};
 
-const handleSlotSubmit = async () => {
-  submittingSlot.value = true;
-  try {
-    if (editingSlot.value) {
-      await adminService.updateSlot(editingSlot.value, slotForm);
-    } else {
-      await adminService.createSlot(slotForm);
-    }
-    showSlotModal.value = false;
-    await loadPickupSlots();
-    loadAuditLogs();
-  } catch (err) { alert('Error saving pickup slot.'); }
-  finally { submittingSlot.value = false; }
-};
-
-const deleteSlot = async (id) => {
-  if (!confirm('Are you sure you want to remove this pickup slot?')) return;
-  try { await adminService.deleteSlot(id); await loadPickupSlots(); loadAuditLogs(); } catch (err) { alert('Failed to delete slot.'); }
-};
 
 // ── Document Management ──────────────────────────────────────────────────────
 const loadDocTypes = async () => {
@@ -984,9 +904,9 @@ const handleDeleteMasterDoc = async (docId) => {
 
 watch(() => route.params.tab, (v) => {
   if (v === 'record_requests') { loadRequests(); loadDocTypes(); loadStrands(); }
-  if (v === 'staff_management') loadStaffList();
+  if (v === 'staff_management' || v === 'admin_management') loadStaffList();
   if (v === 'audit_logs') loadAuditLogs();
-  if (v === 'pickup_scheduling') loadPickupSlots();
+
   if (v === 'document_types') loadDocTypes();
   if (v === 'strand_settings') loadStrands();
   if (v === 'student_directory') { loadStudents(); loadDocTypes(); }
