@@ -1,20 +1,20 @@
 <template>
   <div>
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-[#00334d]">My Profile</h1>
+      <h1 class="text-2xl font-bold text-[#103059]">My Profile</h1>
       <p class="text-slate-500 text-sm mt-1">Your account information and details.</p>
     </div>
 
     <div class="max-w-xl bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
       <!-- Profile Header -->
-      <div class="bg-gradient-to-r from-[#004d66] to-[#006b8f] px-8 py-10 flex items-center gap-6">
+      <div class="bg-gradient-to-r from-[#103059] to-[#006b8f] px-8 py-10 flex items-center gap-6">
         <div class="w-20 h-20 rounded-full bg-white/20 border-4 border-white/50 flex items-center justify-center text-white text-3xl font-black">
           {{ initials }}
         </div>
         <div>
           <h2 class="text-xl font-bold text-white">{{ user?.full_name || user?.username || 'Staff Member' }}</h2>
           <p class="text-sm text-white/70 mt-0.5">{{ user?.department || 'No Department Assigned' }}</p>
-          <span class="mt-2 inline-block bg-amber-400 text-[#0d324d] text-[0.65rem] font-bold px-2 py-0.5 rounded-full uppercase">Staff</span>
+          <span class="mt-2 inline-block bg-amber-400 text-[#103059] text-[0.65rem] font-bold px-2 py-0.5 rounded-full uppercase">Staff</span>
         </div>
       </div>
 

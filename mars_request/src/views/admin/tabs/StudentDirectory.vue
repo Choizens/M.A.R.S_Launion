@@ -5,7 +5,7 @@
         <h1 class="text-2xl md:text-3xl font-extrabold text-[#333] tracking-tight">Student Directory</h1>
         <p class="text-slate-500 text-sm">Master database of all registered students.</p>
       </div>
-      <button @click="$emit('open-student-modal')" class="px-6 py-2.5 bg-[#ffca28] text-[#0d324d] font-black rounded border-2 border-[#00334d] hover:bg-white transition-all shadow-md flex items-center gap-2">
+      <button @click="$emit('open-student-modal')" class="px-6 py-2.5 bg-[#ffca28] text-[#103059] font-black rounded border-2 border-[#103059] hover:bg-white transition-all shadow-md flex items-center gap-2">
         <component :is="StudentIcon" class="w-5 h-5" /> Add Master Record
       </button>
     </div>
@@ -60,12 +60,12 @@
             <tr v-for="std in students" :key="std.id" class="hover:bg-slate-50 transition-colors">
               <td class="px-6 py-4 border-r border-slate-100">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-full bg-[#00334d] text-[#ffca28] flex items-center justify-center font-black text-xs">
+                  <div class="w-10 h-10 rounded-full bg-[#103059] text-[#ffca28] flex items-center justify-center font-black text-xs">
                     {{ initials(std.first_name, std.last_name) }}
                   </div>
                   <div @click="$emit('open-profile', std)" class="flex flex-col cursor-pointer hover:underline group">
                     <div class="flex items-center gap-2">
-                      <span class="font-bold text-[#00334d] group-hover:text-amber-600">{{ std.first_name }} {{ std.last_name }}</span>
+                      <span class="font-bold text-[#103059] group-hover:text-amber-600">{{ std.first_name }} {{ std.last_name }}</span>
                       <PaperclipIcon v-if="std.documents?.length > 0" class="w-3.5 h-3.5 text-amber-500" title="Has Scanned Documents" />
                     </div>
                     <span class="text-[0.65rem] text-slate-400 font-medium">{{ std.email }}</span>
@@ -76,10 +76,10 @@
               <td class="px-6 py-4 border-r border-slate-100">
                 <span class="text-[0.7rem] font-black text-slate-500 uppercase tracking-tighter">{{ std.strand_display || 'N/A' }}</span>
               </td>
-              <td class="px-6 py-4 text-sm font-black text-[#00334d] border-r border-slate-100">{{ std.year_graduated }}</td>
+              <td class="px-6 py-4 text-sm font-black text-[#103059] border-r border-slate-100">{{ std.year_graduated }}</td>
               <td class="px-6 py-4 text-center">
                 <div class="flex items-center justify-center gap-3">
-                  <button @click="$emit('open-profile', std)" class="px-4 py-1.5 bg-[#00334d] text-white font-bold text-xs rounded hover:bg-[#002233] transition-colors shadow-sm flex items-center gap-2">
+                  <button @click="$emit('open-profile', std)" class="px-4 py-1.5 bg-[#103059] text-white font-bold text-xs rounded hover:bg-[#002233] transition-colors shadow-sm flex items-center gap-2">
                     <UserIcon class="w-3.5 h-3.5" /> View Profile
                   </button>
                   <button @click="$emit('delete-student', std.id)" class="p-1.5 text-red-500 hover:text-white hover:bg-red-500 rounded transition-colors shadow-sm border border-red-200 hover:border-red-500" title="Delete Record">

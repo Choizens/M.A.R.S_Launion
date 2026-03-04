@@ -1,7 +1,7 @@
 <template>
   <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
     <div class="flex items-center justify-between mb-3 border-b border-dashed pb-2 border-slate-200">
-      <span class="text-[#00334d] font-black text-sm">{{ filename }}</span>
+      <span class="text-[#103059] font-black text-sm">{{ filename }}</span>
       <div class="flex gap-2">
          <span v-if="hasMasterScan" class="text-[0.6rem] font-black uppercase px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full border border-blue-200">In Record</span>
          <span v-else class="text-[0.6rem] font-black uppercase px-2 py-0.5 bg-orange-100 text-orange-600 rounded-full border border-orange-200 animate-pulse">Missing Master</span>
@@ -34,7 +34,7 @@
           <button @click="deleteDoc(processedDoc.id)" class="text-[0.6rem] font-bold text-red-500 px-2 py-1 rounded border border-red-200 hover:bg-red-50 transition-colors">X</button>
         </div>
         <div v-else class="mt-1">
-          <label class="cursor-pointer px-3 py-1.5 bg-[#00334d] text-white text-[0.6rem] font-black uppercase rounded hover:bg-[#004d66] transition-colors inline-block" :class="{'opacity-50 cursor-not-allowed': loading}">
+          <label class="cursor-pointer px-3 py-1.5 bg-[#103059] text-white text-[0.6rem] font-black uppercase rounded hover:bg-[#103059] transition-colors inline-block" :class="{'opacity-50 cursor-not-allowed': loading}">
             <input type="file" class="hidden" @change="handleUpload" :disabled="loading" />
             {{ loading ? 'Uploading...' : '⬆ Upload' }}
           </label>

@@ -5,7 +5,7 @@
         <h1 class="text-2xl md:text-3xl font-extrabold text-[#333] tracking-tight">Document Types</h1>
         <p class="text-slate-500 text-sm">Configure available documents, descriptions, and processing fees.</p>
       </div>
-      <button @click="$emit('open-doc-modal')" class="px-6 py-2.5 bg-[#004d66] text-white font-bold rounded hover:bg-[#003d52] transition-colors shadow-md flex items-center gap-2">
+      <button @click="$emit('open-doc-modal')" class="px-6 py-2.5 bg-[#103059] text-white font-bold rounded hover:bg-[#003d52] transition-colors shadow-md flex items-center gap-2">
         <component :is="DocsIcon" class="w-5 h-5" /> Add New Document
       </button>
     </div>
@@ -15,7 +15,7 @@
            class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col group hover:shadow-md transition-all">
         <div class="p-6 flex-grow">
           <div class="flex justify-between items-start mb-4">
-            <div class="p-3 bg-[#00334d]/5 rounded-lg text-[#00334d]">
+            <div class="p-3 bg-[#103059]/5 rounded-lg text-[#103059]">
               <component :is="DocsIcon" class="w-6 h-6" />
             </div>
             <span :class="[
@@ -25,11 +25,11 @@
               {{ doc.is_active ? 'Active' : 'Disabled' }}
             </span>
           </div>
-          <h3 class="font-black text-[#00334d] text-lg mb-2 uppercase tracking-tight">{{ doc.name }}</h3>
+          <h3 class="font-black text-[#103059] text-lg mb-2 uppercase tracking-tight">{{ doc.name }}</h3>
           <p class="text-slate-500 text-xs leading-relaxed mb-4 line-clamp-2 italic">{{ doc.description || 'wala' }}</p>
           
           <div class="flex items-center gap-2 mt-auto">
-            <span class="font-black text-xl text-[#00334d]">₱{{ parseFloat(doc.price).toLocaleString() }}</span>
+            <span class="font-black text-xl text-[#103059]">₱{{ parseFloat(doc.price).toLocaleString() }}</span>
           </div>
         </div>
         <div class="px-6 py-4 bg-slate-50 border-t flex justify-end gap-2">

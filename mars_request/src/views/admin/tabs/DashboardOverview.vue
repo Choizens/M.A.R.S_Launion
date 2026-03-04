@@ -14,7 +14,7 @@
         </div>
         <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">{{ card.label }}</span>
         <div class="flex items-end gap-2">
-          <span class="text-3xl font-black text-[#00334d]">{{ card.value }}</span>
+          <span class="text-3xl font-black text-[#103059]">{{ card.value }}</span>
         </div>
         <div class="w-full h-1 mt-2 rounded-full bg-slate-100 overflow-hidden">
           <div class="h-full rounded-full transition-all duration-1000" :style="{ width: '100%', backgroundColor: card.color }"></div>
@@ -26,7 +26,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-4">
       <!-- Monthly Trend Line Chart -->
       <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 flex flex-col h-80">
-        <h3 class="font-bold text-[#00334d] text-sm uppercase tracking-wide mb-4">Requests Over Time (Last 6 Months)</h3>
+        <h3 class="font-bold text-[#103059] text-sm uppercase tracking-wide mb-4">Requests Over Time (Last 6 Months)</h3>
         <div class="flex-grow flex items-center justify-center relative w-full h-full max-h-full">
           <div v-if="loadingStats" class="text-slate-400">Loading chart...</div>
           <div v-else-if="!monthlyChartData || monthlyChartData.labels.length === 0" class="text-slate-400 italic text-sm">No data available.</div>
@@ -36,7 +36,7 @@
 
       <!-- Strand Breakdown Doughnut Chart -->
       <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 flex flex-col h-80">
-        <h3 class="font-bold text-[#00334d] text-sm uppercase tracking-wide mb-4">Requests by Strand</h3>
+        <h3 class="font-bold text-[#103059] text-sm uppercase tracking-wide mb-4">Requests by Strand</h3>
         <div class="flex-grow flex items-center justify-center relative w-full h-full max-h-full">
           <div v-if="loadingStats" class="text-slate-400">Loading chart...</div>
           <div v-else-if="!strandChartData || strandChartData.labels.length === 0" class="text-slate-400 italic text-sm">No data available.</div>
@@ -52,7 +52,7 @@
       <!-- Upcoming Pickup Slots -->
       <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden flex flex-col">
         <div class="px-6 py-4 bg-slate-50 border-b flex justify-between items-center">
-          <h3 class="font-bold text-[#00334d] text-sm uppercase tracking-wide">Upcoming Pickups</h3>
+          <h3 class="font-bold text-[#103059] text-sm uppercase tracking-wide">Upcoming Pickups</h3>
           <button @click="$emit('change-view', 'pickup_scheduling')" class="text-[0.7rem] font-bold text-cyan-600 hover:underline px-2">Manage</button>
         </div>
         <div v-if="loadingStats" class="p-12 text-center text-slate-400">Loading schedule...</div>
@@ -60,7 +60,7 @@
         <div v-else class="divide-y flex-grow">
           <div v-for="slot in stats.upcoming_slots" :key="slot.id" class="px-6 py-5 hover:bg-slate-50 transition-colors">
             <div class="flex justify-between items-start mb-2">
-               <span class="font-bold text-[#00334d] text-sm">{{ formatDateFull(slot.date) }}</span>
+               <span class="font-bold text-[#103059] text-sm">{{ formatDateFull(slot.date) }}</span>
                <span class="text-[0.65rem] font-black text-slate-500">{{ slot.booked_slots }} / {{ slot.max_slots }}</span>
             </div>
             <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
@@ -76,7 +76,7 @@
       <!-- Popular Documents -->
       <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden flex flex-col">
         <div class="px-6 py-4 bg-slate-50 border-b flex justify-between items-center">
-          <h3 class="font-bold text-[#00334d] text-sm uppercase tracking-wide">Document Popularity</h3>
+          <h3 class="font-bold text-[#103059] text-sm uppercase tracking-wide">Document Popularity</h3>
           <button @click="$emit('change-view', 'document_types')" class="text-[0.7rem] font-bold text-cyan-600 hover:underline px-2">Manage Types</button>
         </div>
         <div v-if="loadingStats" class="p-12 text-center text-slate-400">Loading document stats...</div>
@@ -108,7 +108,7 @@
       <!-- Recent Requests -->
       <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden flex flex-col">
         <div class="px-6 py-4 bg-slate-50 border-b flex justify-between items-center">
-          <h3 class="font-bold text-[#00334d] text-sm uppercase tracking-wide">Recent Submissions</h3>
+          <h3 class="font-bold text-[#103059] text-sm uppercase tracking-wide">Recent Submissions</h3>
           <button @click="$emit('change-view', 'record_requests')" class="text-[0.7rem] font-bold text-cyan-600 hover:underline px-2">View All</button>
         </div>
         <div v-if="loadingStats" class="p-12 text-center text-slate-400">Loading requests...</div>
@@ -122,7 +122,7 @@
               </div>
               <div class="flex flex-col">
                 <div class="flex items-center gap-2">
-                  <span class="font-bold text-sm text-[#00334d] group-hover:text-cyan-600 transition-colors">{{ req.first_name }} {{ req.last_name }}</span>
+                  <span class="font-bold text-sm text-[#103059] group-hover:text-cyan-600 transition-colors">{{ req.first_name }} {{ req.last_name }}</span>
                   <component :is="AttachmentIcon" v-if="req.documents?.length > 0" class="w-3.5 h-3.5 text-amber-500" />
                 </div>
                 <span class="text-[0.7rem] text-slate-500 font-medium">{{ req.strand_display || req.strand || 'No Strand' }} \u00b7 {{ formatDate(req.submitted_at) }}</span>
@@ -169,7 +169,7 @@ const chartOptions = {
   plugins: {
     legend: { display: false },
     tooltip: {
-      backgroundColor: '#00334d',
+      backgroundColor: '#103059',
       titleFont: { size: 13, weight: 'bold' },
       bodyFont: { size: 14, weight: 'bold' },
       padding: 12,
@@ -194,7 +194,7 @@ const pieOptions = {
   maintainAspectRatio: false,
   plugins: {
     legend: { position: 'right', labels: { font: { weight: 'bold', size: 11 }, padding: 20 } },
-    tooltip: { backgroundColor: '#00334d', padding: 12, cornerRadius: 8 }
+    tooltip: { backgroundColor: '#103059', padding: 12, cornerRadius: 8 }
   },
   cutout: '65%'
 };
@@ -225,7 +225,7 @@ const monthlyChartData = computed(() => {
 
 // Vibrant colors for the pie chart
 const strandColors = [
-  '#00334d', // Dark Blue
+  '#103059', // Dark Blue
   '#006080', // Mid Blue
   '#0099cc', // Light Blue
   '#ffca28', // Yellow

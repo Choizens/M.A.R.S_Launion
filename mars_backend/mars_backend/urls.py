@@ -24,5 +24,6 @@ urlpatterns = [
     path('api/', include('request_backend.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Always serve media files in the local development server
+# (Django's runserver handles this safely regardless of DEBUG setting)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

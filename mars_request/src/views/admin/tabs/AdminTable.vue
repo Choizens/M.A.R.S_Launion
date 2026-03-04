@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-6">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
       <h1 class="text-2xl md:text-3xl font-extrabold text-[#333] tracking-tight">Administrator Management</h1>
-      <button @click="$emit('open-modal')" class="px-6 py-2.5 bg-[#004d66] text-white font-bold rounded hover:bg-[#003d52] transition-colors shadow-md flex items-center gap-2">
+      <button @click="$emit('open-modal')" class="px-6 py-2.5 bg-[#103059] text-white font-bold rounded hover:bg-[#003d52] transition-colors shadow-md flex items-center gap-2">
         <component :is="ShieldIcon" class="w-5 h-5" /> Add Admin
       </button>
     </div>
@@ -25,7 +25,7 @@
             <td colspan="7" class="py-20 italic text-slate-400">No administrators found.</td>
           </tr>
           <tr v-for="adm in adminList" :key="adm.id" class="hover:bg-slate-50 transition-colors" :class="{'opacity-60': !adm.is_active}">
-            <td class="px-6 py-4 font-bold text-[#00334d]">
+            <td class="px-6 py-4 font-bold text-[#103059]">
               <div class="flex flex-col">
                 <div class="flex items-center gap-2">
                   <span>{{ adm.full_name }}</span>

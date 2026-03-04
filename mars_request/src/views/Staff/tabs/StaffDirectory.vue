@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-[#00334d]">Staff Directory</h1>
+      <h1 class="text-2xl font-bold text-[#103059]">Staff Directory</h1>
       <p class="text-slate-500 text-sm mt-1">View information about other staff members in your department.</p>
     </div>
 
     <div v-if="loading" class="flex justify-center items-center py-24">
-      <div class="w-10 h-10 border-4 border-[#004d66] border-t-transparent rounded-full animate-spin"></div>
+      <div class="w-10 h-10 border-4 border-[#103059] border-t-transparent rounded-full animate-spin"></div>
     </div>
 
     <div v-else-if="staffList.length === 0" class="text-center py-24 text-slate-400">
@@ -22,7 +22,7 @@
         :key="staff.id"
         class="bg-white rounded-xl shadow-sm border border-slate-100 p-5 flex items-start gap-4 hover:shadow-md transition-shadow"
       >
-        <div class="w-12 h-12 rounded-full bg-[#004d66] text-white flex items-center justify-center text-lg font-bold shrink-0">
+        <div class="w-12 h-12 rounded-full bg-[#103059] text-white flex items-center justify-center text-lg font-bold shrink-0">
           {{ initials(staff.full_name) }}
         </div>
         <div class="min-w-0">

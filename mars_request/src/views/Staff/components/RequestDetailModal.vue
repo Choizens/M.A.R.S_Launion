@@ -1,11 +1,11 @@
 <template>
   <Teleport to="body">
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" @click.self="$emit('close')">
-      <div class="bg-white w-full max-w-2xl rounded-lg shadow-2xl border-4 border-[#00334d] flex flex-col max-h-[95vh] overflow-hidden">
+      <div class="bg-white w-full max-w-2xl rounded-lg shadow-2xl border-4 border-[#103059] flex flex-col max-h-[95vh] overflow-hidden">
         <!-- Header -->
-        <div class="px-8 py-6 bg-[#00334d] text-white flex justify-between items-center shrink-0">
+        <div class="px-8 py-6 bg-[#103059] text-white flex justify-between items-center shrink-0">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded bg-white text-[#00334d] flex items-center justify-center font-black text-lg">
+            <div class="w-12 h-12 rounded bg-white text-[#103059] flex items-center justify-center font-black text-lg">
               {{ initials(request.first_name, request.last_name) }}
             </div>
             <div class="flex flex-col">
@@ -24,7 +24,7 @@
               <div class="p-2 bg-amber-400 rounded text-amber-900"><ClockIcon class="w-6 h-6" /></div>
               <div>
                 <h4 class="text-[0.6rem] font-black text-amber-600 uppercase tracking-widest">Preferred Schedule</h4>
-                <p class="text-sm font-bold text-[#00334d]">{{ formatDate(request.pickup_date) }} @ {{ request.pickup_time || 'No time set' }}</p>
+                <p class="text-sm font-bold text-[#103059]">{{ formatDate(request.pickup_date) }} @ {{ request.pickup_time || 'No time set' }}</p>
               </div>
             </div>
           </div>
@@ -33,16 +33,16 @@
             <div class="flex flex-col gap-4">
               <h3 class="text-[0.7rem] font-black text-slate-400 uppercase tracking-widest border-b pb-1">Academic Info</h3>
               <div class="flex flex-col gap-2">
-                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Graduation Year:</span> <span class="text-sm font-bold text-[#00334d]">{{ request.year_graduated }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Strand:</span> <span class="text-sm font-bold text-[#00334d]">{{ request.strand }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">LRN:</span> <span class="text-sm font-bold text-[#00334d]">{{ request.lrn_number || '—' }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Graduation Year:</span> <span class="text-sm font-bold text-[#103059]">{{ request.year_graduated }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Strand:</span> <span class="text-sm font-bold text-[#103059]">{{ request.strand }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">LRN:</span> <span class="text-sm font-bold text-[#103059]">{{ request.lrn_number || '—' }}</span></div>
               </div>
             </div>
             <div class="flex flex-col gap-4">
               <h3 class="text-[0.7rem] font-black text-slate-400 uppercase tracking-widest border-b pb-1">Contact Info</h3>
               <div class="flex flex-col gap-2">
-                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Email:</span> <span class="text-sm font-bold text-[#00334d] truncate max-w-[150px]">{{ request.email }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Phone:</span> <span class="text-sm font-bold text-[#00334d]">{{ request.phone_number }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Email:</span> <span class="text-sm font-bold text-[#103059] truncate max-w-[150px]">{{ request.email }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Phone:</span> <span class="text-sm font-bold text-[#103059]">{{ request.phone_number }}</span></div>
               </div>
             </div>
           </div>
@@ -64,7 +64,7 @@
           <div class="border-t pt-8 flex flex-col gap-6">
             <div class="flex items-center justify-between p-4 rounded-lg bg-slate-50 border border-slate-200">
                <div class="flex flex-col">
-                  <h4 class="text-sm font-bold text-[#00334d]">Accountability Clearance</h4>
+                  <h4 class="text-sm font-bold text-[#103059]">Accountability Clearance</h4>
                   <p class="text-[0.6rem] text-slate-500 italic uppercase">Verify student obligations</p>
                </div>
                <button @click="toggleAccountability" :class="['px-6 py-2 rounded-full text-[0.65rem] font-black uppercase transition-all border-2', request.no_accountabilities ? 'bg-green-500 border-green-600 text-white shadow-lg' : 'bg-white border-slate-300 text-slate-400 hover:border-red-400']">
@@ -73,7 +73,7 @@
             </div>
 
             <div class="flex flex-col gap-4">
-              <div class="bg-white border-2 border-[#00334d] rounded-xl p-6">
+              <div class="bg-white border-2 border-[#103059] rounded-xl p-6">
                 <!-- Status Logic (Simplified for Component) -->
                  <div class="flex gap-2">
                     <button v-if="request.status === 'Pending' || request.status === 'Needs Verification'" @click="updateStatus('Approved')" class="flex-1 py-4 bg-[#10b981] text-white font-black uppercase rounded-lg shadow-md hover:bg-emerald-600">Approve</button>

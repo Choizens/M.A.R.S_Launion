@@ -20,16 +20,33 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="100%"
                                 style="font-size: 10px; text-transform: uppercase;">
                                 <tr>
-                                    <td width="33%" align="left">REFERENCE: <strong>{{ instance.passkey }}</strong></td>
-                                    <td width="34%" align="center">DATE SENT: <strong>{{ instance.submitted_at|date:"F
-                                            j, Y" }}</strong></td>
-                                    <td width="33%" align="right">APPOINTMENT: <strong>{{ instance.pickup_date|date:"F
-                                            j, Y" }}</strong></td>
+                                    <td width="33%" align="left">PASSKEY: <strong>{{ instance.passkey }}</strong></td>
+                                    <td width="34%" align="center">DATE SENT: <strong>{{ submitted_at_fmt }}</strong>
+                                    </td>
+                                    <td width="33%" align="right">PICKUP DATE: <strong>{{ pickup_date_fmt }}</strong>
+                                    </td>
                                 </tr>
                             </table>
                             <div style="border-bottom: 2px solid #000000; margin-top: 5px; margin-bottom: 15px;"></div>
                         </td>
                     </tr>
+
+                    <!-- Status Message Alert (for updates) -->
+                    {% if status_message %}
+                    <tr>
+                        <td style="padding-bottom: 15px;">
+                            <table border="0" cellpadding="10" cellspacing="0" width="100%"
+                                style="border-radius: 4px; border: 1px solid {% if instance.status == 'Approved' or instance.status == 'Completed' %}#bbf7d0; background-color: #f0fdf4;{% elif instance.status == 'Needs Verification' %}#fed7aa; background-color: #fff7ed;{% elif instance.status == 'Rejected' %}#fecaca; background-color: #fef2f2;{% else %}#e2e8f0; background-color: #f8fafc;{% endif %}">
+                                <tr>
+                                    <td
+                                        style="font-size: 14px; text-align: center; font-weight: bold; color: {% if instance.status == 'Approved' or instance.status == 'Completed' %}#166534;{% elif instance.status == 'Needs Verification' %}#9a3412;{% elif instance.status == 'Rejected' %}#991b1b;{% else %}#334155;{% endif %};">
+                                        {{ status_message }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    {% endif %}
 
                     <!-- Logo and Title Table -->
                     <tr>
@@ -38,15 +55,15 @@
                                 style="border-collapse: collapse; margin-bottom: 20px;">
                                 <tr>
                                     <td width="20%" align="center" style="padding: 10px; background-color: #ffffff;">
-                                        <img src="https://mars-launion.vercel.app/logo.png" alt="LU SHS Logo" width="80"
-                                            style="display: block; margin: 0 auto;" />
+                                        <img src="https://mars-launion.vercel.app/logo-launion%202.png"
+                                            alt="LU SHS Logo" width="80" style="display: block; margin: 0 auto;" />
                                     </td>
                                     <td width="80%" align="center" style="padding: 0;">
                                         <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                             <tr>
                                                 <td align="center"
                                                     style="padding: 10px; font-size: 18px; font-weight: bold; text-transform: uppercase;">
-                                                    Manual and Automated Records System (M.A.R.S)</td>
+                                                    (M.A.R.S)</td>
                                             </tr>
                                             <tr>
                                                 <td align="center"
@@ -66,12 +83,10 @@
                             <table border="0" cellpadding="5" cellspacing="0" width="100%"
                                 style="font-size: 11px; margin-bottom: 20px;">
                                 <tr>
-                                    <td width="20%" style="font-weight: bold;">APPOINTMENT DATE:</td>
-                                    <td width="30%">{{ instance.pickup_date|date:"F j, Y" }} - {{ instance.pickup_time
-                                        }}</td>
-                                    <td width="20%" style="font-weight: bold;">LRN NO. / PASSKEY:</td>
-                                    <td width="30%">{{ instance.lrn_number|default:"N/A" }} / {{ instance.passkey }}
-                                    </td>
+                                    <td width="20%" style="font-weight: bold;">PICKUP SCHEDULE:</td>
+                                    <td width="30%">{{ pickup_date_fmt }} [{{ pickup_time_fmt }}]</td>
+                                    <td width="20%" style="font-weight: bold;">LRN NO.:</td>
+                                    <td width="30%">{{ instance.lrn_number|default:"N/A" }}</td>
                                 </tr>
                                 <tr>
                                     <td style="font-weight: bold;">LAST NAME:</td>
@@ -133,16 +148,22 @@
                         <td>
                             <div
                                 style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #eeeeee; padding-bottom: 5px; margin-top: 20px; margin-bottom: 10px;">
-                                Procedures for Pickup:</div>
+                                Procedures for Pickup:
+                            </div>
                             <ol style="font-size: 12px; margin: 0; padding-left: 20px;">
-                                <li style="margin-bottom: 8px;">Present a printed copy of this system-generated request
-                                    form at the Registrar Window on your appointment date.</li>
-                                <li style="margin-bottom: 8px;">Bring at least one (1) valid ID for identification and
-                                    verification purposes.</li>
-                                <li style="margin-bottom: 8px;">Proceed to the designated school window for payment and
-                                    processing.</li>
-                                <li style="margin-bottom: 8px;">Wait for the releasing officer to issue the documents
-                                    and sign the log sheet.</li>
+                                <li style="margin-bottom: 8px;">
+                                    Arrive at the Registrar Window on your <strong>scheduled date and time</strong>.
+                                </li>
+                                <li style="margin-bottom: 8px;">
+                                    Present your <strong>Unique Pass Key</strong>.
+                                </li>
+                                <li style="margin-bottom: 8px;">
+                                    Settle the required fee at the designated window <strong>(if applicable)</strong>.
+                                </li>
+                                <li style="margin-bottom: 8px;">
+                                    Receive your documents once the staff marks your request as
+                                    <strong>Completed</strong>.
+                                </li>
                             </ol>
                         </td>
                     </tr>
@@ -152,8 +173,6 @@
                         <td align="center"
                             style="font-size: 10px; color: #777777; border-top: 1px solid #eeeeee; padding-top: 15px; margin-top: 30px;">
                             &copy; {{ instance.submitted_at|date:"Y" }} La Union Senior High School Registrar's Office.
-                            <br />This is a system-generated document. No manual signature is required for electronic
-                            verification.
                         </td>
                     </tr>
                 </table>
