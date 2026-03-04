@@ -44,7 +44,7 @@
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <a :href="doc.file" target="_blank" class="px-3 py-1 bg-slate-100 text-slate-600 text-[0.6rem] font-black uppercase rounded hover:bg-slate-200">View</a>
+                  <a :href="getFullUrl(doc.file)" target="_blank" class="px-3 py-1 bg-slate-100 text-slate-600 text-[0.6rem] font-black uppercase rounded hover:bg-slate-200">View</a>
                   <button @click="$emit('delete-doc', doc.id)" class="p-1 px-2 bg-red-50 text-red-600 rounded hover:bg-red-100"><XIcon class="w-4 h-4" /></button>
                 </div>
               </div>
@@ -59,6 +59,7 @@
 <script setup>
 import { X as XIcon, FileText as FileIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { getFullUrl } from '@/services/api';
 
 defineProps({
   show: Boolean,

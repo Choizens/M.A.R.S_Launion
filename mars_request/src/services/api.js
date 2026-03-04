@@ -10,6 +10,23 @@ if (!base_url.includes('/api/')) {
 
 const API_BASE_URL = base_url;
 
+/**
+ * Resolves a backend media URL to a full absolute URL suitable for the browser.
+ * Removes the /api/ prefix from the base URL if necessary.
+ */
+export const getFullUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+
+    // Use API_BASE_URL as a reference but strip the /api/ suffix for media
+    let baseUrl = API_BASE_URL;
+    // Replace trailing /api/ or /api with just /
+    baseUrl = baseUrl.replace(/\/api\/?$/, '/');
+
+    const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
+    return `${baseUrl}${cleanUrl}`;
+};
+
 const apiClient = axios.create({
     baseURL: API_BASE_URL,
     headers: {

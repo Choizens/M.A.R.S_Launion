@@ -167,8 +167,15 @@
                   <div class="flex items-center justify-between px-4 py-2 bg-[#103059] text-white shrink-0">
                     <span class="text-[0.65rem] font-black uppercase tracking-widest truncate">📄 {{ viewingDoc.document_type }}</span>
                     <div class="flex items-center gap-3">
-                      <a :href="getFullUrl(viewingDoc.file)" target="_blank" rel="noopener noreferrer" class="text-amber-300 hover:text-white transition-colors text-[0.65rem] font-black uppercase">↗ Open in New Tab</a>
-                      <button @click="viewingDoc = null" class="text-white opacity-70 hover:opacity-100 transition-opacity text-xs font-black uppercase">✕ Close</button>
+                      <button @click="printDocument(getFullUrl(viewingDoc.file))" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1">
+                        <PrinterIcon class="w-3 h-3" /> Print
+                      </button>
+                      <button @click="downloadDocument(getFullUrl(viewingDoc.file), viewingDoc.document_type)" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1">
+                        <DownloadIcon class="w-3 h-3" /> Download
+                      </button>
+                      <div class="h-3 w-[1px] bg-white/20 mx-1"></div>
+                      <a :href="getFullUrl(viewingDoc.file)" target="_blank" rel="noopener noreferrer" class="text-white hover:text-amber-300 transition-colors text-[0.65rem] font-black uppercase">↗ Full Screen</a>
+                      <button @click="viewingDoc = null" class="text-white opacity-70 hover:opacity-100 transition-opacity text-xs font-black uppercase ml-2">✕ Close</button>
                     </div>
                   </div>
                   <!-- Image viewer -->
@@ -216,9 +223,11 @@
 import { 
   X as XIcon, User as UserIcon, Folder as FolderIcon,
   UploadCloud as UploadCloudIcon, FileText as FileIcon,
-  Eye as EyeIcon, Trash as TrashIcon
+  Eye as EyeIcon, Trash as TrashIcon, Printer as PrinterIcon,
+  Download as DownloadIcon
 } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
+import { getFullUrl } from '@/services/api';
 
 const props = defineProps({
   show: Boolean,
@@ -234,21 +243,37 @@ const fileInput = ref(null);
 const viewingDoc = ref(null);
 defineExpose({ fileInput });
 
-const getFullUrl = (url) => {
-  if (!url) return '';
-  
-  // Consistently use localhost for development to avoid cross-origin issues
-  let finalUrl = url;
-  if (url.startsWith('http')) {
-    finalUrl = url.replace('127.0.0.1', 'localhost');
-    return finalUrl;
+const printDocument = (url) => {
+  if (!url) return;
+  const printWindow = window.open(url, '_blank');
+  if (printWindow) {
+    printWindow.onload = () => {
+      printWindow.print();
+    };
   }
-  
-  let baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/';
-  baseUrl = baseUrl.replace(/\/api\/?$/, '').replace('127.0.0.1', 'localhost');
-  
-  const cleanUrl = url.startsWith('/') ? url : `/${url}`;
-  return `${baseUrl}${cleanUrl}`;
+};
+
+const downloadDocument = async (url, filename) => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    
+    // Extract extension from URL
+    const extension = url.split('.').pop().split(/[?#]/)[0] || 'pdf';
+    link.download = `${filename}.${extension}`;
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error('Download failed:', error);
+    // Fallback if fetch fails (e.g. CORS)
+    window.open(url, '_blank');
+  }
 };
 
 const viewDoc = (doc) => {
