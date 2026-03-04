@@ -87,11 +87,28 @@ class FileRequestLookupView(APIView):
 
     def get(self, request, code, *args, **kwargs):
         try:
-            file_request = FileRequest.objects.get(request_code=code.upper())
-            serializer = FileRequestSerializer(file_request)
+            # Strip whitespace and normalize
+            code = code.strip()
+            print(f"DEBUG LOOKUP: Searching for code='{code}'")
+            
+            # Try passkey first (exact match, case-insensitive), then request_code
+            file_request = FileRequest.objects.filter(passkey__iexact=code).first()
+            if not file_request:
+                file_request = FileRequest.objects.filter(request_code__iexact=code).first()
+            
+            print(f"DEBUG LOOKUP: Found={file_request}")
+            
+            if not file_request:
+                # List all passkeys for debug
+                all_keys = list(FileRequest.objects.values_list('passkey', flat=True))
+                print(f"DEBUG LOOKUP: Available passkeys = {all_keys}")
+                return Response({'error': f'No request found for passkey: {code}'}, status=status.HTTP_404_NOT_FOUND)
+            
+            serializer = FileRequestSerializer(file_request, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except FileRequest.DoesNotExist:
-            return Response({'error': 'Invalid request code. No request found.'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(f"DEBUG LOOKUP ERROR: {str(e)}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, serializer):
         instance = serializer.save()
