@@ -254,9 +254,7 @@ const scrollToSection = (id) => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
-
 .font-caveat {
-  font-family: 'Caveat', cursive;
+  font-family: 'Poppins', sans-serif;
 }
 </style>
