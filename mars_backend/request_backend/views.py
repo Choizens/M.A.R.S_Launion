@@ -50,50 +50,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
-import threading
-from django.db import close_old_connections
-
-def background_process_request(instance_id):
-    """
-    Handles heavy tasks in the background to keep response time low.
-    """
-    close_old_connections()
-    try:
-        from .models import FileRequest, ProcessedDocument
-        from django.core.files.base import ContentFile
-        
-        instance = FileRequest.objects.get(id=instance_id)
-        
-        # 1. Auto-link digitized documents
-        if instance.student:
-            for doc_type_name in instance.requested_files:
-                master_doc = instance.student.documents.filter(document_type__iexact=doc_type_name).first()
-                if master_doc and master_doc.file:
-                    try:
-                        processed_doc = ProcessedDocument(
-                            request=instance,
-                            document_type=doc_type_name,
-                            notes="Automatically attached from digitized master records."
-                        )
-                        # Safe file copying
-                        filename = master_doc.file.name.split('/')[-1]
-                        file_content = master_doc.file.read()
-                        processed_doc.file.save(filename, ContentFile(file_content), save=True)
-                        record_log(None, "Auto-attached Document", f"Attached digitized {doc_type_name} to Request #{instance.id}")
-                    except Exception as e:
-                        print(f"[Auto-attach Error] Request #{instance_id}: {e}")
-        
-        # 2. Send confirmation email
-        try:
-            send_submission_confirmation(instance)
-        except Exception as e:
-            print(f"[Email Error] Background dispatch failed for Request #{instance_id}: {e}")
-            
-    except Exception as e:
-        print(f"[Background Task System Error] Request #{instance_id}: {e}")
-    finally:
-        close_old_connections()
-
 class FileRequestCreateView(generics.CreateAPIView):
     queryset = FileRequest.objects.all()
     serializer_class = FileRequestSerializer
@@ -111,8 +67,24 @@ class FileRequestCreateView(generics.CreateAPIView):
         request_code = self.generate_unique_code()
         instance = serializer.save(request_code=request_code)
         
-        # Dispatch background tasks immediately and return response
-        threading.Thread(target=background_process_request, args=(instance.id,)).start()
+        # Send Email Notification
+        subject = 'Your File Request has been Sent'
+        html_content = render_to_string('emails/request_notification.html', {
+            'instance': instance,
+        })
+        text_content = strip_tags(html_content)
+        
+        from django.conf import settings
+        email = EmailMultiAlternatives(
+            subject,
+            text_content,
+            settings.EMAIL_HOST_USER,
+            [instance.email]
+        )
+        email.attach_alternative(html_content, "text/html")
+        email.send(fail_silently=False)
+        # Send confirmation email immediately after the request is created
+        send_submission_confirmation(instance)
 
 
 class FileRequestLookupView(APIView):
@@ -641,9 +613,6 @@ class PublicRecordCheckView(APIView):
                 'documents': []
             })
 
-        # Get names of digitized documents
-        digitized_docs = list(student.documents.values_list('document_type', flat=True))
-
         # Check for existing requests (Pending, Approved, Needs Verification, Completed)
         # Only 'Rejected' requests allow a new submission. 
         # 'Completed' is blocked because the school has already given the physical file.
@@ -659,13 +628,15 @@ class PublicRecordCheckView(APIView):
                 'has_active_request': True,
                 'active_request_id': active_request.passkey,
                 'message': f'You already have a request that {status_msg} (Passkey: {active_request.passkey}). Duplicate requests are not allowed.',
-                'documents': digitized_docs
+                'documents': []
             })
 
+        # Get names of digitized documents
+        digitized_docs = student.documents.values_list('document_type', flat=True)
+        
         return Response({
             'exists': True,
             'has_active_request': False,
             'student_id': student.id,
             'full_name': f"{student.first_name} {student.last_name}",
-            'documents': digitized_docs
         })
