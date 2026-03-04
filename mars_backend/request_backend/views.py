@@ -69,41 +69,34 @@ class FileRequestCreateView(generics.CreateAPIView):
         
         # Auto-link digitized documents if the student is identified
         if instance.student:
-            for doc_type_name in instance.requested_files:
-                master_doc = instance.student.documents.filter(document_type__iexact=doc_type_name).first()
-                if master_doc:
-                    # Create a ProcessedDocument using the file from StudentMasterDocument
-                    from .models import ProcessedDocument
-                    from django.core.files.base import ContentFile
-                    
-                    processed_doc = ProcessedDocument(
-                        request=instance,
-                        document_type=doc_type_name,
-                        notes="Automatically attached from digitized master records."
-                    )
-                    # Copy the file content
-                    filename = master_doc.file.name.split('/')[-1]
-                    processed_doc.file.save(filename, ContentFile(master_doc.file.read()), save=True)
-                    record_log(None, "Auto-attached Document", f"Attached digitized {doc_type_name} to Request #{instance.id}")
+            try:
+                from .models import ProcessedDocument
+                from django.core.files.base import ContentFile
+                
+                for doc_type_name in instance.requested_files:
+                    master_doc = instance.student.documents.filter(document_type__iexact=doc_type_name).first()
+                    if master_doc and master_doc.file:
+                        try:
+                            processed_doc = ProcessedDocument(
+                                request=instance,
+                                document_type=doc_type_name,
+                                notes="Automatically attached from digitized master records."
+                            )
+                            # Safe file copying
+                            filename = master_doc.file.name.split('/')[-1]
+                            file_content = master_doc.file.read()
+                            processed_doc.file.save(filename, ContentFile(file_content), save=True)
+                            record_log(None, "Auto-attached Document", f"Attached digitized {doc_type_name} to Request #{instance.id}")
+                        except Exception as e:
+                            print(f"[Auto-attach Error] Failed to attach {doc_type_name}: {e}")
+            except Exception as e:
+                print(f"[Auto-attach System Error]: {e}")
 
-        # Send Email Notification
-        subject = 'Your File Request has been Sent'
-        html_content = render_to_string('emails/request_notification.html', {
-            'instance': instance,
-        })
-        text_content = strip_tags(html_content)
-        
-        from django.conf import settings
-        email = EmailMultiAlternatives(
-            subject,
-            text_content,
-            settings.EMAIL_HOST_USER,
-            [instance.email]
-        )
-        email.attach_alternative(html_content, "text/html")
-        email.send(fail_silently=False)
-        # Send confirmation email immediately after the request is created
-        send_submission_confirmation(instance)
+        # Send confirmation email using the utility function (which already handles exceptions)
+        try:
+            send_submission_confirmation(instance)
+        except Exception as e:
+            print(f"[Email Error] perform_create email dispatch failed: {e}")
 
 
 class FileRequestLookupView(APIView):
