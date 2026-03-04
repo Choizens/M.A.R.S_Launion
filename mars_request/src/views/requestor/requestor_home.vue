@@ -683,7 +683,7 @@
                   </div>
 
                   <div v-if="trackedRequest.processed_documents?.find(d => d.document_type === file)">
-                    <a :href="'http://127.0.0.1:8000' + trackedRequest.processed_documents.find(d => d.document_type === file).file"
+                    <a :href="getFullUrl(trackedRequest.processed_documents.find(d => d.document_type === file).file)"
                        target="_blank"
                        class="px-5 py-2 bg-[#154252] text-white text-[0.65rem] font-black uppercase rounded shadow-lg shadow-[#154252]/20 hover:bg-yellow-400 hover:text-[#154252] transition-all flex items-center gap-2">
                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
@@ -810,7 +810,7 @@ import logoImg from '@/assets/logo_launion.svg';
 import logoImgFoot from '@/assets/logo_launion_foot.svg';
 import logo_launion from '@/assets/form_logo.png';
 import sittingPersonImg from '@/assets/sitting_person.png';
-import { requestService, publicService } from '@/services/api';
+import { requestService, publicService, getFullUrl } from '@/services/api';
 
 // Lucide Icons
 import { X as XIcon, CheckCircle as CheckIcon, AlertCircle as AlertIcon, Search as SearchIcon, Calendar as CalendarIcon, Clock as ClockIcon, FileText as FileTextIcon } from 'lucide-vue-next';
