@@ -1026,15 +1026,15 @@ async function handleRecordCheck() {
 
     const res = await publicService.checkRecord(params);
     if (res.data.exists) {
+      availableDocs.value = res.data.documents;
+      form.student = res.data.student_id;
+      
       if (res.data.has_active_request) {
         recordStatus.value = 'duplicate';
         duplicateMessage.value = res.data.message;
-        availableDocs.value = [];
       } else {
         recordStatus.value = 'found';
-        availableDocs.value = res.data.documents;
         duplicateMessage.value = '';
-        form.student = res.data.student_id;
       }
     } else {
       recordStatus.value = 'not_found';
