@@ -1,10 +1,10 @@
 <template>
   <Teleport to="body">
     <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div class="bg-white w-full max-w-5xl rounded-lg shadow-2xl border-4 border-[#00334d] flex flex-col max-h-[95vh] overflow-hidden">
+      <div class="bg-white w-full max-w-5xl rounded-lg shadow-2xl border-4 border-[#103059] flex flex-col max-h-[95vh] overflow-hidden">
         
         <!-- Header -->
-        <div class="px-6 py-4 bg-[#00334d] text-white flex justify-between items-center">
+        <div class="px-6 py-4 bg-[#103059] text-white flex justify-between items-center">
           <div class="flex flex-col">
              <h2 class="font-black uppercase tracking-widest text-sm text-white">Master Student Profile</h2>
              <p class="text-[0.6rem] text-amber-400 font-bold uppercase">{{ student?.lrn_number || 'New Record' }}</p>
@@ -21,12 +21,12 @@
             <div v-if="student" class="flex flex-col gap-5">
               <!-- Minimalist Profile Header -->
               <div class="flex items-center gap-4 bg-[#f8fafc] p-3 rounded-lg border border-slate-200 shadow-sm">
-                 <div class="w-12 h-12 rounded-full bg-[#00334d] text-[#ffca28] flex items-center justify-center font-black text-base shadow-inner border-2 border-slate-100 shrink-0">
+                 <div class="w-12 h-12 rounded-full bg-[#103059] text-[#ffca28] flex items-center justify-center font-black text-base shadow-inner border-2 border-slate-100 shrink-0">
                     {{ initials(student.first_name, student.last_name) }}
                   </div>
                   <div class="flex flex-col min-w-0">
                     <h4 class="text-[0.6rem] font-bold text-amber-600 uppercase tracking-widest leading-none mb-0.5">RECORD ID: #{{ student.id }}</h4>
-                    <span class="text-lg font-black text-[#00334d] leading-none truncate uppercase">{{ student.first_name }} {{ student.last_name }}</span>
+                    <span class="text-lg font-black text-[#103059] leading-none truncate uppercase">{{ student.first_name }} {{ student.last_name }}</span>
                     <span class="text-[0.6rem] font-bold text-slate-400 uppercase tracking-widest mt-1">{{ student.strand_display }} • GRADUATED {{ student.year_graduated }}</span>
                   </div>
               </div>
@@ -37,55 +37,55 @@
                 <!-- LRN -->
                 <div class="flex flex-col">
                   <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">LRN Number</span>
-                  <span class="text-[0.75rem] font-bold text-[#00334d] font-mono select-all">{{ student.lrn_number }}</span>
+                  <span class="text-[0.75rem] font-bold text-[#103059] font-mono select-all">{{ student.lrn_number }}</span>
                 </div>
 
                 <!-- Gender -->
                 <div class="flex flex-col">
                   <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Gender / Sex</span>
-                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.sex || 'Not Specified' }}</span>
+                  <span class="text-[0.75rem] font-bold text-[#103059]">{{ student.sex || 'Not Specified' }}</span>
                 </div>
 
                 <!-- Name Details -->
                 <div class="flex flex-col">
                   <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">First Name</span>
-                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.first_name }}</span>
+                  <span class="text-[0.75rem] font-bold text-[#103059]">{{ student.first_name }}</span>
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Last Name</span>
-                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.last_name }}</span>
+                  <span class="text-[0.75rem] font-bold text-[#103059]">{{ student.last_name }}</span>
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Middle Name</span>
-                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.middle_name || '—' }}</span>
+                  <span class="text-[0.75rem] font-bold text-[#103059]">{{ student.middle_name || '—' }}</span>
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Suffix</span>
-                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.suffix || '—' }}</span>
+                  <span class="text-[0.75rem] font-bold text-[#103059]">{{ student.suffix || '—' }}</span>
                 </div>
 
                 <!-- Academic -->
                 <div class="flex flex-col">
                   <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Strand / Track</span>
-                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.strand_display }}</span>
+                  <span class="text-[0.75rem] font-bold text-[#103059]">{{ student.strand_display }}</span>
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Batch Year</span>
-                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.year_graduated }}</span>
+                  <span class="text-[0.75rem] font-bold text-[#103059]">{{ student.year_graduated }}</span>
                 </div>
 
                 <!-- Contact Info - Compacted -->
                 <div class="flex flex-col col-span-2">
                   <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Email Address</span>
-                  <span class="text-[0.75rem] font-bold text-[#00334d] truncate">{{ student.email }}</span>
+                  <span class="text-[0.75rem] font-bold text-[#103059] truncate">{{ student.email }}</span>
                 </div>
                 <div class="flex flex-col col-span-2">
                   <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Phone Number</span>
-                  <span class="text-[0.75rem] font-bold text-[#00334d]">{{ student.phone_number }}</span>
+                  <span class="text-[0.75rem] font-bold text-[#103059]">{{ student.phone_number }}</span>
                 </div>
                 <div class="flex flex-col col-span-2">
                   <span class="text-[0.55rem] font-black text-slate-400 uppercase tracking-wider">Permanent Address</span>
-                  <span class="text-[0.7rem] font-bold text-[#00334d] leading-tight">{{ student.permanent_address }}</span>
+                  <span class="text-[0.7rem] font-bold text-[#103059] leading-tight">{{ student.permanent_address }}</span>
                 </div>
 
                 <!-- Footer Meta - Very Minimal -->
@@ -107,18 +107,18 @@
             </h3>
 
             <!-- Upload Box -->
-            <div class="bg-[#f8fafc] border-2 border-dashed border-[#cbd5e1] rounded-lg p-5 mb-6 hover:border-[#00334d] transition-colors relative group">
-              <h4 class="text-[0.65rem] font-black text-[#00334d] uppercase mb-3 flex items-center gap-1">
+            <div class="bg-[#f8fafc] border-2 border-dashed border-[#cbd5e1] rounded-lg p-5 mb-6 hover:border-[#103059] transition-colors relative group">
+              <h4 class="text-[0.65rem] font-black text-[#103059] uppercase mb-3 flex items-center gap-1">
                 <UploadCloudIcon class="w-3.5 h-3.5" /> Upload Hardcopy Scan
               </h4>
               <div class="flex flex-col gap-3">
-                <select :value="form.document_type" @change="$emit('update:document_type', $event.target.value)" class="w-full border-2 border-slate-200 px-3 py-2 rounded text-xs font-bold focus:border-[#00334d] outline-none bg-white">
+                <select :value="form.document_type" @change="$emit('update:document_type', $event.target.value)" class="w-full border-2 border-slate-200 px-3 py-2 rounded text-xs font-bold focus:border-[#103059] outline-none bg-white">
                   <option value="" disabled>Select Document Type...</option>
                   <option v-for="doc in docTypes" :key="doc.id" :value="doc.name">{{ doc.name }}</option>
                 </select>
                 <div class="flex items-center gap-2">
-                  <input ref="fileInput" type="file" @change="$emit('file-change', $event)" class="text-xs file:mr-4 file:py-1.5 file:px-4 file:rounded file:border-0 file:text-[0.65rem] file:font-black file:uppercase file:bg-slate-200 file:text-[#00334d] hover:file:bg-slate-300 transition-colors w-full cursor-pointer" />
-                  <button @click="$emit('upload')" :disabled="uploading || !form.document_type" class="px-5 py-2 bg-[#ffca28] text-[#00334d] rounded border-2 border-[#00334d] font-black uppercase tracking-wider text-[0.65rem] hover:bg-white transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                  <input ref="fileInput" type="file" accept=".pdf,.jpg,.jpeg,.png" @change="$emit('file-change', $event)" class="text-xs file:mr-4 file:py-1.5 file:px-4 file:rounded file:border-0 file:text-[0.65rem] file:font-black file:uppercase file:bg-slate-200 file:text-[#103059] hover:file:bg-slate-300 transition-colors w-full cursor-pointer" />
+                  <button @click="$emit('upload')" :disabled="uploading || !form.document_type" class="px-5 py-2 bg-[#ffca28] text-[#103059] rounded border-2 border-[#103059] font-black uppercase tracking-wider text-[0.65rem] hover:bg-white transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
                      {{ uploading ? 'Uploading...' : 'Save File' }}
                   </button>
                 </div>
@@ -133,25 +133,72 @@
                 <p class="text-[0.65rem] text-slate-400 mt-1 max-w-[250px]">Upload scanned master records here to permanently attach them to the student's profile.</p>
               </div>
               
-              <div v-else class="flex overflow-x-auto gap-4 border-t border-slate-100 pt-4 pb-4 custom-scrollbar">
-                <div v-for="doc in student.documents" :key="doc.id" class="flex-shrink-0 w-72 flex flex-col justify-between p-4 bg-[#f8fafc] border-2 border-slate-200 rounded-xl hover:border-[#00334d] hover:bg-white hover:shadow-md transition-all group">
-                  <div class="flex items-center gap-4 mb-4">
-                    <div class="p-3 bg-white border border-slate-200 rounded-lg text-[#00334d] group-hover:bg-[#00334d] group-hover:text-white transition-colors shadow-sm">
-                       <FileIcon class="w-5 h-5" />
+              <div v-else class="flex flex-col gap-3 flex-1 overflow-hidden">
+                <!-- Document Cards -->
+                <div class="flex overflow-x-auto gap-4 border-t border-slate-100 pt-4 pb-2 custom-scrollbar">
+                  <div v-for="doc in student.documents" :key="doc.id" class="flex-shrink-0 w-64 flex flex-col justify-between p-4 bg-[#f8fafc] border-2 border-slate-200 rounded-xl hover:border-[#103059] hover:bg-white hover:shadow-md transition-all group">
+                    <div class="flex items-center gap-3 mb-3">
+                      <div class="p-2.5 bg-white border border-slate-200 rounded-lg text-[#103059] group-hover:bg-[#103059] group-hover:text-white transition-colors shadow-sm">
+                        <FileIcon class="w-4 h-4" />
+                      </div>
+                      <div class="flex flex-col min-w-0">
+                        <span class="font-black text-[#103059] text-[0.75rem] uppercase leading-tight truncate">{{ doc.document_type }}</span>
+                        <span class="text-[0.6rem] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Added {{ formatDate(doc.uploaded_at) }}</span>
+                      </div>
                     </div>
-                    <div class="flex flex-col min-w-0">
-                      <span class="font-black text-[#00334d] text-[0.8rem] uppercase leading-tight truncate">{{ doc.document_type }}</span>
-                      <span class="text-[0.6rem] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Added {{ formatDate(doc.uploaded_at) }}</span>
+                    <div class="flex items-center justify-end gap-2">
+                      <button
+                        @click="viewDoc(doc)"
+                        class="flex-1 flex items-center justify-center gap-1.5 p-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-[#103059] hover:text-white hover:border-[#103059] transition-all shadow-sm text-[0.65rem] font-black uppercase"
+                        title="View Document"
+                      >
+                        <EyeIcon class="w-3.5 h-3.5" />
+                        VIEW
+                      </button>
+                      <button @click="$emit('delete-doc', doc.id)" class="p-2 bg-white border border-red-100 text-red-500 rounded-lg hover:bg-red-500 hover:text-white hover:border-red-500 transition-all shadow-sm" title="Delete Document">
+                        <TrashIcon class="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
-                  <div class="flex items-center justify-end gap-2">
-                    <a :href="doc.file" target="_blank" class="flex-1 flex items-center justify-center gap-2 p-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-[#00334d] hover:text-white hover:border-[#00334d] transition-all shadow-sm text-[0.65rem] font-black uppercase" title="View Document">
-                      <EyeIcon class="w-4 h-4" />
-                      VIEW
-                    </a>
-                    <button @click="$emit('delete-doc', doc.id)" class="p-2 bg-white border border-red-100 text-red-500 rounded-lg hover:bg-red-500 hover:text-white hover:border-red-500 transition-all shadow-sm" title="Delete Document">
-                      <TrashIcon class="w-4 h-4" />
-                    </button>
+                </div>
+
+                <!-- Document Viewer Panel -->
+                <div v-if="viewingDoc" class="flex-1 flex flex-col border-2 border-[#103059] rounded-xl overflow-hidden" style="min-height: 420px;">
+                  <div class="flex items-center justify-between px-4 py-2 bg-[#103059] text-white shrink-0">
+                    <span class="text-[0.65rem] font-black uppercase tracking-widest truncate">📄 {{ viewingDoc.document_type }}</span>
+                    <div class="flex items-center gap-3">
+                      <a :href="getFullUrl(viewingDoc.file)" target="_blank" rel="noopener noreferrer" class="text-amber-300 hover:text-white transition-colors text-[0.65rem] font-black uppercase">↗ Open in New Tab</a>
+                      <button @click="viewingDoc = null" class="text-white opacity-70 hover:opacity-100 transition-opacity text-xs font-black uppercase">✕ Close</button>
+                    </div>
+                  </div>
+                  <!-- Image viewer -->
+                  <img
+                    v-if="viewingDoc.file && (viewingDoc.file.toLowerCase().endsWith('.jpg') || viewingDoc.file.toLowerCase().endsWith('.jpeg') || viewingDoc.file.toLowerCase().endsWith('.png'))"
+                    :key="`img-${viewingDoc.id}`"
+                    :src="getFullUrl(viewingDoc.file)"
+                    class="w-full h-full object-contain bg-slate-100 flex-1"
+                    style="min-height: 380px;"
+                    alt="Document Preview"
+                  />
+                  <!-- PDF viewer -->
+                  <div v-else class="flex-1 w-full bg-slate-100 flex flex-col" style="min-height: 380px;">
+                    <object
+                      :key="`pdf-obj-${viewingDoc.id}`"
+                      :data="getFullUrl(viewingDoc.file)"
+                      type="application/pdf"
+                      class="flex-1 w-full h-full"
+                    >
+                      <iframe
+                        :key="`pdf-ifrm-${viewingDoc.id}`"
+                        :src="getFullUrl(viewingDoc.file)"
+                        class="w-full h-full border-none"
+                      >
+                        <div class="p-10 text-center">
+                          <p class="text-xs font-bold text-slate-500 mb-4 uppercase">PDF Preview not supported by browser</p>
+                          <a :href="getFullUrl(viewingDoc.file)" target="_blank" class="px-4 py-2 bg-[#103059] text-white rounded font-black text-[0.6rem] uppercase">Download to View</a>
+                        </div>
+                      </iframe>
+                    </object>
                   </div>
                 </div>
               </div>
@@ -171,7 +218,7 @@ import {
   UploadCloud as UploadCloudIcon, FileText as FileIcon,
   Eye as EyeIcon, Trash as TrashIcon
 } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
   show: Boolean,
@@ -184,9 +231,36 @@ const props = defineProps({
 });
 
 const fileInput = ref(null);
+const viewingDoc = ref(null);
 defineExpose({ fileInput });
 
+const getFullUrl = (url) => {
+  if (!url) return '';
+  
+  // Consistently use localhost for development to avoid cross-origin issues
+  let finalUrl = url;
+  if (url.startsWith('http')) {
+    finalUrl = url.replace('127.0.0.1', 'localhost');
+    return finalUrl;
+  }
+  
+  let baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/';
+  baseUrl = baseUrl.replace(/\/api\/?$/, '').replace('127.0.0.1', 'localhost');
+  
+  const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+  return `${baseUrl}${cleanUrl}`;
+};
+
+const viewDoc = (doc) => {
+  viewingDoc.value = doc;
+};
+
 const emit = defineEmits(['close', 'upload', 'file-change', 'update:document_type', 'delete-doc', 'edit-student']);
+
+// Reset viewer when modal is closed
+watch(() => props.show, (val) => {
+  if (!val) viewingDoc.value = null;
+});
 </script>
 
 <script>
@@ -208,6 +282,6 @@ export default {
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #00334d;
+  background: #103059;
 }
 </style>

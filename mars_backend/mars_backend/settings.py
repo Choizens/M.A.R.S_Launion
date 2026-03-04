@@ -12,15 +12,11 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
-<<<<<<< HEAD
+from datetime import timedelta
 from dotenv import load_dotenv
 import dj_database_url
 
 load_dotenv()
-=======
-import dj_database_url
-from datetime import timedelta
->>>>>>> a40035b (Update design: yellow tracking section and environment fixes)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -68,8 +64,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'mars_backend.urls'
@@ -179,13 +173,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-<<<<<<< HEAD
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-=======
-EMAIL_HOST_USER = 'dummychan70@gmail.com'
-EMAIL_HOST_PASSWORD = 'xxeu ccbl dbug fwew'
-DEFAULT_FROM_EMAIL = 'dummychan70@gmail.com'
-
->>>>>>> a40035b (Update design: yellow tracking section and environment fixes)

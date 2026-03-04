@@ -1,8 +1,8 @@
 <template>
   <Teleport to="body">
     <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div class="bg-white w-full max-w-2xl rounded-lg shadow-2xl border-4 border-[#00334d] flex flex-col max-h-[90vh] overflow-hidden">
-        <div class="px-6 py-4 bg-[#00334d] text-white flex justify-between items-center">
+      <div class="bg-white w-full max-w-2xl rounded-lg shadow-2xl border-4 border-[#103059] flex flex-col max-h-[90vh] overflow-hidden">
+        <div class="px-6 py-4 bg-[#103059] text-white flex justify-between items-center">
           <div class="flex flex-col">
              <h2 class="font-black uppercase tracking-widest text-sm text-white">Student Document Portal</h2>
              <p class="text-[0.6rem] text-amber-400 font-bold uppercase">{{ student?.first_name }} {{ student?.last_name }}</p>
@@ -15,12 +15,12 @@
           <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
             <h3 class="text-[0.65rem] font-black text-slate-500 uppercase tracking-widest mb-4">Upload New Master Document</h3>
             <div class="flex flex-col md:flex-row gap-3">
-              <select :value="form.document_type" @change="$emit('update:document_type', $event.target.value)" class="flex-1 border px-3 py-2 rounded text-sm focus:border-[#00334d] outline-none bg-white">
+              <select :value="form.document_type" @change="$emit('update:document_type', $event.target.value)" class="flex-1 border px-3 py-2 rounded text-sm focus:border-[#103059] outline-none bg-white">
                 <option value="" disabled>Select Document Type</option>
                 <option v-for="doc in docTypes" :key="doc.id" :value="doc.name">{{ doc.name }}</option>
               </select>
               <input ref="fileInput" type="file" @change="$emit('file-change', $event)" class="text-xs self-center" />
-              <button @click="$emit('upload')" :disabled="uploading" class="px-4 py-2 bg-[#00334d] text-[#ffca28] rounded font-black uppercase text-xs hover:bg-[#004466] disabled:opacity-50">
+              <button @click="$emit('upload')" :disabled="uploading" class="px-4 py-2 bg-[#103059] text-[#ffca28] rounded font-black uppercase text-xs hover:bg-[#004466] disabled:opacity-50">
                  {{ uploading ? 'Uploading...' : 'Upload' }}
               </button>
             </div>
@@ -39,7 +39,7 @@
                      <FileIcon class="w-4 h-4" />
                   </div>
                   <div class="flex flex-col">
-                    <span class="font-bold text-[#00334d] text-sm">{{ doc.document_type }}</span>
+                    <span class="font-bold text-[#103059] text-sm">{{ doc.document_type }}</span>
                     <span class="text-[0.6rem] text-slate-400">{{ formatDate(doc.uploaded_at) }}</span>
                   </div>
                 </div>

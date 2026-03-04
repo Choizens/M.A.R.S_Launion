@@ -26,7 +26,7 @@
           </div>
           <div class="flex flex-col">
             <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">{{ card.label }}</span>
-            <span class="text-3xl font-black text-[#00334d]">{{ card.value }}</span>
+            <span class="text-3xl font-black text-[#103059]">{{ card.value }}</span>
           </div>
         </template>
       </div>
@@ -37,7 +37,7 @@
       <!-- Strand Distribution -->
       <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
         <div class="px-6 py-4 bg-slate-50 border-b">
-          <h3 class="font-bold text-[#00334d] text-sm uppercase tracking-wide">Requests by Strand</h3>
+          <h3 class="font-bold text-[#103059] text-sm uppercase tracking-wide">Requests by Strand</h3>
         </div>
         <div class="p-6">
           <div v-if="loading" class="space-y-5">
@@ -68,7 +68,7 @@
       <!-- Recent High-Priority Requests -->
       <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
         <div class="px-6 py-4 bg-slate-50 border-b">
-          <h3 class="font-bold text-[#00334d] text-sm uppercase tracking-wide">Recent Submissions</h3>
+          <h3 class="font-bold text-[#103059] text-sm uppercase tracking-wide">Recent Submissions</h3>
         </div>
         <div class="divide-y relative min-h-[200px] flex flex-col">
           <template v-if="loading">
@@ -91,12 +91,12 @@
                  @click="$emit('open-request', req)"
                  class="px-6 py-4 flex items-center justify-between hover:bg-slate-50 cursor-pointer transition-colors group">
               <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded bg-[#00334d] text-white flex items-center justify-center font-bold text-xs uppercase">
+                <div class="w-10 h-10 rounded bg-[#103059] text-white flex items-center justify-center font-bold text-xs uppercase">
                   {{ initials(req.first_name, req.last_name) }}
                 </div>
                 <div class="flex flex-col">
                   <div class="flex items-center gap-2">
-                    <span class="font-bold text-sm text-[#00334d] group-hover:text-cyan-600">{{ req.first_name }} {{ req.last_name }}</span>
+                    <span class="font-bold text-sm text-[#103059] group-hover:text-cyan-600">{{ req.first_name }} {{ req.last_name }}</span>
                     <AttachmentIcon v-if="req.documents?.length > 0" class="w-3.5 h-3.5 text-amber-500" />
                   </div>
                   <span class="text-[0.7rem] text-slate-500 font-medium">{{ formatDate(req.submitted_at) }}</span>
@@ -128,7 +128,7 @@ const stats = ref({
 const loading = ref(false);
 
 const statCards = computed(() => [
-  { label: 'Total', value: stats.value.total ?? 0, color: '#00334d', icon: markRaw(FileIcon) },
+  { label: 'Total', value: stats.value.total ?? 0, color: '#103059', icon: markRaw(FileIcon) },
   { label: 'Pending', value: stats.value.pending ?? 0, color: '#f59e0b', icon: markRaw(ClockIcon) },
   { label: 'Missing Record', value: stats.value.needs_verification ?? 0, color: '#f97316', icon: markRaw(AlertIcon) },
   { label: 'Approved', value: stats.value.approved ?? 0, color: '#10b981', icon: markRaw(CheckIcon) },

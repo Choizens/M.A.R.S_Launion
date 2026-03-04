@@ -1,11 +1,11 @@
 <template>
   <Teleport to="body">
     <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" @click.self="$emit('close')">
-      <div class="bg-white w-full max-w-2xl rounded-lg shadow-2xl border-4 border-[#00334d] flex flex-col max-h-[95vh] overflow-hidden">
+      <div class="bg-white w-full max-w-2xl rounded-lg shadow-2xl border-4 border-[#103059] flex flex-col max-h-[95vh] overflow-hidden">
         <!-- Modal Header -->
-        <div class="px-8 py-6 bg-[#00334d] text-white flex justify-between items-center relative overflow-hidden">
+        <div class="px-8 py-6 bg-[#103059] text-white flex justify-between items-center relative overflow-hidden">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded bg-white text-[#00334d] flex items-center justify-center font-black text-lg">
+            <div class="w-12 h-12 rounded bg-white text-[#103059] flex items-center justify-center font-black text-lg">
               {{ request?.first_name[0] }}{{ request?.last_name[0] }}
             </div>
             <div class="flex flex-col">
@@ -26,7 +26,7 @@
               <div class="p-2 bg-amber-400 rounded text-amber-900"><ClockIcon class="w-6 h-6" /></div>
               <div>
                 <h4 class="text-[0.6rem] font-black text-amber-600 uppercase tracking-widest">Preferred Pickup Schedule</h4>
-                <p class="text-sm font-bold text-[#00334d]">{{ formatDate(request.pickup_date) }} @ {{ request.pickup_time || 'No time set' }}</p>
+                <p class="text-sm font-bold text-[#103059]">{{ formatDate(request.pickup_date) }} @ {{ request.pickup_time || 'No time set' }}</p>
               </div>
             </div>
           </div>
@@ -35,17 +35,17 @@
             <div class="flex flex-col gap-4">
               <h3 class="text-[0.7rem] font-black text-slate-400 uppercase tracking-widest border-b pb-1">Profile Information</h3>
               <div class="flex flex-col gap-2">
-                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Graduation Year:</span> <span class="text-sm font-bold text-[#00334d]">{{ request.year_graduated }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Strand:</span> <span class="text-sm font-bold text-[#00334d]">{{ request.strand }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">LRN:</span> <span class="text-sm font-bold text-[#00334d]">{{ request.lrn_number || '\u2014' }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Graduation Year:</span> <span class="text-sm font-bold text-[#103059]">{{ request.year_graduated }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Strand:</span> <span class="text-sm font-bold text-[#103059]">{{ request.strand }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">LRN:</span> <span class="text-sm font-bold text-[#103059]">{{ request.lrn_number || '\u2014' }}</span></div>
               </div>
             </div>
             <div class="flex flex-col gap-4">
               <h3 class="text-[0.7rem] font-black text-slate-400 uppercase tracking-widest border-b pb-1">Contact Info</h3>
               <div class="flex flex-col gap-2">
-                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Email:</span> <span class="text-sm font-bold text-[#00334d]">{{ request.email }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Phone:</span> <span class="text-sm font-bold text-[#00334d]">{{ request.phone_number }}</span></div>
-                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Date Applied:</span> <span class="text-sm font-bold text-[#00334d]">{{ formatDate(request.submitted_at) }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Email:</span> <span class="text-sm font-bold text-[#103059]">{{ request.email }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Phone:</span> <span class="text-sm font-bold text-[#103059]">{{ request.phone_number }}</span></div>
+                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-500">Date Applied:</span> <span class="text-sm font-bold text-[#103059]">{{ formatDate(request.submitted_at) }}</span></div>
               </div>
             </div>
           </div>
@@ -56,7 +56,7 @@
               <div v-for="f in request.requested_files" :key="f" 
                    class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
                 <div class="flex items-center justify-between mb-3 border-b border-dashed pb-2 border-slate-200">
-                  <span class="text-[#00334d] font-black text-xs uppercase tracking-wider">{{ f }}</span>
+                  <span class="text-[#103059] font-black text-xs uppercase tracking-wider">{{ f }}</span>
                   <div class="flex gap-2">
                     <span v-if="request.student_record?.documents?.find(d => d.document_type === f)"
                           class="text-[0.55rem] font-black uppercase px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full border border-blue-200">In Record</span>

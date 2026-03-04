@@ -2,7 +2,7 @@
   <div class="min-h-screen flex flex-col font-sans text-white bg-cover bg-center"
        :style="{ backgroundImage: `url(${bgImg})` }">
     <!-- Navbar -->
-    <nav class="flex flex-col md:flex-row justify-between items-center py-4 px-6 md:px-12 bg-[#0a243a] border-b-2 border-white gap-4 md:gap-0">
+    <nav class="flex flex-col md:flex-row justify-between items-center py-4 px-6 md:px-12 bg-[#103059] border-b-2 border-white gap-4 md:gap-0">
       <div class="flex items-center gap-3">
         <img :src="logoImg" alt="Logo" class="w-8 h-8 object-contain" />
         <span class="font-bold text-sm tracking-tight text-slate-100 italic">La Union Senior High School</span>
@@ -44,23 +44,23 @@
             <h1 class="text-[1.8rem] font-black text-center mb-8 text-[#111827] tracking-wide">LOGIN</h1>
             <form @submit.prevent="handleLogin" class="flex flex-col gap-6">
               <div class="flex flex-col gap-1.5">
-                <label for="username" class="text-[0.85rem] font-semibold text-[#0d324d]">Username <span class="text-red-500">*</span></label>
+                <label for="username" class="text-[0.85rem] font-semibold text-[#103059]">Username <span class="text-red-500">*</span></label>
                 <input 
                   type="text" 
                   id="username" 
                   v-model="username" 
                   required
-                  class="w-full py-2.5 px-3 border border-slate-400 rounded text-[0.95rem] text-slate-800 transition-all duration-200 focus:outline-none focus:border-[#004f71] focus:ring-1 focus:ring-[#004f71]"
+                  class="w-full py-2.5 px-3 border border-slate-400 rounded text-[0.95rem] text-slate-800 transition-all duration-200 focus:outline-none focus:border-[#103059] focus:ring-1 focus:ring-[#103059]"
                 />
               </div>
               <div class="flex flex-col gap-1.5">
-                <label for="password" class="text-[0.85rem] font-semibold text-[#0d324d]">Password <span class="text-red-500">*</span></label>
+                <label for="password" class="text-[0.85rem] font-semibold text-[#103059]">Password <span class="text-red-500">*</span></label>
                 <input 
                   type="password" 
                   id="password" 
                   v-model="password" 
                   required
-                  class="w-full py-2.5 px-3 border border-slate-400 rounded text-[0.95rem] text-slate-800 transition-all duration-200 focus:outline-none focus:border-[#004f71] focus:ring-1 focus:ring-[#004f71]"
+                  class="w-full py-2.5 px-3 border border-slate-400 rounded text-[0.95rem] text-slate-800 transition-all duration-200 focus:outline-none focus:border-[#103059] focus:ring-1 focus:ring-[#103059]"
                 />
               </div>
               
@@ -69,7 +69,7 @@
               </div>
 
               <div class="flex justify-center mt-4">
-                <button type="submit" :disabled="loading" class="w-[140px] py-2.5 px-4 font-bold text-[0.9rem] rounded bg-[#ffca28] hover:bg-[#ffb300] text-[#0d324d] transition-colors disabled:opacity-70 disabled:cursor-not-allowed uppercase tracking-wide">
+                <button type="submit" :disabled="loading" class="w-[140px] py-2.5 px-4 font-bold text-[0.9rem] rounded bg-[#ffca28] hover:bg-[#ffb300] text-[#103059] transition-colors disabled:opacity-70 disabled:cursor-not-allowed uppercase tracking-wide">
                   <span v-if="loading">Logging in...</span>
                   <span v-else>Login</span>
                 </button>

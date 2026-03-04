@@ -3,7 +3,7 @@
   <div class="flex flex-col h-screen bg-[#f5f7fa] font-sans overflow-hidden">
 
     <!-- ===== TOP HEADER (spans full width) ===== -->
-    <header class="h-16 bg-[#004d66] text-white flex items-center justify-between px-4 md:px-8 shadow-md z-50 shrink-0">
+    <header class="h-16 bg-[#103059] text-white flex items-center justify-between px-4 md:px-8 shadow-md z-50 shrink-0">
       <div class="flex items-center gap-3 mr-auto">
         <!-- Burger toggle -->
         <button
@@ -27,7 +27,7 @@
         </div>
         <div class="relative cursor-pointer hover:opacity-80 transition-opacity">
           <BellIcon class="w-6 h-6" />
-          <span v-if="pendingCount > 0" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#004d66]">
+          <span v-if="pendingCount > 0" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#103059]">
             {{ pendingCount }}
           </span>
         </div>
@@ -49,7 +49,7 @@
       <!-- Sidebar -->
       <aside
         :class="[
-          'bg-[#00334d] text-white flex flex-col transition-all duration-300 ease-in-out shadow-xl shrink-0',
+          'bg-[#103059] text-white flex flex-col transition-all duration-300 ease-in-out shadow-xl shrink-0',
           isMobile ? (
             sidebarOpen ? 'fixed top-16 left-0 bottom-0 w-72 translate-x-0 z-40' : 'fixed top-16 left-0 bottom-0 w-72 -translate-x-full z-40'
           ) : (
@@ -66,7 +66,7 @@
               @click="navigateTo(item.id)"
               :class="[
                 'group flex items-center px-4 py-3.5 cursor-pointer transition-colors border-b border-white/5 relative',
-                currentView === item.id ? 'bg-[#ffca28] text-[#0d324d]' : 'hover:bg-white/10'
+                currentView === item.id ? 'bg-[#ffca28] text-[#103059]' : 'hover:bg-white/10'
               ]"
               :title="!sidebarOpen ? item.label : ''"
             >

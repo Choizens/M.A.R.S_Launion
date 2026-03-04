@@ -2,7 +2,7 @@
   <div class="min-h-screen flex flex-col font-sans text-white bg-cover bg-center"
        :style="{ backgroundImage: `url(${bgImg})` }">
     <!-- Navbar -->
-    <nav class="flex flex-col md:flex-row justify-between items-center py-4 px-6 md:px-12 bg-[#0a243a] border-b-2 border-white gap-4 md:gap-0">
+    <nav class="flex flex-col md:flex-row justify-between items-center py-4 px-6 md:px-12 bg-[#103059] border-b-2 border-white gap-4 md:gap-0">
       <div class="flex items-center gap-3">
         <img :src="formLogoImg" alt="Logo" class="w-8 h-8 object-contain" />
         <span class="font-bold text-sm tracking-tight text-slate-100 italic">La Union Senior High School</span>
@@ -48,15 +48,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div class="flex flex-col gap-2">
                 <label for="firstName" class="text-xs font-semibold text-slate-700">First Name <span class="text-red-500">*</span></label>
-                <input type="text" id="firstName" v-model="uiForm.firstName" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#0d324d] focus:ring-2 focus:ring-[#0d324d]/15" />
+                <input type="text" id="firstName" v-model="uiForm.firstName" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#103059] focus:ring-2 focus:ring-[#103059]/15" />
               </div>
               <div class="flex flex-col gap-2">
                 <label for="middleName" class="text-xs font-semibold text-slate-700">Middle Name</label>
-                <input type="text" id="middleName" v-model="uiForm.middleName" class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#0d324d] focus:ring-2 focus:ring-[#0d324d]/15" />
+                <input type="text" id="middleName" v-model="uiForm.middleName" class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#103059] focus:ring-2 focus:ring-[#103059]/15" />
               </div>
               <div class="flex flex-col gap-2">
                 <label for="lastName" class="text-xs font-semibold text-slate-700">Last Name <span class="text-red-500">*</span></label>
-                <input type="text" id="lastName" v-model="uiForm.lastName" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#0d324d] focus:ring-2 focus:ring-[#0d324d]/15" />
+                <input type="text" id="lastName" v-model="uiForm.lastName" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#103059] focus:ring-2 focus:ring-[#103059]/15" />
               </div>
             </div>
 
@@ -64,11 +64,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="flex flex-col gap-2">
                 <label for="email" class="text-xs font-semibold text-slate-700">Email Address <span class="text-red-500">*</span></label>
-                <input type="email" id="email" v-model="form.email" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#0d324d] focus:ring-2 focus:ring-[#0d324d]/15" />
+                <input type="email" id="email" v-model="form.email" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#103059] focus:ring-2 focus:ring-[#103059]/15" />
               </div>
               <div class="flex flex-col gap-2">
                 <label for="username" class="text-xs font-semibold text-slate-700">Username <span class="text-red-500">*</span></label>
-                <input type="text" id="username" v-model="form.username" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#0d324d] focus:ring-2 focus:ring-[#0d324d]/15" />
+                <input type="text" id="username" v-model="form.username" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#103059] focus:ring-2 focus:ring-[#103059]/15" />
               </div>
             </div>
 
@@ -76,15 +76,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div class="flex flex-col gap-2">
                 <label for="staff_id" class="text-xs font-semibold text-slate-700">Staff ID <span class="text-red-500">*</span></label>
-                <input type="text" id="staff_id" v-model="form.staff_id" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#0d324d] focus:ring-2 focus:ring-[#0d324d]/15" />
+                <input type="text" id="staff_id" v-model="form.staff_id" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#103059] focus:ring-2 focus:ring-[#103059]/15" />
               </div>
               <div class="flex flex-col gap-2">
                 <label for="department" class="text-xs font-semibold text-slate-700">Department <span class="text-red-500">*</span></label>
-                <input type="text" id="department" v-model="form.department" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#0d324d] focus:ring-2 focus:ring-[#0d324d]/15" />
+                <input type="text" id="department" v-model="form.department" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#103059] focus:ring-2 focus:ring-[#103059]/15" />
               </div>
               <div class="flex flex-col gap-2">
                 <label for="password" class="text-xs font-semibold text-slate-700">Password <span class="text-red-500">*</span></label>
-                <input type="password" id="password" v-model="form.password" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#0d324d] focus:ring-2 focus:ring-[#0d324d]/15" />
+                <input type="password" id="password" v-model="form.password" required class="p-3 border border-slate-400 rounded text-[0.95rem] transition-all duration-200 focus:outline-none focus:border-[#103059] focus:ring-2 focus:ring-[#103059]/15" />
               </div>
             </div>
             

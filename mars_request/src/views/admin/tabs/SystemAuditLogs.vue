@@ -15,7 +15,7 @@
           <tbody class="divide-y divide-slate-200">
             <tr v-for="log in auditLogs" :key="log.id" class="text-sm hover:bg-slate-50 transition-colors">
               <td class="px-6 py-4 text-slate-500 font-mono text-[0.75rem]">{{ formatDateTime(log.timestamp) }}</td>
-              <td class="px-6 py-4 font-bold text-[#00334d]">{{ log.user_name || 'System' }}</td>
+              <td class="px-6 py-4 font-bold text-[#103059]">{{ log.user_name || 'System' }}</td>
               <td class="px-6 py-4"><span class="px-2 py-1 bg-slate-100 rounded text-[0.65rem] font-bold uppercase tracking-wide">{{ log.action }}</span></td>
               <td class="px-6 py-4 text-slate-600 text-[0.8rem]">{{ log.details }}</td>
             </tr>

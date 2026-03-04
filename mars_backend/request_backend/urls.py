@@ -62,7 +62,7 @@ urlpatterns = [
 
     # Student Management
     path('admin/students/', AdminStudentListView.as_view(), name='admin_students'),
-    path('admin/students/<int:pk>/', AdminStudentDetailView.as_view(), name='admin_student_detail'),
     path('admin/students/<int:student_id>/documents/', AdminStudentMasterDocumentCreateView.as_view(), name='admin_student_master_doc_create'),
+    path('admin/students/<int:pk>/', AdminStudentDetailView.as_view(), name='admin_student_detail'),
     path('admin/student-documents/<int:pk>/', AdminStudentMasterDocumentDeleteView.as_view(), name='admin_student_master_doc_delete'),
 ]

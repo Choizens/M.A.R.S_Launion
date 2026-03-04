@@ -6,16 +6,37 @@ class StudentDocumentSerializer(serializers.ModelSerializer):
         model = StudentDocument
         fields = ['id', 'document_type', 'file', 'uploaded_at']
 
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        request = self.context.get('request')
+        if instance.file and request:
+            ret['file'] = request.build_absolute_uri(instance.file.url)
+        return ret
+
 
 class ProcessedDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProcessedDocument
         fields = ['id', 'document_type', 'file', 'uploaded_at', 'notes']
 
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        request = self.context.get('request')
+        if instance.file and request:
+            ret['file'] = request.build_absolute_uri(instance.file.url)
+        return ret
+
 class StudentMasterDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentMasterDocument
         fields = ['id', 'document_type', 'file', 'uploaded_at']
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        request = self.context.get('request')
+        if instance.file and request:
+            ret['file'] = request.build_absolute_uri(instance.file.url)
+        return ret
 
 class StudentSerializer(serializers.ModelSerializer):
     strand_display = serializers.SerializerMethodField()

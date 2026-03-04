@@ -13,7 +13,7 @@
     <!-- Sidebar -->
     <aside 
       :class="[
-        'bg-[#00334d] text-white flex flex-col transition-all duration-300 ease-in-out z-40 shadow-xl shrink-0',
+        'bg-[#103059] text-white flex flex-col transition-all duration-300 ease-in-out z-40 shadow-xl shrink-0',
         // Mobile: fixed drawer that slides in/out
         isMobile ? (
           sidebarOpen ? 'fixed inset-y-0 left-0 w-72 translate-x-0' : 'fixed inset-y-0 left-0 w-72 -translate-x-full'
@@ -54,7 +54,7 @@
             @click="navigateTo(item.id)"
             :class="[
               'group flex items-center px-4 py-3.5 cursor-pointer transition-colors border-b border-white/5 relative',
-              currentView === item.id ? 'bg-[#ffca28] text-[#0d324d]' : 'hover:bg-white/10'
+              currentView === item.id ? 'bg-[#ffca28] text-[#103059]' : 'hover:bg-white/10'
             ]"
             :title="!sidebarOpen ? item.label : ''"
           >
@@ -108,7 +108,7 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
       <!-- Top Header -->
-      <header class="h-16 bg-[#004d66] text-white flex items-center justify-between px-4 md:px-8 shadow-md z-10 shrink-0">
+      <header class="h-16 bg-[#103059] text-white flex items-center justify-between px-4 md:px-8 shadow-md z-10 shrink-0">
         <div class="flex items-center gap-3">
           <!-- Burger toggle -->
           <button 
@@ -133,7 +133,7 @@
           
           <div class="relative cursor-pointer hover:opacity-80 transition-opacity">
             <BellIcon class="w-6 h-6" />
-            <span v-if="stats.pending > 0" class="absolute -top-1.5 -right-1.5 bg-[#ff4d4d] text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#004d66]">
+            <span v-if="stats.pending > 0" class="absolute -top-1.5 -right-1.5 bg-[#ff4d4d] text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#103059]">
               {{ stats.pending }}
             </span>
           </div>
@@ -417,6 +417,10 @@ const submittingStrand = ref(false);
 const strandForm = reactive({ name: '', description: '' });
 const strands = ref([]);
 
+// Document Modal State
+const showDocModal = ref(false);
+const editingDoc = ref(null);
+const submittingDoc = ref(false);
 const docForm = reactive({ name: '', description: '', price: 0, is_active: true });
 
 // Student Modal State
@@ -447,7 +451,7 @@ const handleVerify = async () => {
   if (!verifyKey.value.trim()) return;
   try {
     const res = await adminService.getRequests({ search: verifyKey.value.trim() });
-    const match = res.data.find(r => r.pass_key === verifyKey.value.trim().toUpperCase());
+    const match = res.data.find(r => r.passkey === verifyKey.value.trim().toUpperCase());
     if (match) {
       openModal(match);
       verifyKey.value = '';
@@ -478,7 +482,7 @@ const navItems = [
 ];
 
 const statCards = computed(() => [
-  { label: 'Total Requests', value: stats.value.total ?? 0, color: '#00334d', icon: markRaw(FileIcon) },
+  { label: 'Total Requests', value: stats.value.total ?? 0, color: '#103059', icon: markRaw(FileIcon) },
   { label: 'Active Admins', value: stats.value.admin_count ?? 0, color: '#b45309', icon: markRaw(AdminIcon) },
   { label: 'Staff Members', value: stats.value.staff_count ?? 0, color: '#1d4ed8', icon: markRaw(UserIcon) },
   { label: 'Pending', value: stats.value.pending ?? 0, color: '#f59e0b', icon: markRaw(ClockIcon) },
