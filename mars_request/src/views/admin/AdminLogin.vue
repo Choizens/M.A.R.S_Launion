@@ -213,8 +213,6 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -224,7 +222,7 @@ const handleLogin = async () => {
 .admin-login-root {
   min-height: 100vh;
   background: #0a0f1a;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   display: flex;
   align-items: stretch;
   position: relative;
@@ -494,7 +492,7 @@ const handleLogin = async () => {
   padding: 13px 44px;
   color: #f1f5f9;
   font-size: 0.9rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   transition: all 0.2s;
   outline: none;
 }
@@ -554,7 +552,7 @@ const handleLogin = async () => {
   border-radius: 12px;
   background: linear-gradient(135deg, #0ea5e9, #6366f1);
   color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
