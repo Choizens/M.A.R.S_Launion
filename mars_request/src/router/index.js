@@ -53,11 +53,6 @@ const router = createRouter({
       component: () => import('../views/Admin/AdminDashboard.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
     },
-    // Catch-all
-    {
-      path: '/:pathMatch(.*)*',
-      redirect: '/Staff/login',
-    },
     {
       path: '/requestor/request-details/:code',
       name: 'request-details',
@@ -67,6 +62,11 @@ const router = createRouter({
       path: '/requestor/find-lrn',
       name: 'find-lrn',
       component: () => import('../views/requestor/Find_lrn.vue'),
+    },
+    // Catch-all
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/Staff/login',
     },
   ],
 })
