@@ -244,72 +244,72 @@
         <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[95vh]">
           
           <!-- Modal Header -->
-          <div class="px-6 md:px-10 pt-8 md:pt-10 pb-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50 relative z-10 backdrop-blur-sm">
+          <div class="px-6 md:px-8 pt-6 md:pt-8 pb-4 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50 relative z-10 backdrop-blur-sm">
             <div>
-              <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">{{ currentStep === 1 ? 'Applicant Details' : 'Request Processing' }}</h2>
-              <div class="mt-2 text-sm text-slate-600 font-medium">
-                <span class="font-bold text-[#154252] uppercase tracking-wider text-xs">Step {{ currentStep }} of 2 &mdash;</span> <span class="hidden xs:inline">Please complete the requested information.</span>
+              <h2 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight">{{ currentStep === 1 ? 'Applicant Details' : 'Request Processing' }}</h2>
+              <div class="mt-1 text-xs text-slate-500 font-medium">
+                <span class="font-bold text-[#154252] uppercase tracking-wider text-[0.65rem]">Step {{ currentStep }} / 2 &mdash;</span> <span class="hidden xs:inline">Please complete the requested information.</span>
               </div>
             </div>
             <!-- Step Indicator -->
             <div class="hidden sm:flex items-center gap-3">
-              <div class="flex items-center justify-center w-10 h-10 rounded-full font-black shadow-sm transition-all duration-300"
+              <div class="flex items-center justify-center w-8 h-8 rounded-full text-xs font-black shadow-sm transition-all duration-300"
                    :class="currentStep >= 1 ? 'bg-[#154252] text-white' : 'bg-slate-200 text-slate-400'">1</div>
-              <div class="w-12 h-1 rounded-full transition-all duration-300"
+              <div class="w-8 h-0.5 rounded-full transition-all duration-300"
                    :class="currentStep >= 2 ? 'bg-[#154252]' : 'bg-slate-200'"></div>
-              <div class="flex items-center justify-center w-10 h-10 rounded-full font-black shadow-sm transition-all duration-300"
+              <div class="flex items-center justify-center w-8 h-8 rounded-full text-xs font-black shadow-sm transition-all duration-300"
                    :class="currentStep >= 2 ? 'bg-amber-400 text-slate-900' : 'bg-slate-200 text-slate-400'">2</div>
             </div>
           </div>
 
           <!-- Modal Body -->
-          <form id="submission-form" ref="requestForm" @submit.prevent="handleSubmit" class="p-6 md:p-8 lg:p-10 flex flex-col gap-6 md:gap-10 flex-1 overflow-y-auto">
+          <form id="submission-form" ref="requestForm" @submit.prevent="handleSubmit" class="p-5 md:p-6 lg:p-8 flex flex-col gap-4 md:gap-6 flex-1 overflow-y-auto">
             
             <!-- STEP 1: Personal & School Information -->
             <div v-show="currentStep === 1" class="flex flex-col gap-6 animate-in fade-in slide-in-from-right-4 duration-500">
 
               <!-- Name Details -->
-              <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h3 class="text-xs font-black text-[#154252] uppercase tracking-widest mb-5 pb-2 border-b border-slate-100">Applicant Name</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-5">
+              <div class="bg-white p-5 rounded-lg border border-slate-200">
+                <h3 class="text-sm font-bold text-slate-700 mb-4 pb-1 border-b border-slate-100">Applicant Name</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
                   <div class="flex flex-col sm:col-span-2 text-left">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">First Name <span class="text-red-500">*</span></label>
-                    <input v-model="form.first_name" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                    <label class="text-xs font-semibold text-slate-500 mb-1">First Name <span class="text-red-500">*</span></label>
+                    <input v-model="form.first_name" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
                   </div>
                   <div class="flex flex-col sm:col-span-2 text-left">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Last Name <span class="text-red-500">*</span></label>
-                    <input v-model="form.last_name" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                    <label class="text-xs font-semibold text-slate-500 mb-1">Last Name <span class="text-red-500">*</span></label>
+                    <input v-model="form.last_name" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
                   </div>
                   <div class="flex flex-col sm:col-span-3 text-left">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Middle Name</label>
-                    <input v-model="form.middle_name" type="text" class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" placeholder="Optional" />
+                    <label class="text-xs font-semibold text-slate-500 mb-1">Middle Name</label>
+                    <input v-model="form.middle_name" type="text" class="w-full bg-white border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" placeholder="Optional" />
                   </div>
                   <div class="flex flex-col sm:col-span-1 text-left">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Suffix</label>
-                    <input v-model="form.suffix" type="text" class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" placeholder="Jr., III..." />
+                    <label class="text-xs font-semibold text-slate-500 mb-1">Suffix</label>
+                    <input v-model="form.suffix" type="text" class="w-full bg-white border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" placeholder="Jr., III..." />
                   </div>
                 </div>
               </div>
 
               <!-- Academic Details -->
-              <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h3 class="text-xs font-black text-[#154252] uppercase tracking-widest mb-5 pb-2 border-b border-slate-100">Personal & Academic Profile</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div class="bg-white p-5 rounded-lg border border-slate-200">
+                <h3 class="text-sm font-bold text-slate-700 mb-4 pb-1 border-b border-slate-100">Personal & Academic Profile</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div class="flex flex-col text-left">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Sex <span class="text-red-500">*</span></label>
-                    <select v-model="form.sex" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors appearance-none cursor-pointer">
+                    <label class="text-xs font-semibold text-slate-500 mb-1">Sex <span class="text-red-500">*</span></label>
+                    <select v-model="form.sex" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors appearance-none cursor-pointer">
                       <option value="" disabled>Select...</option>
                       <option>Male</option>
                       <option>Female</option>
                     </select>
                   </div>
                   <div class="flex flex-col text-left">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Year Graduated <span class="text-red-500">*</span></label>
-                    <input v-model="form.year_graduated" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" placeholder="e.g. 2023" />
+                    <label class="text-xs font-semibold text-slate-500 mb-1">Year Graduated <span class="text-red-500">*</span></label>
+                    <input v-model="form.year_graduated" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" placeholder="e.g. 2023" />
                   </div>
                   <div class="flex flex-col text-left">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Strand <span class="text-red-500">*</span></label>
-                    <select v-model="form.strand_type" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors appearance-none cursor-pointer">
+                    <label class="text-xs font-semibold text-slate-500 mb-1">Strand <span class="text-red-500">*</span></label>
+                    <select v-model="form.strand_type" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors appearance-none cursor-pointer">
                       <option value="" disabled>Select Strand</option>
                       <option v-for="s in strands" :key="s.id" :value="s.id">{{ s.name }}</option>
                     </select>
@@ -318,27 +318,27 @@
               </div>
 
               <!-- Contact & Identity Details -->
-              <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h3 class="text-xs font-black text-[#154252] uppercase tracking-widest mb-5 pb-2 border-b border-slate-100">Contact Information</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div class="bg-white p-5 rounded-lg border border-slate-200">
+                <h3 class="text-sm font-bold text-slate-700 mb-4 pb-1 border-b border-slate-100">Contact Information</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div class="flex flex-col text-left">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">LRN Number <span class="text-[0.55rem] normal-case text-slate-400 font-normal tracking-normal">(Optional)</span></label>
-                    <input v-model="form.lrn_number" type="text" class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                    <label class="text-xs font-semibold text-slate-500 mb-1">LRN Number <span class="text-[0.55rem] normal-case text-slate-400 font-normal tracking-normal">(Optional)</span></label>
+                    <input v-model="form.lrn_number" type="text" class="w-full bg-white border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
                   </div>
                   <div class="hidden sm:block"></div> <!-- Empty column beside LRN -->
                   
                   <div class="flex flex-col text-left">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Phone No. <span class="text-red-500">*</span></label>
-                    <input v-model="form.phone_number" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                    <label class="text-xs font-semibold text-slate-500 mb-1">Phone No. <span class="text-red-500">*</span></label>
+                    <input v-model="form.phone_number" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
                   </div>
                   <div class="flex flex-col text-left">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Active Email <span class="text-red-500">*</span></label>
-                    <input v-model="form.email" type="email" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                    <label class="text-xs font-semibold text-slate-500 mb-1">Active Email <span class="text-red-500">*</span></label>
+                    <input v-model="form.email" type="email" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
                   </div>
-
-                  <div class="flex flex-col sm:col-span-2 text-left mt-2">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Permanent Address <span class="text-red-500">*</span></label>
-                    <input v-model="form.permanent_address" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+ 
+                  <div class="flex flex-col sm:col-span-2 text-left mt-1">
+                    <label class="text-xs font-semibold text-slate-500 mb-1">Permanent Address <span class="text-red-500">*</span></label>
+                    <input v-model="form.permanent_address" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
                   </div>
                 </div>
               </div>
@@ -348,22 +348,22 @@
             <div v-show="currentStep === 2" class="flex flex-col gap-8 animate-in fade-in slide-in-from-right-4 duration-500">
               
               <!-- Record Verification Info -->
-              <div class="p-4 md:p-5 rounded-xl border-2 flex flex-col sm:flex-row items-center justify-between gap-4" 
+              <div class="p-3 md:p-4 rounded-lg border flex flex-col sm:flex-row items-center justify-between gap-4" 
                   :class="recordStatus === 'found' ? 'bg-blue-50 border-blue-200' : 
                           recordStatus === 'duplicate' ? 'bg-amber-50 border-amber-200' :
                           recordStatus === 'not_found' ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-200'">
-                <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-full flex items-center justify-center shadow-md border-2 border-white/50"
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full flex items-center justify-center shadow-sm border border-white/50"
                         :class="recordStatus === 'found' ? 'bg-blue-500 text-white' : 
                                 recordStatus === 'duplicate' ? 'bg-amber-500 text-white' :
                                 recordStatus === 'not_found' ? 'bg-red-500 text-white' : 'bg-slate-400 text-white'">
-                    <CheckIcon v-if="recordStatus === 'found'" class="w-6 h-6" />
-                    <ClockIcon v-else-if="recordStatus === 'duplicate'" class="w-6 h-6" />
-                    <AlertIcon v-else-if="recordStatus === 'not_found'" class="w-6 h-6" />
-                    <SearchIcon v-else class="w-6 h-6" />
+                    <CheckIcon v-if="recordStatus === 'found'" class="w-5 h-5" />
+                    <ClockIcon v-else-if="recordStatus === 'duplicate'" class="w-5 h-5" />
+                    <AlertIcon v-else-if="recordStatus === 'not_found'" class="w-5 h-5" />
+                    <SearchIcon v-else class="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 class="text-sm font-black uppercase tracking-tight"
+                    <h3 class="text-[0.75rem] font-bold uppercase tracking-tight"
                         :class="recordStatus === 'found' ? 'text-blue-900' : 
                                 recordStatus === 'duplicate' ? 'text-amber-900' :
                                 recordStatus === 'not_found' ? 'text-red-900' : 'text-slate-600'">
@@ -371,7 +371,7 @@
                           recordStatus === 'duplicate' ? 'Active Request Exists' :
                           recordStatus === 'not_found' ? 'No Digital Record' : 'Record Check' }}
                     </h3>
-                    <p class="text-[0.65rem] font-medium leading-tight mt-1" 
+                    <p class="text-[0.6rem] font-medium leading-tight mt-0.5" 
                         :class="recordStatus === 'found' ? 'text-blue-700' : 
                                 recordStatus === 'duplicate' ? 'text-amber-700' :
                                 recordStatus === 'not_found' ? 'text-red-700' : 'text-slate-500'">
@@ -379,26 +379,26 @@
                         {{ duplicateMessage }}
                       </template>
                       <template v-else>
-                        {{ recordStatus === 'found' ? 'Master file found. You may proceed.' : recordStatus === 'not_found' ? 'Record missing. Proceed to school office for manual processing.' : 'Type Name/LRN to check system eligibility.' }}
+                        {{ recordStatus === 'found' ? 'Master file found. You may proceed.' : recordStatus === 'not_found' ? 'Record missing. Proceed to school office.' : 'Type Name/LRN to check system eligibility.' }}
                       </template>
                     </p>
                   </div>
                 </div>
-                <div v-if="checkingRecord" class="animate-spin rounded-full h-5 w-5 border-2 border-[#154252] border-t-transparent ml-2"></div>
+                <div v-if="checkingRecord" class="animate-spin rounded-full h-4 w-4 border-2 border-[#154252] border-t-transparent ml-2"></div>
               </div>
 
               <!-- File Selection -->
-              <div class="flex flex-col gap-3 bg-white border border-slate-200 p-5 rounded-xl shadow-sm">
-                <label class="text-xs font-bold text-[#154252] uppercase tracking-wider">Select Documents</label>
+              <div class="flex flex-col gap-3 bg-white border border-slate-200 p-4 rounded-lg">
+                <label class="text-xs font-bold text-slate-700 uppercase tracking-tight">Select Documents</label>
                 <div class="relative">
-                  <select v-model="fileSelectValue" @change="addFile" class="w-full border border-slate-300 rounded-lg px-4 py-3 text-sm text-slate-600 font-medium appearance-none bg-white focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] cursor-pointer shadow-sm">
+                  <select v-model="fileSelectValue" @change="addFile" class="w-full border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-600 font-medium appearance-none bg-white focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] cursor-pointer shadow-sm">
                     <option value="" disabled>Choose a file from available records...</option>
                     <option v-for="d in filteredDocTypes" :key="d.id" :value="d.name">
                       {{ d.name }} — ₱{{ parseFloat(d.price).toLocaleString() }}
                     </option>
                   </select>
                   <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
                   </div>
@@ -427,49 +427,49 @@
               </div>
 
               <!-- Pickup Scheduling -->
-              <div class="p-5 bg-amber-50 rounded-xl border border-amber-200 shadow-inner flex flex-col gap-5">
-                <div class="flex flex-col gap-1">
-                  <h3 class="text-sm font-black text-[#154252] uppercase tracking-tight flex items-center gap-2">
-                    <CalendarIcon class="w-4 h-4 text-amber-500" />
+              <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 flex flex-col gap-4">
+                <div class="flex flex-col gap-0.5">
+                  <h3 class="text-sm font-bold text-[#154252] uppercase tracking-tight flex items-center gap-2">
+                    <CalendarIcon class="w-3.5 h-3.5 text-amber-500" />
                     Pickup Schedule
                   </h3>
-                  <p class="text-[0.65rem] text-amber-800 font-medium">Select a date and timeframe to collect your processed documents from the school office.</p>
+                  <p class="text-[0.6rem] text-amber-800 font-medium font-bold opacity-75">Select a date and timeframe to collect your documents.</p>
                 </div>
                   
                 <div class="flex flex-col gap-5">
                   <!-- Date Calendar Selection -->
                   <div class="flex flex-col gap-2">
-                    <label class="text-[0.65rem] font-black text-[#154252] uppercase tracking-widest border-b border-amber-200 pb-1">Date</label>
-                    <div v-if="loadingSlots" class="flex items-center gap-2 py-3">
-                        <div class="animate-spin rounded-full h-4 w-4 border-2 border-amber-500 border-t-transparent"></div>
-                        <span class="text-xs font-bold text-amber-700 italic">Searching available slots...</span>
+                    <label class="text-[0.6rem] font-bold text-[#154252] uppercase tracking-widest border-b border-amber-200 pb-1">Date</label>
+                    <div v-if="loadingSlots" class="flex items-center gap-2 py-2">
+                        <div class="animate-spin rounded-full h-3 w-3 border-2 border-amber-500 border-t-transparent"></div>
+                        <span class="text-[0.6rem] font-bold text-amber-700 italic">Searching available slots...</span>
                     </div>
-
-                    <div v-else-if="slots.length > 0" class="flex overflow-x-auto gap-2 pb-2 custom-scrollbar">
-                      <button 
-                        v-for="slot in slots" 
-                        :key="slot.id" 
-                        type="button"
-                        @click="handleDateSelect(slot)"
-                        :disabled="slot.booked_morning >= slot.morning_slots && slot.booked_afternoon >= slot.afternoon_slots"
-                        :class="[
-                          'flex-shrink-0 w-20 p-2 rounded-xl border-2 transition-all flex flex-col items-center justify-center gap-1 group relative',
-                          form.pickup_date === slot.date 
-                            ? 'bg-[#154252] border-[#154252] text-white shadow-md' 
-                            : (slot.booked_morning >= slot.morning_slots && slot.booked_afternoon >= slot.afternoon_slots)
-                              ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed opacity-60'
-                              : 'bg-white border-white text-slate-700 hover:border-amber-400 hover:shadow-sm'
-                        ]"
-                      >
-                        <span class="text-[0.55rem] font-black uppercase tracking-widest opacity-80">
-                          {{ new Date(slot.date).toLocaleDateString('en-PH', { month: 'short' }) }}
-                        </span>
-                        <span class="text-xl font-black leading-none my-0.5">
-                          {{ new Date(slot.date).getDate() }}
-                        </span>
-                        <span class="text-[0.5rem] font-bold uppercase tracking-tighter">
-                          {{ new Date(slot.date).toLocaleDateString('en-PH', { weekday: 'short' }) }}
-                        </span>
+ 
+                     <div v-else-if="slots.length > 0" class="flex overflow-x-auto gap-2 pb-2 custom-scrollbar">
+                       <button 
+                         v-for="slot in slots" 
+                         :key="slot.id" 
+                         type="button"
+                         @click="handleDateSelect(slot)"
+                         :disabled="slot.booked_morning >= slot.morning_slots && slot.booked_afternoon >= slot.afternoon_slots"
+                         :class="[
+                           'flex-shrink-0 w-16 p-1.5 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-0.5 group relative',
+                           form.pickup_date === slot.date 
+                             ? 'bg-[#154252] border-[#154252] text-white shadow-sm' 
+                             : (slot.booked_morning >= slot.morning_slots && slot.booked_afternoon >= slot.afternoon_slots)
+                               ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed opacity-60'
+                               : 'bg-white border-white text-slate-700 hover:border-amber-400 hover:shadow-sm'
+                         ]"
+                       >
+                         <span class="text-[0.5rem] font-bold uppercase tracking-widest opacity-80">
+                           {{ new Date(slot.date).toLocaleDateString('en-PH', { month: 'short' }) }}
+                         </span>
+                         <span class="text-lg font-black leading-none">
+                           {{ new Date(slot.date).getDate() }}
+                         </span>
+                         <span class="text-[0.45rem] font-bold uppercase tracking-tighter">
+                           {{ new Date(slot.date).toLocaleDateString('en-PH', { weekday: 'short' }) }}
+                         </span>
                         <!-- Status Badge -->
                         <div class="absolute -top-2 -right-1.5" v-if="slot.booked_morning >= slot.morning_slots && slot.booked_afternoon >= slot.afternoon_slots">
                           <span class="bg-red-500 text-white border-2 border-amber-50 text-[0.45rem] font-black px-1.5 py-0.5 rounded shadow-sm">FULL</span>
@@ -483,31 +483,31 @@
                   </div>
 
                   <!-- Time Slot Selection -->
-                  <div class="flex flex-col gap-2">
-                    <label class="text-[0.65rem] font-black text-[#154252] uppercase tracking-widest border-b border-amber-200 pb-1">Time</label>
-                    <div class="flex gap-2">
-                      <button 
-                        v-for="time in availableTimes" 
-                        :key="time"
-                        type="button"
-                        @click="form.pickup_time = time"
-                        :disabled="isTimeDisabled(time)"
-                        :class="[
-                          'flex-1 py-3 rounded-xl border-2 transition-all flex flex-col items-center justify-center text-center',
-                          isTimeDisabled(time)
-                            ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed opacity-60'
-                            : form.pickup_time === time 
-                              ? 'bg-[#154252] border-[#154252] text-yellow-400 shadow-md' 
-                              : 'bg-white border-white text-slate-600 hover:border-amber-400'
-                        ]"
-                      >
-                        <span class="text-xs font-black uppercase tracking-wide">{{ time }}</span>
-                        <span class="text-[0.6rem] font-bold opacity-80 mt-0.5">
-                          {{ time === 'Morning' ? '8:00 AM - 12:00 PM' : '1:00 PM - 5:00 PM' }}
-                        </span>
-                      </button>
-                    </div>
-                  </div>
+                   <div class="flex flex-col gap-2">
+                     <label class="text-[0.6rem] font-bold text-[#154252] uppercase tracking-widest border-b border-amber-200 pb-1">Time</label>
+                     <div class="flex gap-2">
+                       <button 
+                         v-for="time in availableTimes" 
+                         :key="time"
+                         type="button"
+                         @click="form.pickup_time = time"
+                         :disabled="isTimeDisabled(time)"
+                         :class="[
+                           'flex-1 py-2 rounded-lg border-2 transition-all flex flex-col items-center justify-center text-center',
+                           isTimeDisabled(time)
+                             ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed opacity-60'
+                             : form.pickup_time === time 
+                               ? 'bg-[#154252] border-[#154252] text-yellow-500 shadow-sm' 
+                               : 'bg-white border-white text-slate-600 hover:border-amber-400'
+                         ]"
+                       >
+                         <span class="text-[0.65rem] font-bold uppercase tracking-wide">{{ time }}</span>
+                         <span class="text-[0.55rem] font-medium opacity-80">
+                           {{ time === 'Morning' ? '8:00 AM - 12:00 PM' : '1:00 PM - 5:00 PM' }}
+                         </span>
+                       </button>
+                     </div>
+                   </div>
                 </div>
               </div>
 
@@ -530,13 +530,13 @@
             </div>
             
             <!-- Controls -->
-            <div class="flex gap-4 w-full sm:w-auto">
+            <div class="flex gap-3 w-full sm:w-auto">
               <!-- Actions for Step 1 -->
               <template v-if="currentStep === 1">
-                <button type="button" @click="closeModal" class="flex-1 sm:flex-none px-8 py-2.5 border-2 border-slate-200 text-slate-600 font-bold rounded-lg hover:border-slate-800 hover:text-slate-800 transition-colors">Cancel</button>
-                <button type="button" @click="goToNextStep" class="flex-1 sm:flex-none px-8 py-2.5 bg-[#154252] text-white hover:bg-[#0d2a35] font-black rounded-lg shadow-md transition-all hover:shadow-lg active:scale-95 flex items-center justify-center gap-2">
+                <button type="button" @click="closeModal" class="flex-1 sm:flex-none px-6 py-2 border border-slate-300 text-slate-600 font-bold rounded-md hover:border-slate-800 hover:text-slate-800 transition-colors text-sm">Cancel</button>
+                <button type="button" @click="goToNextStep" class="flex-1 sm:flex-none px-6 py-2 bg-[#154252] text-white hover:bg-[#0d2a35] font-bold rounded-md shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2 text-sm">
                   Next Step
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </button>
@@ -544,13 +544,13 @@
               
               <!-- Actions for Step 2 -->
               <template v-else>
-                <button type="button" @click="currentStep = 1" class="flex-1 sm:flex-none px-8 py-2.5 border-2 border-slate-200 text-slate-600 font-bold rounded-lg hover:border-slate-800 hover:text-slate-800 transition-colors flex items-center justify-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <button type="button" @click="currentStep = 1" class="flex-1 sm:flex-none px-6 py-2 border border-slate-300 text-slate-600 font-bold rounded-md hover:border-slate-800 hover:text-slate-800 transition-colors flex items-center justify-center gap-2 text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                   </svg>
                   Back
                 </button>
-                <button type="submit" form="submission-form" :disabled="submitting || !['found', 'duplicate'].includes(recordStatus)" class="flex-1 sm:flex-none px-8 py-2.5 bg-yellow-400 hover:bg-yellow-500 font-black text-slate-900 rounded-lg shadow-md transition-all hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                <button type="submit" form="submission-form" :disabled="submitting || !['found', 'duplicate'].includes(recordStatus)" class="flex-1 sm:flex-none px-6 py-2 bg-yellow-400 hover:bg-yellow-500 font-bold text-slate-900 rounded-md shadow-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
                   <span v-if="submitting">Submitting...</span>
                   <span v-else-if="recordStatus === 'not_found'">Unavailable</span>
                   <span v-else>Submit Request</span>
