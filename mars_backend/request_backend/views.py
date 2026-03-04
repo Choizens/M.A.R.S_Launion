@@ -632,6 +632,9 @@ class PublicRecordCheckView(APIView):
                 'documents': []
             })
 
+        # Get names of digitized documents
+        digitized_docs = list(student.documents.values_list('document_type', flat=True))
+
         # Check for existing requests (Pending, Approved, Needs Verification, Completed)
         # Only 'Rejected' requests allow a new submission. 
         # 'Completed' is blocked because the school has already given the physical file.
@@ -647,16 +650,13 @@ class PublicRecordCheckView(APIView):
                 'has_active_request': True,
                 'active_request_id': active_request.passkey,
                 'message': f'You already have a request that {status_msg} (Passkey: {active_request.passkey}). Duplicate requests are not allowed.',
-                'documents': []
+                'documents': digitized_docs
             })
 
-        # Get names of digitized documents
-        digitized_docs = student.documents.values_list('document_type', flat=True)
-        
         return Response({
             'exists': True,
             'has_active_request': False,
             'student_id': student.id,
             'full_name': f"{student.first_name} {student.last_name}",
-            'documents': list(digitized_docs)
+            'documents': digitized_docs
         })

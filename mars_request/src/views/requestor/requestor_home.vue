@@ -833,7 +833,7 @@ const form = reactive({
 });
 
 const filteredDocTypes = computed(() => {
-  if (recordStatus.value !== 'found' || !availableDocs.value) return [];
+  if (!['found', 'duplicate'].includes(recordStatus.value) || !availableDocs.value) return [];
   // Only show document types that exist for this student in the master database
   return docTypes.value.filter(dt => Array.isArray(availableDocs.value) && availableDocs.value.includes(dt.name));
 });
