@@ -134,9 +134,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { adminService } from '@/services/api';
 import { Search as SearchIcon, Paperclip as AttachmentIcon, Download as DownloadIcon } from 'lucide-vue-next';
+
+// Props
+const props = defineProps({
+  defaultFilter: { type: String, default: '' }
+});
 
 // Data
 const requests = ref([]);
@@ -270,8 +275,16 @@ const statusClass = (s) => ({
 });
 
 onMounted(() => {
+  if (props.defaultFilter) {
+    statusFilter.value = props.defaultFilter;
+  }
   loadRequests();
   loadStrands();
+});
+
+// Watch for filter changes from sidebar
+watch(() => props.defaultFilter, (newFilter) => {
+  setFilter(newFilter || '');
 });
 
 // Expose refresh function to parent

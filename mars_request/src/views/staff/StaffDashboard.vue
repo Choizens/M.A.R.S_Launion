@@ -63,36 +63,67 @@
             <li
               v-for="item in menuItems"
               :key="item.id"
-              @click="navigateTo(item.id)"
-              :class="[
-                'group flex items-center px-4 py-3.5 cursor-pointer transition-colors border-b border-white/5 relative',
-                currentView === item.id ? 'bg-[#ffca28] text-[#103059]' : 'hover:bg-white/10'
-              ]"
-              :title="!sidebarOpen ? item.label : ''"
             >
+              <!-- Main nav item -->
               <div
-                class="flex items-center min-w-[24px] justify-center shrink-0"
-                :class="!sidebarOpen && !isMobile ? 'mx-auto' : ''"
-              >
-                <component :is="item.icon" class="w-5 h-5 shrink-0" />
-              </div>
-              <span
+                @click="navigateTo(item.id)"
                 :class="[
-                  'ml-4 font-semibold text-sm whitespace-nowrap transition-all duration-200 overflow-hidden',
-                  sidebarOpen ? 'opacity-100 max-w-xs' : 'opacity-0 max-w-0 ml-0'
+                  'group flex items-center px-4 py-3.5 cursor-pointer transition-colors border-b border-white/5 relative',
+                  currentView === item.id && item.id !== 'requests' ? 'bg-[#ffca28] text-[#103059]' :
+                  item.id === 'requests' && currentView === 'requests' ? 'bg-white/10' :
+                  'hover:bg-white/10'
                 ]"
+                :title="!sidebarOpen ? item.label : ''"
               >
-                {{ item.label }}
-              </span>
-              <!-- Pending badge -->
-              <span
-                v-if="sidebarOpen && item.id === 'requests' && pendingCount > 0"
-                class="ml-auto bg-red-500 text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full shrink-0"
-              >
-                {{ pendingCount }}
-              </span>
-              <!-- Active bar for collapsed desktop -->
-              <div v-if="!sidebarOpen && !isMobile && currentView === item.id" class="absolute left-0 top-0 w-1 h-full bg-[#ffca28] rounded-r"></div>
+                <div
+                  class="flex items-center min-w-[24px] justify-center shrink-0"
+                  :class="!sidebarOpen && !isMobile ? 'mx-auto' : ''"
+                >
+                  <component :is="item.icon" class="w-5 h-5 shrink-0" />
+                </div>
+                <span
+                  :class="[
+                    'ml-4 font-semibold text-sm whitespace-nowrap transition-all duration-200 overflow-hidden flex-1',
+                    sidebarOpen ? 'opacity-100 max-w-xs' : 'opacity-0 max-w-0 ml-0'
+                  ]"
+                >
+                  {{ item.label }}
+                </span>
+                <!-- Pending badge -->
+                <span
+                  v-if="sidebarOpen && item.id === 'requests' && pendingCount > 0"
+                  class="bg-red-500 text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full shrink-0 mr-1"
+                >
+                  {{ pendingCount }}
+                </span>
+                <!-- Chevron for Requests -->
+                <span v-if="sidebarOpen && item.id === 'requests'" class="ml-auto shrink-0 text-white/60 text-xs">
+                  {{ requestsOpen ? '▲' : '▼' }}
+                </span>
+                <!-- Active bar for collapsed desktop -->
+                <div v-if="!sidebarOpen && !isMobile && currentView === item.id" class="absolute left-0 top-0 w-1 h-full bg-[#ffca28] rounded-r"></div>
+              </div>
+
+              <!-- Sub-items for Requests -->
+              <transition name="submenu">
+                <ul v-if="item.id === 'requests' && requestsOpen && sidebarOpen" class="flex flex-col bg-black/20">
+                  <li
+                    v-for="sub in requestSubItems"
+                    :key="sub.value"
+                    @click.stop="navigateToFilter(sub.value)"
+                    :class="[
+                      'flex items-center gap-3 pl-12 pr-4 py-2.5 cursor-pointer text-sm transition-colors border-b border-white/5',
+                      activeRequestFilter === sub.value ? 'bg-[#ffca28] text-[#103059] font-black' : 'text-white/70 hover:bg-white/10 hover:text-white'
+                    ]"
+                  >
+                    <span class="text-xs">{{ sub.icon }}</span>
+                    <span class="font-semibold text-sm">{{ sub.label }}</span>
+                    <span v-if="sub.value === 'Pending' && pendingCount > 0" class="ml-auto bg-red-500 text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full">
+                      {{ pendingCount }}
+                    </span>
+                  </li>
+                </ul>
+              </transition>
             </li>
           </ul>
         </nav>
@@ -130,6 +161,7 @@
           <StaffRequests
             v-if="currentView === 'requests'"
             @open-request="openModal"
+            :defaultFilter="activeRequestFilter"
             ref="requestsTab"
           />
           <StaffScheduling
@@ -191,8 +223,36 @@ const handleResize = () => {
 window.addEventListener('resize', handleResize);
 onUnmounted(() => window.removeEventListener('resize', handleResize));
 
+const requestsOpen = ref(false);
+const activeRequestFilter = ref('');
+
+const requestSubItems = [
+  { label: 'Pending',   value: 'Pending',   icon: '🕐' },
+  { label: 'Approved',  value: 'Approved',  icon: '✅' },
+  { label: 'Completed', value: 'Completed', icon: '📦' },
+];
+
 const navigateTo = (id) => {
-  currentView.value = id;
+  if (id === 'requests') {
+    // Toggle sub-menu if already on requests, else navigate and open
+    if (currentView.value === 'requests') {
+      requestsOpen.value = !requestsOpen.value;
+    } else {
+      currentView.value = 'requests';
+      requestsOpen.value = true;
+      activeRequestFilter.value = '';
+    }
+  } else {
+    currentView.value = id;
+    requestsOpen.value = false;
+  }
+  if (isMobile.value) sidebarOpen.value = false;
+};
+
+const navigateToFilter = (filterValue) => {
+  currentView.value = 'requests';
+  activeRequestFilter.value = filterValue;
+  requestsOpen.value = true;
   if (isMobile.value) sidebarOpen.value = false;
 };
 
@@ -263,6 +323,11 @@ onUnmounted(() => {
 /* Mobile backdrop transition */
 .fade-enter-active, .fade-leave-active { transition: opacity 0.25s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+/* Submenu slide transition */
+.submenu-enter-active, .submenu-leave-active { transition: all 0.2s ease; overflow: hidden; }
+.submenu-enter-from, .submenu-leave-to { max-height: 0; opacity: 0; }
+.submenu-enter-to, .submenu-leave-from { max-height: 200px; opacity: 1; }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
