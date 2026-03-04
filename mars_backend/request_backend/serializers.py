@@ -137,6 +137,20 @@ class FileRequestSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
+        # Prevent duplicate active requests on creation
+        if not self.instance:
+            lrn = data.get('lrn_number')
+            email = data.get('email')
+            
+            active_request = FileRequest.objects.filter(
+                email__iexact=email,
+                lrn_number=lrn,
+                status__in=['Pending', 'Approved', 'Processing', 'Needs Verification']
+            ).first()
+            
+            if active_request:
+                raise serializers.ValidationError(f"An active request already exists for this student (Passkey: {active_request.passkey}). Please wait for it to be completed or rejected.")
+
         pickup_date = data.get('pickup_date')
         pickup_time = data.get('pickup_time')
 

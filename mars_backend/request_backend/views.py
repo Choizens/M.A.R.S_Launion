@@ -618,21 +618,15 @@ class PublicRecordCheckView(APIView):
                 'documents': []
             })
 
-        # Check for existing active requests for THIS specific student.
-        # Allow new requests if previous requests are 'Completed' or 'Rejected'
+        # Check for existing requests (Pending, Approved, Processing, Needs Verification)
+        # Only 'Rejected' or 'Completed' requests allow a new submission.
+        # We use both email and LRN to ensure the check is student-specific 
+        # but also matches the notification context as requested.
         active_request = FileRequest.objects.filter(
-            student=student,
-            status__in=['Pending', 'Approved', 'Needs Verification']
+            email__iexact=student.email,
+            lrn_number=student.lrn_number,
+            status__in=['Pending', 'Approved', 'Processing', 'Needs Verification']
         ).first()
-        
-        # Fallback for older database entries that might not have the foreign key linked
-        if not active_request:
-            active_request = FileRequest.objects.filter(
-                email__iexact=student.email,
-                first_name__iexact=student.first_name,
-                last_name__iexact=student.last_name,
-                status__in=['Pending', 'Approved', 'Needs Verification']
-            ).first()
 
         if active_request:
             return Response({
