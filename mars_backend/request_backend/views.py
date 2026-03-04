@@ -67,24 +67,10 @@ class FileRequestCreateView(generics.CreateAPIView):
         request_code = self.generate_unique_code()
         instance = serializer.save(request_code=request_code)
         
-        # Send Email Notification
-        subject = 'Your File Request has been Sent'
-        html_content = render_to_string('emails/request_notification.html', {
-            'instance': instance,
-        })
-        text_content = strip_tags(html_content)
-        
-        from django.conf import settings
-        email = EmailMultiAlternatives(
-            subject,
-            text_content,
-            settings.EMAIL_HOST_USER,
-            [instance.email]
-        )
-        email.attach_alternative(html_content, "text/html")
-        email.send(fail_silently=False)
-        # Send confirmation email immediately after the request is created
+        # Send notifications in the background
+        from .utils import send_submission_confirmation, notify_staff_new_request
         send_submission_confirmation(instance)
+        notify_staff_new_request(instance)
 
 
 class FileRequestLookupView(APIView):
@@ -94,11 +80,12 @@ class FileRequestLookupView(APIView):
 
     def get(self, request, code, *args, **kwargs):
         try:
-            file_request = FileRequest.objects.get(request_code=code.upper())
+            # Search by passkey (e.g. PASS-2026-001) instead of internal request_code
+            file_request = FileRequest.objects.get(passkey__iexact=code.strip())
             serializer = FileRequestSerializer(file_request)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except FileRequest.DoesNotExist:
-            return Response({'error': 'Invalid request code. No request found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'No matching request found for this Passkey.'}, status=status.HTTP_404_NOT_FOUND)
 
     def perform_create(self, serializer):
         instance = serializer.save()
