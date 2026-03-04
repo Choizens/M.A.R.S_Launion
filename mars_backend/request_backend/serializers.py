@@ -79,6 +79,9 @@ class FileRequestSerializer(serializers.ModelSerializer):
             'documents', 'processed_documents'
         ]
         read_only_fields = ['id', 'passkey', 'submitted_at', 'status', 'request_code', 'documents', 'processed_documents', 'strand_display', 'student_record']
+        extra_kwargs = {
+            'strand': {'required': False, 'allow_blank': True}
+        }
 
     def get_student_record(self, obj):
         # 1. If explicitly linked via ForeignKey
@@ -100,13 +103,15 @@ class FileRequestSerializer(serializers.ModelSerializer):
         return None
 
     def validate_email(self, value):
-        if not value.endswith(('.com', '.edu.ph', '.org', '.net')):
-            raise serializers.ValidationError("Please provide a valid email address.")
+        # Basic email check is already handled by EmailField, adding specific logic if needed
+        # We relax the strict suffix check to allow any valid email
         return value
 
     def validate_phone_number(self, value):
-        if not value.isdigit() or len(value) < 10:
-            raise serializers.ValidationError("Please provide a valid phone number (at least 10 digits).")
+        # Relaxed check: Allow digits, plus, hyphens, and parentheses
+        import re
+        if not re.match(r'^[\d\+\-\(\)\s]+$', value) or len(re.sub(r'\D', '', value)) < 7:
+            raise serializers.ValidationError("Please provide a valid phone number.")
         return value
 
 

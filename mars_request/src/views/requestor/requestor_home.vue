@@ -931,13 +931,19 @@ async function handleSubmit() {
     resetForm();
   } catch (err) {
     const data = err.response?.data;
-    if (data && typeof data === 'object' && !Array.isArray(data)) {
-      const firstKey = Object.keys(data)[0];
-      submitError.value = Array.isArray(data[firstKey]) ? data[firstKey][0] : data[firstKey];
+    if (data && typeof data === 'object') {
+      // If it's a validation error (400), format the fields nicely
+      const errors = [];
+      for (const [key, messages] of Object.entries(data)) {
+        const fieldName = key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const message = Array.isArray(messages) ? messages[0] : messages;
+        errors.push(`${fieldName}: ${message}`);
+      }
+      submitError.value = errors.join(' | ');
     } else if (typeof data === 'string') {
-      submitError.value = 'An error occurred on the server. Please try again later.';
+      submitError.value = data;
     } else {
-      submitError.value = 'Something went wrong. Please try again.';
+      submitError.value = 'Something went wrong. Please check your information and try again.';
     }
   } finally {
     submitting.value = false;
