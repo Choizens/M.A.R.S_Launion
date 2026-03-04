@@ -33,6 +33,9 @@ class Command(BaseCommand):
             ("Certificate of Good Moral", "Character verification", 75.00),
             ("Transcript of Records", "Detailed academic records", 100.00),
             ("Certification of Enrollment", "Proof of current status", 30.00),
+            ("Graduation Certificate", "Official proof of graduation", 50.00),
+            ("Honorable Dismissal", "Transfer credential", 100.00),
+            ("CAV (Certification, Authentication, Verification)", "For DFA/Abroad use", 200.00),
         ]
         doc_type_objs = []
         for name, desc, price in docs_data:
@@ -43,7 +46,7 @@ class Command(BaseCommand):
             doc_type_objs.append(doc_type)
             if created: self.stdout.write(f"Created DocumentType: {name}")
 
-        # 3. Staff
+        # ... (Staff seeding) ...
         staff_data = [
             ('registrar_user', 'reg123!', 'registrar@example.com', 'S-2024-010', 'Registrar', 'Emma Watson'),
             ('office_user', 'off123!', 'office@example.com', 'S-2024-011', 'Admin Office', 'Tom Hanks'),
@@ -67,6 +70,9 @@ class Command(BaseCommand):
             ('123456789003', 'Bobby', '', 'Brown', 'Jr.', 'Male', '2022', random.choice(strand_objs), 'bobby@example.com', '09112233445', 'City C'),
         ]
         student_objs = []
+        from request_backend.models import StudentMasterDocument
+        from django.core.files.base import ContentFile
+
         for lrn, f, m, l, sfx, sex, yr, strand, email, phone, addr in students_data:
             student, created = Student.objects.get_or_create(
                 lrn_number=lrn,
@@ -77,26 +83,41 @@ class Command(BaseCommand):
                 }
             )
             student_objs.append(student)
-            if created: self.stdout.write(f"Created Student: {f} {l}")
+            if created: 
+                self.stdout.write(f"Created Student: {f} {l}")
+                # Create master documents for new students so they have records to request
+                # We'll create "Form 137", "Diploma", and "Graduation Certificate" for everyone
+                for doc_type_name in ["Form 137", "Diploma", "Graduation Certificate"]:
+                    # Using a dummy file content
+                    dummy_file = ContentFile(b"Dummy document content", name=f"{doc_type_name.replace(' ', '_')}.pdf")
+                    StudentMasterDocument.objects.create(
+                        student=student,
+                        document_type=doc_type_name,
+                        file=dummy_file
+                    )
+                self.stdout.write(f"Digitized master records for {f} {l}")
 
         # 5. FileRequest
         for i, student in enumerate(student_objs):
-            requested_files = [random.choice(doc_type_objs).name for _ in range(2)]
-            req, created = FileRequest.objects.get_or_create(
-                student=student,
-                defaults={
-                    'first_name': student.first_name, 'middle_name': student.middle_name,
-                    'last_name': student.last_name, 'suffix': student.suffix,
-                    'sex': student.sex, 'year_graduated': student.year_graduated,
-                    'strand_type': student.strand_type, 'lrn_number': student.lrn_number,
-                    'email': student.email, 'phone_number': student.phone_number,
-                    'permanent_address': student.permanent_address,
-                    'requested_files': requested_files,
-                    'status': 'Pending' if i == 0 else 'Approved' if i == 1 else 'Received',
-                    'no_accountabilities': True
-                }
-            )
-            if created: self.stdout.write(f"Created FileRequest for: {student.first_name}")
+            # Pick documents that the student actually HAS in StudentMasterDocument
+            available_docs = student.documents.values_list('document_type', flat=True)
+            if available_docs:
+                requested_files = random.sample(list(available_docs), k=min(2, len(available_docs)))
+                req, created = FileRequest.objects.get_or_create(
+                    student=student,
+                    defaults={
+                        'first_name': student.first_name, 'middle_name': student.middle_name,
+                        'last_name': student.last_name, 'suffix': student.suffix,
+                        'sex': student.sex, 'year_graduated': student.year_graduated,
+                        'strand_type': student.strand_type, 'lrn_number': student.lrn_number,
+                        'email': student.email, 'phone_number': student.phone_number,
+                        'permanent_address': student.permanent_address,
+                        'requested_files': requested_files,
+                        'status': 'Pending' if i == 0 else 'Approved' if i == 1 else 'Received',
+                        'no_accountabilities': True
+                    }
+                )
+                if created: self.stdout.write(f"Created FileRequest for: {student.first_name}")
 
         # 6. AuditLog
         if staff_objs:
