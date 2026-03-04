@@ -829,6 +829,7 @@ const form = reactive({
   permanent_address: '',
   pickup_date: '',
   pickup_time: '',
+  student: null,
 });
 
 const filteredDocTypes = computed(() => {
@@ -1024,6 +1025,7 @@ async function handleRecordCheck() {
         recordStatus.value = 'found';
         availableDocs.value = res.data.documents;
         duplicateMessage.value = '';
+        form.student = res.data.student_id;
       }
     } else {
       recordStatus.value = 'not_found';
