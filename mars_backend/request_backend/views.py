@@ -695,6 +695,7 @@ class PublicRecordCheckView(APIView):
             })
 
         # Check for existing requests (Pending, Approved, Needs Verification)
+        # 'Completed' and 'Rejected' requests allow a new submission. 
         active_request = FileRequest.objects.filter(
             email__iexact=student.email,
             status__in=['Pending', 'Approved', 'Needs Verification']
@@ -705,7 +706,8 @@ class PublicRecordCheckView(APIView):
                 'exists': True,
                 'has_active_request': True,
                 'active_request_id': active_request.passkey,
-                'message': f'You already have an active request (Passkey: {active_request.passkey}).',
+                'message': f'You already have an active request being processed (Passkey: {active_request.passkey}). Please wait for it to be completed or rejected before submitting a new one.',
+                'documents': [],
                 'lrn_number': student.lrn_number,
                 'full_name': f"{student.first_name} {student.last_name}",
             })
