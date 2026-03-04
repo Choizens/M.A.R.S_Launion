@@ -8,12 +8,11 @@
         <span class="font-bold text-sm tracking-tight text-slate-100 italic">La Union Senior High School</span>
       </div>
       <div class="flex flex-wrap justify-center items-center gap-4 md:gap-6 text-xs md:text-sm">
-        <router-link to="/Staff/home" class="text-white font-medium transition-opacity hover:opacity-80">Home</router-link>
+        <router-link to="/" class="text-white font-medium transition-opacity hover:opacity-80">Home</router-link>
         <a href="#" class="hidden sm:inline text-white font-medium transition-opacity hover:opacity-80">About us</a>
         <a href="#" class="hidden sm:inline text-white font-medium transition-opacity hover:opacity-80">Contact</a>
-        <div class="flex gap-2.5">
+        <div class="flex gap-2.5 invisible">
           <router-link to="/Staff/login" class="px-3 md:px-5 py-1.5 rounded font-semibold text-slate-900 bg-amber-300 hover:bg-amber-400 transition-colors pointer shadow-sm cursor-pointer whitespace-nowrap">Login</router-link>
-          <router-link to="/Staff/register" class="px-3 md:px-5 py-1.5 rounded font-semibold text-slate-900 bg-amber-300 hover:bg-amber-400 transition-colors pointer shadow-sm cursor-pointer whitespace-nowrap">Register</router-link>
         </div>
       </div>
     </nav>
@@ -106,6 +105,7 @@ const handleLogin = async () => {
     localStorage.setItem('token', response.data.access);
     localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('is_admin', userData.is_admin ? 'true' : 'false');
+    localStorage.setItem('is_superuser', userData.is_superuser ? 'true' : 'false');
     router.push('/Staff/dashboard');
   } catch (err) {
     error.value = err.response?.data?.detail || 'Invalid username or password';

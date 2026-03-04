@@ -63,6 +63,7 @@
                 {{ date.day }}
               </span>
               <span v-if="date.isWeekend" class="text-[0.45rem] font-black uppercase text-slate-400 border border-slate-200 px-1 rounded bg-white">Closed</span>
+              <span v-else-if="date.slot?.is_virtual" class="text-[0.45rem] font-black uppercase text-amber-500 border border-amber-100 px-1 rounded bg-amber-50">Default</span>
             </div>
 
             <div v-if="date.slot" class="mt-2 flex flex-col gap-1.5">
@@ -232,8 +233,8 @@ const currentMonth = ref(new Date());
 
 const slotForm = reactive({
   date: '',
-  morning_slots: 10,
-  afternoon_slots: 10,
+  morning_slots: 5,
+  afternoon_slots: 5,
   is_blocked: false,
   reason: ''
 });
@@ -251,8 +252,22 @@ const calendarDays = computed(() => {
   for (let d = 1; d <= lastDay.getDate(); d++) {
     const dateObj = new Date(year, month, d);
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const slot = pickupSlots.value.find(s => s.date === dateStr);
+    let slot = pickupSlots.value.find(s => s.date === dateStr);
     const dayOfWeek = dateObj.getDay();
+    
+    // If no slot in DB but it's a weekday, provide a virtual one for display
+    if (!slot && dayOfWeek !== 0 && dayOfWeek !== 6) {
+      slot = {
+        date: dateStr,
+        morning_slots: 5,
+        afternoon_slots: 5,
+        is_blocked: false,
+        is_virtual: true, // Flag for UI
+        booked_morning: 0, 
+        booked_afternoon: 0
+      };
+    }
+
     days.push({
       day: d, date: dateStr, type: 'day',
       isToday: new Date().toDateString() === dateObj.toDateString(),
@@ -305,8 +320,8 @@ const openSlotModal = (slot = null) => {
   } else {
     editingSlotId.value = null;
     slotForm.date = slot?.date || '';
-    slotForm.morning_slots = 10;
-    slotForm.afternoon_slots = 10;
+    slotForm.morning_slots = 5;
+    slotForm.afternoon_slots = 5;
     slotForm.is_blocked = false;
     slotForm.reason = '';
   }

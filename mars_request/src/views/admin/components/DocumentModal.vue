@@ -9,7 +9,7 @@
         <form @submit.prevent="$emit('submit')" class="p-6 flex flex-col gap-5">
           <div class="flex flex-col gap-1">
             <label class="text-[0.65rem] font-black uppercase text-slate-500 tracking-wider">Document Name</label>
-            <input v-model="form.name" type="text" required placeholder="e.g. Form 137, Transcript..." class="border px-4 py-2.5 rounded focus:border-[#00334d] outline-none font-bold text-[#00334d]" />
+            <input v-model="form.name" type="text" required placeholder="e.g. Diploma, Good Moral, Cert..." class="border px-4 py-2.5 rounded focus:border-[#00334d] outline-none font-bold text-[#00334d]" />
           </div>
 
           <div class="flex flex-col gap-1">
@@ -19,9 +19,9 @@
           
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-1">
-              <label class="text-[0.65rem] font-black uppercase text-slate-500 tracking-wider">Fee (\u20b1)</label>
+              <label class="text-[0.65rem] font-black uppercase text-slate-500 tracking-wider">Fee (₱)</label>
               <div class="relative">
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">\u20b1</span>
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">₱</span>
                 <input v-model.number="form.price" type="number" step="0.01" required class="w-full border pl-8 pr-4 py-2.5 rounded focus:border-[#00334d] outline-none font-bold text-[#00334d]" />
               </div>
             </div>
