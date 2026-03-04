@@ -84,7 +84,7 @@ class FileRequestSerializer(serializers.ModelSerializer):
             'pickup_date', 'pickup_time', 'no_accountabilities',
             'documents', 'processed_documents'
         ]
-        read_only_fields = ['id', 'passkey', 'submitted_at', 'status', 'request_code', 'documents', 'processed_documents', 'strand_display', 'student_record']
+        read_only_fields = ['id', 'passkey', 'submitted_at', 'request_code', 'documents', 'processed_documents', 'strand_display', 'student_record']
 
     def get_student_record(self, obj):
         # 1. If explicitly linked via ForeignKey
