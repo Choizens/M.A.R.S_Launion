@@ -642,40 +642,55 @@ class PublicRecordCheckView(APIView):
         lrn = request.query_params.get('lrn', '').strip()
         first_name = request.query_params.get('first_name', '').strip()
         last_name = request.query_params.get('last_name', '').strip()
+        middle_name = request.query_params.get('middle_name', '').strip()
+        suffix = request.query_params.get('suffix', '').strip()
+        sex = request.query_params.get('sex', '').strip()
+        strand_id = request.query_params.get('strand', '').strip()
+        year_graduated = request.query_params.get('year_graduated', '').strip()
 
         student = None
         if lrn:
             student = Student.objects.filter(lrn_number=lrn).first()
         
         if not student and first_name and last_name:
-            student = Student.objects.filter(
-                first_name__iexact=first_name,
-                last_name__iexact=last_name
-            ).first()
+            filters = {
+                'first_name__iexact': first_name,
+                'last_name__iexact': last_name,
+            }
+            if middle_name:
+                filters['middle_name__iexact'] = middle_name
+            if suffix:
+                filters['suffix__iexact'] = suffix
+            if sex:
+                filters['sex__iexact'] = sex
+            if strand_id:
+                filters['strand_type_id'] = strand_id
+            if year_graduated:
+                filters['year_graduated'] = year_graduated
+
+            student = Student.objects.filter(**filters).first()
 
         if not student:
             return Response({
                 'exists': False,
-                'message': 'No digital record found. Please visit the school office for manual processing.',
+                'message': 'No digital record found. Please check your details or visit the school office for manual processing.',
                 'documents': []
             })
 
-        # Check for existing requests (Pending, Approved, Needs Verification, Completed)
-        # Only 'Rejected' requests allow a new submission. 
-        # 'Completed' is blocked because the school has already given the physical file.
+        # Check for existing requests (Pending, Approved, Needs Verification)
         active_request = FileRequest.objects.filter(
             email__iexact=student.email,
-            status__in=['Pending', 'Approved', 'Needs Verification', 'Completed']
+            status__in=['Pending', 'Approved', 'Needs Verification']
         ).first()
 
         if active_request:
-            status_msg = "is being processed" if active_request.status != 'Completed' else "has already been completed and the file was issued"
             return Response({
                 'exists': True,
                 'has_active_request': True,
                 'active_request_id': active_request.passkey,
-                'message': f'You already have a request that {status_msg} (Passkey: {active_request.passkey}). Duplicate requests are not allowed.',
-                'documents': []
+                'message': f'You already have an active request (Passkey: {active_request.passkey}).',
+                'lrn_number': student.lrn_number,
+                'full_name': f"{student.first_name} {student.last_name}",
             })
 
         # Get names of digitized documents
@@ -685,6 +700,7 @@ class PublicRecordCheckView(APIView):
             'exists': True,
             'has_active_request': False,
             'student_id': student.id,
+            'lrn_number': student.lrn_number,
             'full_name': f"{student.first_name} {student.last_name}",
             'documents': digitized_docs
         })

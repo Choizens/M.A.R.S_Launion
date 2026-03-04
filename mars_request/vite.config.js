@@ -1,5 +1,4 @@
 import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
@@ -15,4 +14,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  // ADD THIS SECTION BELOW TO FIX THE BLOCKED REQUEST ERROR
+  preview: {
+    allowedHosts: true,
+  }
 })

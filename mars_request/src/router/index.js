@@ -3,6 +3,17 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return { ...savedPosition, behavior: 'smooth' };
+    }
+
+    if (to.hash) {
+      return { el: to.hash, behavior: 'smooth' };
+    }
+
+    return { top: 0, behavior: 'smooth' };
+  },
   routes: [
     {
       path: '/',
@@ -10,7 +21,6 @@ const router = createRouter({
       component: () => import('../views/requestor/requestor_home.vue'),
     },
     // ── Staff routes ──────────────────────────────────────
-
     {
       path: '/Staff/login',
       name: 'login',
@@ -20,7 +30,7 @@ const router = createRouter({
     {
       path: '/Staff/dashboard/:tab?',
       name: 'staff-dashboard',
-      component: () => import('../views/Staff/StaffDashboard.vue'),
+      component: () => import('../views/staff/StaffDashboard.vue'),
       meta: { requiresAuth: true },
     },
     // ── Admin routes (using lowercase 'admin' for Linux compatibility) ────
@@ -35,15 +45,20 @@ const router = createRouter({
       component: () => import('../views/admin/AdminDashboard.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
     },
-    // Catch-all
-    {
-      path: '/:pathMatch(.*)*',
-      redirect: '/',
-    },
     {
       path: '/requestor/request-details/:code',
       name: 'request-details',
       component: () => import('../views/requestor/request_details.vue'),
+    },
+    {
+      path: '/requestor/find-lrn',
+      name: 'find-lrn',
+      component: () => import('../views/requestor/Find_lrn.vue'),
+    },
+    // Catch-all
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/',
     },
   ],
 })
@@ -52,7 +67,6 @@ router.beforeEach((to) => {
   const token = localStorage.getItem('token');
   const isAuthenticated = !!token;
   const isSuperuser = localStorage.getItem('is_superuser') === 'true';
-  const isAdminOrStaff = localStorage.getItem('is_admin') === 'true';
 
   // Redirect unauthenticated users away from protected pages
   if (to.meta.requiresAuth && !isAuthenticated) {
