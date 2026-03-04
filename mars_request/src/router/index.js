@@ -21,11 +21,6 @@ const router = createRouter({
     },
     // ── Staff routes ──────────────────────────────────────
     {
-      path: '/Staff/home',
-      name: 'staff-home',
-      component: () => import('../views/staff/Staff_Home.vue'),
-    },
-    {
       path: '/Staff/login',
       name: 'login',
       component: () => import('../views/auth/login.vue'),
