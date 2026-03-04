@@ -20,7 +20,7 @@ const router = createRouter({
     {
       path: '/Staff/dashboard/:tab?',
       name: 'staff-dashboard',
-      component: () => import('../views/Staff/StaffDashboard.vue'),
+      component: () => import('../views/staff/StaffDashboard.vue'),
       meta: { requiresAuth: true },
     },
     // ── Admin routes (using lowercase 'admin' for Linux compatibility) ────
