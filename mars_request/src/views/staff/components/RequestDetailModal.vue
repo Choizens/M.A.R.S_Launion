@@ -159,6 +159,7 @@ import { ref, computed } from 'vue';
 import { adminService } from '@/services/api';
 import { X as XIcon, Clock as ClockIcon, Check as CheckIcon } from 'lucide-vue-next';
 import DocumentUploadRow from './DocumentUploadRow.vue';
+import html2pdf from 'html2pdf.js';
 
 const props = defineProps(['request']);
 const emit = defineEmits(['close', 'refresh']);
@@ -185,53 +186,70 @@ const handlePrintAndSave = async () => {
     return;
   }
 
-  // 1. Create a printable summary
-  const printWindow = window.open('', '_blank');
   const docList = props.request.requested_files.map(f => `<li>${f}</li>`).join('');
   
+  // Create shared HTML template
+  const contentHtml = `
+    <div style="font-family: sans-serif; padding: 40px; background: white;">
+      <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px;">
+        <h1>M.A.R.S DOCUMENT REQUEST</h1>
+        <p>Request Key: ${props.request.request_code}</p>
+      </div>
+      <div style="margin-bottom: 30px; line-height: 1.6;">
+        <p><b style="display: inline-block; width: 120px;">Student:</b> ${props.request.first_name} ${props.request.last_name}</p>
+        <p><b style="display: inline-block; width: 120px;">LRN:</b> ${props.request.lrn_number || 'N/A'}</p>
+        <p><b style="display: inline-block; width: 120px;">Date:</b> ${new Date().toLocaleDateString()}</p>
+      </div>
+      <div style="margin-top: 20px;">
+        <h3>Documents Issued:</h3>
+        <ul>${docList}</ul>
+      </div>
+      <div style="margin-top: 50px; font-size: 10px; border-top: 1px solid #ccc; padding-top: 10px; text-align: center; color: #666;">
+        Processed via M.A.R.S System • ${new Date().toLocaleString()}
+      </div>
+    </div>
+  `;
+
+  // 1. Auto-download PDF using html2pdf
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = contentHtml;
+  
+  const opt = {
+    margin:       0.5,
+    filename:     `MARS_Release_${props.request.request_code}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2 },
+    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+  
+  try {
+     await html2pdf().set(opt).from(tempDiv).save();
+  } catch (err) {
+     console.error('PDF Generation Failed', err);
+  }
+
+  // 2. Open physical print preview window
+  const printWindow = window.open('', '_blank');
   printWindow.document.write(`
     <html>
       <head>
         <title>MARS - Request Summary [${props.request.request_code}]</title>
-        <style>
-          body { font-family: sans-serif; padding: 40px; }
-          .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
-          .info { margin-bottom: 30px; line-height: 1.6; }
-          .info b { display: inline-block; width: 120px; }
-          .docs { margin-top: 20px; }
-          .footer { margin-top: 50px; font-size: 10px; border-top: 1px solid #ccc; padding-top: 10px; text-align: center; color: #666; }
-        </style>
       </head>
       <body>
-        <div class="header">
-          <h1>M.A.R.S DOCUMENT REQUEST</h1>
-          <p>Request Key: ${props.request.request_code}</p>
-        </div>
-        <div class="info">
-          <p><b>Student:</b> ${props.request.first_name} ${props.request.last_name}</p>
-          <p><b>LRN:</b> ${props.request.lrn_number || 'N/A'}</p>
-          <p><b>Date:</b> ${new Date().toLocaleDateString()}</p>
-        </div>
-        <div class="docs">
-          <h3>Documents Issued:</h3>
-          <ul>${docList}</ul>
-        </div>
-        <div class="footer">
-          Processed via M.A.R.S System • ${new Date().toLocaleString()}
-        </div>
+        ${contentHtml}
         <script>window.print(); window.onload = function() { setTimeout(function() { window.close(); }, 500); }${'</scr' + 'ipt>'}
       </body>
     </html>
   `);
 
-  // 2. Update status
+  // 3. Update status in DB
   try {
     const res = await adminService.updateRequest(props.request.id, { status: 'Completed' });
     props.request.status = res.data.status;
     emit('refresh');
     isVerifyingPasskey.value = false;
   } catch (err) {
-    alert('Failed to update status, but printing was triggered.');
+    alert('Failed to update status, but printing/PDF was triggered.');
   }
 };
 
