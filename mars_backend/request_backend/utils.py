@@ -14,11 +14,10 @@ def send_submission_confirmation(file_request):
     subject = f"Request Received - M.A.R.S [Passkey: {file_request.passkey}]"
     
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'knightcyberg@gmail.com')
-    print(f"DEBUG: Attempting to send confirmation to {file_request.email}")
+    print(f"\n🚀 [EMAIL TRIGGER] Attempting to send confirmation to {file_request.email}")
     print(f"DEBUG: FROM: {from_email}, BACKEND: {settings.EMAIL_BACKEND}")
     
     try:
-        print("DEBUG: Rendering template...")
         html_content = render_to_string('emails/request_notification.html', {
             'instance': file_request,
             'pickup_date_fmt': file_request.pickup_date.strftime('%B %d, %Y') if file_request.pickup_date else '—',
@@ -26,7 +25,6 @@ def send_submission_confirmation(file_request):
             'submitted_at_fmt': file_request.submitted_at.strftime('%B %d, %Y') if file_request.submitted_at else '—',
             'status_message': "Thank you! We have received your document request. Our team will review your application and notify you once it has been processed."
         })
-        print(f"DEBUG: Template rendered (length: {len(html_content)})")
         text_content = strip_tags(html_content)
         
         email = EmailMultiAlternatives(
@@ -39,21 +37,22 @@ def send_submission_confirmation(file_request):
         
         def send_email_thread():
             try:
-                print(f"DEBUG: (Thread) Attempting SMTP send to {file_request.email}...")
+                print(f"DEBUG: (Thread) Starting SMTP send to {file_request.email} via {settings.EMAIL_BACKEND}...")
                 email.send(fail_silently=False)
-                print(f"DEBUG: (Thread) SUCCESS: Confirmation email sent to {file_request.email}")
+                print(f"✅ [EMAIL SUCCESS] Confirmation email sent to {file_request.email}")
             except Exception as thread_err:
                 import traceback
-                print(f"DEBUG: (Thread) CRITICAL ERROR sending email to {file_request.email}: {thread_err}")
+                print(f"❌ [EMAIL ERROR] CRITICAL failure sending to {file_request.email}: {thread_err}")
                 traceback.print_exc()
 
         # Use daemon=False to ensure the thread has a better chance of finishing in cloud environments
-        threading.Thread(target=send_email_thread, daemon=False).start()
+        t = threading.Thread(target=send_email_thread, daemon=False)
+        t.start()
         print(f"DEBUG: Email thread started for {file_request.email}")
 
     except Exception as e:
         import traceback
-        print(f"ERROR: Failed to prepare confirmation email: {str(e)}")
+        print(f"❌ [PRE-SEND ERROR] Failed to prepare confirmation email: {str(e)}")
         traceback.print_exc()
 
 def send_request_notification(file_request):
