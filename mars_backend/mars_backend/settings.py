@@ -179,6 +179,7 @@ SIMPLE_JWT = {
 # Priority: 1. SendGrid (Free single sender) | 2. Resend | 3. Gmail SMTP
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 RESEND_API_KEY = os.getenv('RESEND_API_KEY')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'dummychan70@gmail.com')
 
 if SENDGRID_API_KEY:
     EMAIL_BACKEND = 'anymail.backends.sendgrid.EmailBackend'
@@ -193,7 +194,6 @@ else:
     EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
     EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False') == 'True'
     EMAIL_TIMEOUT = 60
-    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'dummychan70@gmail.com')
     EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'xxeuccbldbugfwew').replace(' ', '')
 
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
