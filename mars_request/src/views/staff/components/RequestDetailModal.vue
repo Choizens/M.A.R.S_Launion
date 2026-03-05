@@ -216,7 +216,7 @@ const handlePrintAndSave = async () => {
   
   const opt = {
     margin:       0.5,
-    filename:     `MARS_Release_${props.request.request_code}.pdf`,
+    filename:     `${props.request.last_name}_document.pdf`,
     image:        { type: 'jpeg', quality: 0.98 },
     html2canvas:  { scale: 2 },
     jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
