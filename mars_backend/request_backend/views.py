@@ -1,4 +1,5 @@
 from rest_framework import generics, status
+from django.db import transaction
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
@@ -67,10 +68,13 @@ class FileRequestCreateView(generics.CreateAPIView):
         request_code = self.generate_unique_code()
         instance = serializer.save(request_code=request_code)
         
-        # Send notifications in the background
-        from .utils import send_submission_confirmation, notify_staff_new_request
-        send_submission_confirmation(instance)
-        notify_staff_new_request(instance)
+        # Send notifications after transaction commit
+        def send_notifications():
+            from .utils import send_submission_confirmation, notify_staff_new_request
+            send_submission_confirmation(instance)
+            notify_staff_new_request(instance)
+
+        transaction.on_commit(send_notifications)
 
 
 class FileRequestLookupView(APIView):
