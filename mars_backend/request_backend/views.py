@@ -633,3 +633,44 @@ class PublicRecordCheckView(APIView):
             'student_id': student.id,
             'full_name': f"{student.first_name} {student.last_name}",
         })
+
+import os
+from django.http import FileResponse, Http404
+from django.shortcuts import get_object_or_404
+
+class DocumentDownloadView(APIView):
+    """
+    Force downloads documents for Students, Requests, and Processed docs.
+    """
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, doc_type, pk):
+        if doc_type == 'master':
+            doc = get_object_or_404(StudentMasterDocument, pk=pk)
+        elif doc_type == 'student':
+            doc = get_object_or_404(StudentDocument, pk=pk)
+        elif doc_type == 'processed':
+            doc = get_object_or_404(ProcessedDocument, pk=pk)
+        else:
+            raise Http404
+
+        try:
+            # Get the actual file path
+            file_path = doc.file.path
+            if not os.path.exists(file_path):
+                raise Http404("File not found on server.")
+
+            response = FileResponse(open(file_path, 'rb'), as_attachment=True)
+            
+            # Extract extension
+            ext = os.path.splitext(doc.file.name)[1]
+            
+            # Create a clean display filename
+            display_name = getattr(doc, 'document_type', 'document')
+            # Replace spaces with underscores for filename safety
+            safe_name = "".join([c if c.isalnum() or c in (' ', '-', '_') else '' for c in display_name]).strip().replace(' ', '_')
+            
+            response['Content-Disposition'] = f'attachment; filename="{safe_name}{ext}"'
+            return response
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_VALUE)

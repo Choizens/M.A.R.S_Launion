@@ -208,6 +208,10 @@ export const adminService = {
     deleteStudentMasterDoc(docId) {
         return apiClient.delete(`admin/student-documents/${docId}/`);
     },
+    getDownloadUrl(docType, pk) {
+        // Return the full formatted URL for the download endpoint
+        return `${API_BASE_URL}admin/download/${docType}/${pk}/`;
+    }
 };
 
 export const publicService = {

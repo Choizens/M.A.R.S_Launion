@@ -19,18 +19,18 @@
       <div>
         <p class="text-[0.6rem] font-bold text-slate-400 uppercase mb-1">Student Scan:</p>
         <div v-if="studentDoc">
-          <a :href="getFullUrl(studentDoc.file)" target="_blank" class="flex items-center gap-1 text-[0.6rem] font-bold text-amber-600 bg-white px-2 py-1 rounded border border-amber-200 shadow-sm w-max hover:bg-amber-50 transition-colors">
+          <button @click="downloadDocument('student', studentDoc)" class="flex items-center gap-1 text-[0.6rem] font-bold text-amber-600 bg-white px-2 py-1 rounded border border-amber-200 shadow-sm w-max hover:bg-amber-50 transition-colors">
             <AttachmentIcon class="w-3 h-3" /> View Scan
-          </a>
+          </button>
         </div>
         <span v-else class="text-[0.55rem] font-bold text-slate-400 italic">No scan</span>
       </div>
       <div>
         <p class="text-[0.6rem] font-bold text-slate-400 uppercase mb-1">Staff Ready Doc:</p>
         <div v-if="processedDoc" class="flex items-center gap-2">
-          <a :href="getFullUrl(processedDoc.file)" target="_blank" class="flex items-center gap-1.5 text-[0.6rem] font-bold text-green-600 bg-white px-2 py-1 rounded border border-green-200 shadow-sm hover:bg-green-50 transition-colors">
+          <button @click="downloadDocument('processed', processedDoc)" class="flex items-center gap-1.5 text-[0.6rem] font-bold text-green-600 bg-white px-2 py-1 rounded border border-green-200 shadow-sm hover:bg-green-50 transition-colors">
             <FileIcon class="w-3 h-3" /> Download
-          </a>
+          </button>
           <button @click="deleteDoc(processedDoc.id)" class="text-[0.6rem] font-bold text-red-500 px-2 py-1 rounded border border-red-200 hover:bg-red-50 transition-colors">X</button>
         </div>
         <div v-else class="mt-1">
@@ -96,6 +96,38 @@ const deleteDoc = async (id) => {
     alert('Delete failed'); 
   } finally {
     loading.value = false;
+  }
+};
+
+const downloadDocument = async (type, doc) => {
+  try {
+    const url = adminService.getDownloadUrl(type, doc.id);
+    const token = localStorage.getItem('token');
+    
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (!response.ok) throw new Error('Download failed');
+    
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    
+    const filename = doc.document_type || props.filename;
+    const extension = doc.file.split('.').pop().split(/[?#]/)[0] || 'pdf';
+    link.download = `${filename}.${extension}`;
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error('Download failed:', error);
+    window.open(getFullUrl(doc.file), '_blank');
   }
 };
 </script>

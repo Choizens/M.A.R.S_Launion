@@ -174,7 +174,7 @@
                         <button @click="printDocument(getFullUrl(viewingDoc.file))" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1">
                           <PrinterIcon class="w-3 h-3" /> Print
                         </button>
-                        <button @click="downloadDocument(getFullUrl(viewingDoc.file), viewingDoc.document_type)" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1">
+                        <button @click="downloadDocument(viewingDoc)" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1">
                           <DownloadIcon class="w-3 h-3" /> Download
                         </button>
                         <div class="h-3 w-[1px] bg-white/20 mx-1"></div>
@@ -227,7 +227,7 @@ import {
   Download as DownloadIcon
 } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
-import { getFullUrl } from '@/services/api';
+import { getFullUrl, adminService } from '@/services/api';
 
 const props = defineProps({
   show: Boolean,
@@ -253,17 +253,28 @@ const printDocument = (url) => {
   }
 };
 
-const downloadDocument = async (url, filename) => {
+const downloadDocument = async (doc) => {
   try {
-    const response = await fetch(url);
+    const url = adminService.getDownloadUrl('master', doc.id);
+    const token = localStorage.getItem('token');
+    
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (!response.ok) throw new Error('Download failed');
+    
     const blob = await response.blob();
     const blobUrl = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = blobUrl;
     
-    // Extract extension from URL
-    const extension = url.split('.').pop().split(/[?#]/)[0] || 'pdf';
-    link.download = `${filename}.${extension}`;
+    // The backend provides the filename in Content-Disposition, 
+    // but if we want to be sure, we can still use the doc type.
+    const extension = doc.file.split('.').pop().split(/[?#]/)[0] || 'pdf';
+    link.download = `${doc.document_type}.${extension}`;
     
     document.body.appendChild(link);
     link.click();
@@ -271,8 +282,8 @@ const downloadDocument = async (url, filename) => {
     window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.error('Download failed:', error);
-    // Fallback if fetch fails (e.g. CORS)
-    window.open(url, '_blank');
+    // Fallback if fetch fails
+    window.open(getFullUrl(doc.file), '_blank');
   }
 };
 
