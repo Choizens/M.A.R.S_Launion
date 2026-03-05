@@ -38,7 +38,12 @@ def send_submission_confirmation(file_request):
         email.attach_alternative(html_content, "text/html")
         
         try:
+            from django.core.mail import get_connection
+            print(f"DEBUG: Opening explicit connection to {settings.EMAIL_HOST}:{settings.EMAIL_PORT}...")
+            connection = get_connection(fail_silently=False)
+            
             print(f"DEBUG: Email sending started for {file_request.email}...")
+            email.connection = connection
             email.send(fail_silently=False)
             print(f"DEBUG: Successfully sent confirmation email to {file_request.email}")
         except Exception as e:
