@@ -75,12 +75,48 @@
             <div class="flex flex-col gap-4">
               <div class="bg-white border-2 border-[#103059] rounded-xl p-6">
                 <!-- Status Logic (Simplified for Component) -->
-                 <div class="flex gap-2">
+                 <div v-if="!isVerifyingPasskey" class="flex gap-2">
                     <button v-if="request.status === 'Pending' || request.status === 'Needs Verification'" @click="updateStatus('Approved')" class="flex-1 py-4 bg-[#10b981] text-white font-black uppercase rounded-lg shadow-md hover:bg-emerald-600">Approve</button>
-                    <button v-if="request.status === 'Approved'" @click="updateStatus('Completed')" class="flex-1 py-4 bg-[#8b5cf6] text-white font-black uppercase rounded-lg shadow-md hover:bg-purple-600">Complete</button>
+                    <button v-if="request.status === 'Approved'" @click="startCompletion" class="flex-1 py-4 bg-[#8b5cf6] text-white font-black uppercase rounded-lg shadow-md hover:bg-purple-600">Complete</button>
                     <button @click="updateStatus('Rejected')" class="px-6 py-4 bg-red-50 text-red-600 font-black uppercase rounded-lg border-2 border-red-200 hover:bg-red-100 transition-all">Reject</button>
                  </div>
-                 <button v-if="request.status === 'Pending'" @click="updateStatus('Needs Verification')" class="w-full mt-2 py-2.5 bg-orange-500 text-white font-black uppercase rounded-lg shadow-md hover:bg-orange-600">Notify: Missing Record</button>
+
+                 <!-- Passkey Verification for Completion -->
+                 <div v-else class="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                    <div class="p-4 bg-purple-50 border-2 border-purple-200 rounded-lg">
+                      <h4 class="text-sm font-black text-purple-700 uppercase tracking-tight mb-2">Final Review: Requested Documents</h4>
+                      <ul class="flex flex-col gap-1.5">
+                        <li v-for="f in request.requested_files" :key="f" class="flex items-center gap-2 text-xs font-bold text-purple-900 bg-white/50 px-2 py-1 rounded">
+                          <CheckIcon class="w-3 h-3 text-purple-500" />
+                          {{ f }}
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                       <label class="text-[0.65rem] font-black text-slate-500 uppercase tracking-widest">Verify Student Passkey</label>
+                       <input 
+                         v-model="enteredPasskey" 
+                         type="text" 
+                         placeholder="Type Passkey here (e.g. PASS-2026-001)" 
+                         class="w-full py-4 px-4 bg-slate-50 border-2 border-slate-200 rounded-lg text-lg font-black tracking-widest focus:border-purple-500 focus:outline-none transition-all placeholder:text-slate-300 uppercase"
+                       />
+                       <p v-if="passkeyError" class="text-[0.6rem] font-bold text-red-500 italic">{{ passkeyError }}</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                       <button @click="isVerifyingPasskey = false" class="py-3 bg-slate-100 text-slate-500 font-bold uppercase rounded-lg hover:bg-slate-200 transition-all">Cancel</button>
+                       <button 
+                         @click="handlePrintAndSave" 
+                         :disabled="!isPasskeyValid"
+                         :class="['py-3 font-black uppercase rounded-lg shadow-lg transition-all', isPasskeyValid ? 'bg-[#8b5cf6] text-white hover:bg-purple-700' : 'bg-slate-200 text-slate-400 cursor-not-allowed']"
+                       >
+                         Print & Save
+                       </button>
+                    </div>
+                 </div>
+
+                 <button v-if="!isVerifyingPasskey && request.status === 'Pending'" @click="updateStatus('Needs Verification')" class="w-full mt-2 py-2.5 bg-orange-500 text-white font-black uppercase rounded-lg shadow-md hover:bg-orange-600">Notify: Missing Record</button>
               </div>
             </div>
           </div>
@@ -91,12 +127,83 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue';
 import { adminService } from '@/services/api';
-import { X as XIcon, Clock as ClockIcon } from 'lucide-vue-next';
+import { X as XIcon, Clock as ClockIcon, Check as CheckIcon } from 'lucide-vue-next';
 import DocumentUploadRow from './DocumentUploadRow.vue';
 
 const props = defineProps(['request']);
 const emit = defineEmits(['close', 'refresh']);
+
+const isVerifyingPasskey = ref(false);
+const enteredPasskey = ref('');
+const passkeyError = ref('');
+
+const isPasskeyValid = computed(() => {
+  return enteredPasskey.value.trim().toUpperCase() === props.request.passkey?.toUpperCase();
+});
+
+const startCompletion = () => {
+  isVerifyingPasskey.value = true;
+  enteredPasskey.value = '';
+  passkeyError.value = '';
+};
+
+const handlePrintAndSave = async () => {
+  if (!isPasskeyValid.value) {
+    passkeyError.value = 'Passkey does not match.';
+    return;
+  }
+
+  // 1. Create a printable summary
+  const printWindow = window.open('', '_blank');
+  const docList = props.request.requested_files.map(f => `<li>${f}</li>`).join('');
+  
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>MARS - Request Summary [${props.request.passkey}]</title>
+        <style>
+          body { font-family: sans-serif; padding: 40px; }
+          .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+          .info { margin-bottom: 30px; line-height: 1.6; }
+          .info b { display: inline-block; width: 120px; }
+          .docs { margin-top: 20px; }
+          .footer { margin-top: 50px; font-size: 10px; border-top: 1px solid #ccc; padding-top: 10px; text-align: center; color: #666; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>M.A.R.S DOCUMENT REQUEST</h1>
+          <p>Passkey: ${props.request.passkey}</p>
+        </div>
+        <div class="info">
+          <p><b>Student:</b> ${props.request.first_name} ${props.request.last_name}</p>
+          <p><b>LRN:</b> ${props.request.lrn_number || 'N/A'}</p>
+          <p><b>Date:</b> ${new Date().toLocaleDateString()}</p>
+        </div>
+        <div class="docs">
+          <h3>Documents Issued:</h3>
+          <ul>${docList}</ul>
+        </div>
+        <div class="footer">
+          Processed via M.A.R.S System • ${new Date().toLocaleString()}
+        </div>
+        <script>window.print(); window.onload = function() { setTimeout(function() { window.close(); }, 500); }</script>
+      </body>
+    </html>
+  `);
+
+  // 2. Update status
+  try {
+    const res = await adminService.updateRequest(props.request.id, { status: 'Completed' });
+    props.request.status = res.data.status;
+    emit('refresh');
+    isVerifyingPasskey.value = false;
+  } catch (err) {
+    alert('Failed to update status, but printing was triggered.');
+  }
+};
 
 const refreshRequestData = async () => {
   try {
