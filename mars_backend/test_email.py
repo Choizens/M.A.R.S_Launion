@@ -1,6 +1,5 @@
-import os
-import django
-from django.core.mail import send_mail
+import os, django
+from django.core.mail import send_mail, get_connection
 from django.conf import settings
 
 # Set up Django environment
