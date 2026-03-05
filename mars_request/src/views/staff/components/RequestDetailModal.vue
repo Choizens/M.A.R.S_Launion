@@ -210,6 +210,10 @@ const handlePrintAndSave = async () => {
     </div>
   `;
 
+  // UI feedback during generation
+  const originalBtnText = document.activeElement ? document.activeElement.innerText : 'PRINT & SAVE';
+  if (document.activeElement) document.activeElement.innerText = 'GENERATING PDF...';
+
   // 1. Auto-download PDF using html2pdf
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = contentHtml;
@@ -223,24 +227,33 @@ const handlePrintAndSave = async () => {
   };
   
   try {
+     // Await the entire PDF generation and save process
      await html2pdf().set(opt).from(tempDiv).save();
+     // Give the browser a moment to actually trigger the native download prompt
+     await new Promise(resolve => setTimeout(resolve, 800));
   } catch (err) {
      console.error('PDF Generation Failed', err);
   }
 
+  if (document.activeElement) document.activeElement.innerText = originalBtnText;
+
   // 2. Open physical print preview window
   const printWindow = window.open('', '_blank');
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>MARS - Request Summary [${props.request.request_code}]</title>
-      </head>
-      <body>
-        ${contentHtml}
-        <script>window.print(); window.onload = function() { setTimeout(function() { window.close(); }, 500); }${'</scr' + 'ipt>'}
-      </body>
-    </html>
-  `);
+  if (printWindow) {
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>MARS - Request Summary [${props.request.request_code}]</title>
+        </head>
+        <body>
+          ${contentHtml}
+          <script>window.print(); window.onload = function() { setTimeout(function() { window.close(); }, 500); }${'</scr' + 'ipt>'}
+        </body>
+      </html>
+    `);
+  } else {
+    alert("Pop-up blocker prevented the Print window from opening. The PDF was still saved.");
+  }
 
   // 3. Update status in DB
   try {
@@ -249,7 +262,7 @@ const handlePrintAndSave = async () => {
     emit('refresh');
     isVerifyingPasskey.value = false;
   } catch (err) {
-    alert('Failed to update status, but printing/PDF was triggered.');
+    alert('Failed to update status, but documents were generated.');
   }
 };
 
