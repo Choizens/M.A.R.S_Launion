@@ -181,9 +181,10 @@ SIMPLE_JWT = {
 # (Requires 2-Step Verification enabled on your Google account)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False') == 'True'
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 465))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'False') == 'True'
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'True') == 'True'
+EMAIL_TIMEOUT = 30  # seconds
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'dummychan70@gmail.com')
 # Sanitize App Password by stripping any spaces often copied from Google dashboard
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'xxeuccbldbugfwew').replace(' ', '')
