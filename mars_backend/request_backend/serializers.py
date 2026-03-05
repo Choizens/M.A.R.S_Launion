@@ -70,10 +70,12 @@ class StaffSerializer(serializers.ModelSerializer):
         email = validated_data.pop('email', '')
         password = validated_data.pop('password', None)
         # Ensure registered staff have administrative access by default
+        # Pop is_staff if already present to avoid duplicate keyword argument during create_user
+        is_staff = validated_data.pop('is_staff', True)
         user = Staff.objects.create_user(
             email=email,
             password=password,
-            is_staff=True,
+            is_staff=is_staff,
             **validated_data
         )
         return user
