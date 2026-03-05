@@ -185,23 +185,15 @@
 
                     <!-- Clickable Preview Area -->
                     <div 
-                      class="flex-1 w-full bg-slate-50 relative cursor-pointer overflow-hidden"
-                      @click="window.open(getFullUrl(viewingDoc.file), '_blank')"
-                      title="Click to open in new tab"
+                      class="flex-1 w-full bg-slate-50 relative overflow-hidden"
+                      title="PDF Preview"
                     >
-                      <!-- Hover Overlay -->
-                      <div class="absolute inset-0 bg-[#103059]/0 group-hover/preview:bg-[#103059]/5 transition-colors z-10 flex items-center justify-center">
-                        <div class="opacity-0 group-hover/preview:opacity-100 transition-opacity bg-white/90 text-[#103059] px-4 py-2 rounded-full shadow-lg font-black text-[0.6rem] uppercase tracking-widest flex items-center gap-2">
-                          <EyeIcon class="w-3 h-3" /> Click to View Full Screen
-                        </div>
-                      </div>
-
                       <!-- Image viewer -->
                       <img
                         v-if="viewingDoc.file && (viewingDoc.file.toLowerCase().endsWith('.jpg') || viewingDoc.file.toLowerCase().endsWith('.jpeg') || viewingDoc.file.toLowerCase().endsWith('.png'))"
                         :key="`img-${viewingDoc.id}`"
                         :src="getFullUrl(viewingDoc.file)"
-                        class="w-full h-full object-contain pointer-events-none"
+                        class="w-full h-full object-contain"
                         style="min-height: 380px;"
                         alt="Document Preview"
                       />
@@ -210,7 +202,7 @@
                         <iframe
                           :key="`pdf-ifrm-${viewingDoc.id}`"
                           :src="getFullUrl(viewingDoc.file)"
-                          class="w-full h-full border-none pointer-events-none"
+                          class="w-full h-full border-none"
                         >
                         </iframe>
                       </div>
