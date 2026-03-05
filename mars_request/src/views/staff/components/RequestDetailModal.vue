@@ -227,12 +227,38 @@ const handlePrintAndSave = async () => {
   };
   
   try {
-     // Await the entire PDF generation and save process
-     await html2pdf().set(opt).from(tempDiv).save();
-     // Give the browser a moment to actually trigger the native download prompt
+     // Generate PDF as base64 string
+     const pdfBase64 = await html2pdf().set(opt).from(tempDiv).outputPdf('datauristring');
+     
+     // Strip the meta prefix to get pure base64
+     const base64Data = pdfBase64.split(',')[1];
+     const byteCharacters = atob(base64Data);
+     const byteNumbers = new Array(byteCharacters.length);
+     for (let i = 0; i < byteCharacters.length; i++) {
+         byteNumbers[i] = byteCharacters.charCodeAt(i);
+     }
+     const byteArray = new Uint8Array(byteNumbers);
+     
+     // Create a blob and force download securely
+     const blob = new Blob([byteArray], { type: 'application/pdf' });
+     const blobUrl = URL.createObjectURL(blob);
+     
+     const downloadLink = document.createElement('a');
+     downloadLink.href = blobUrl;
+     downloadLink.download = `${props.request.last_name}_document.pdf`;
+     document.body.appendChild(downloadLink);
+     downloadLink.click();
+     
+     setTimeout(() => {
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(blobUrl);
+     }, 1000);
+     
+     // Give the browser a moment to process the download click
      await new Promise(resolve => setTimeout(resolve, 800));
   } catch (err) {
      console.error('PDF Generation Failed', err);
+     alert('PDF failed to generate. Continuing to Print preview.');
   }
 
   if (document.activeElement) document.activeElement.innerText = originalBtnText;
