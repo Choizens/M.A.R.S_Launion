@@ -37,15 +37,18 @@ def send_submission_confirmation(file_request):
         
         def send_email_thread():
             try:
-                print(f"DEBUG: (Thread) Starting SMTP send to {file_request.email} via {settings.EMAIL_BACKEND}...")
-                email.send(fail_silently=False)
-                print(f"✅ [EMAIL SUCCESS] Confirmation email sent to {file_request.email}")
+                print(f"DEBUG: (Thread) Starting send to {file_request.email} via {settings.EMAIL_BACKEND}...")
+                sent = email.send(fail_silently=False)
+                if sent:
+                    print(f"✅ [EMAIL SUCCESS] Confirmation email sent to {file_request.email}")
+                else:
+                    print(f"⚠️ [EMAIL WARNING] send() returned 0 for {file_request.email}")
             except Exception as thread_err:
                 import traceback
                 print(f"❌ [EMAIL ERROR] CRITICAL failure sending to {file_request.email}: {thread_err}")
                 traceback.print_exc()
 
-        # Use daemon=False to ensure the thread has a better chance of finishing in cloud environments
+        # Use threading to prevent blocking the UI, but log any issues.
         t = threading.Thread(target=send_email_thread, daemon=False)
         t.start()
         print(f"DEBUG: Email thread started for {file_request.email}")
@@ -148,14 +151,14 @@ M.A.R.S Automated System
         def notify_staff_thread():
             try:
                 print(f"DEBUG: (Thread) Attempting STAFF NOTIFICATION to {len(staff_emails)} recipients...")
-                send_mail(
+                sent = send_mail(
                     subject,
                     message,
                     from_email,
                     list(staff_emails),
                     fail_silently=False,
                 )
-                print(f"DEBUG: (Thread) SUCCESS: Staff members notified about new request.")
+                print(f"DEBUG: (Thread) SUCCESS: Staff members notified. Count: {sent}")
             except Exception as thread_err:
                 import traceback
                 print(f"DEBUG: (Thread) CRITICAL ERROR in staff notification: {thread_err}")
