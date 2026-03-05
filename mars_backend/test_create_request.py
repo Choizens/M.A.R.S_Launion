@@ -11,7 +11,7 @@ client = Client()
 payload = {
     "first_name": "Test",
     "last_name": "User",
-    "email": "dummychan70@gmail.com",
+    "email": "another_test_user@example.com",
     "phone_number": "09123456789",
     "permanent_address": "123 Test St",
     "lrn_number": "123456789012",
