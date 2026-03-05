@@ -240,6 +240,10 @@
             @edit-doc="openDocModal"
             @delete-doc="deleteDoc"
           />
+          
+          <PickupScheduling 
+            v-if="currentView === 'scheduling'"
+          />
 
         </div>
       </main>
@@ -328,6 +332,7 @@ import AdminSettings from './tabs/AdminSettings.vue';
 import SystemAuditLogs from './tabs/SystemAuditLogs.vue';
 import StrandSettings from './tabs/StrandSettings.vue';
 import DocumentTypes from './tabs/DocumentTypes.vue';
+import PickupScheduling from './tabs/PickupScheduling.vue';
 
 // Modal Components
 import RequestDetailModal from './components/RequestDetailModal.vue';
@@ -347,7 +352,7 @@ import {
   AlertCircle as AlertIcon, Settings as CogIcon, History as HistoryIcon,
   Activity as ActivityIcon, Copy as CopyIcon, ChevronLeft as ChevronLeftIcon, 
   ChevronRight as ChevronRightIcon, FileStack as DocsIcon, DollarSign as MoneyIcon,
-  Paperclip as AttachmentIcon, ShieldCheck as AdminIcon
+  Paperclip as AttachmentIcon, ShieldCheck as AdminIcon, Calendar as CalendarIcon
 } from 'lucide-vue-next';
 
 const router = useRouter();
@@ -477,6 +482,7 @@ const navItems = [
   { id: 'admin_management', label: 'Administrators', icon: markRaw(AdminIcon) },
   { id: 'staff_management', label: 'Staff Members', icon: markRaw(UserIcon) },
   { id: 'document_types', label: 'Document Types', icon: markRaw(DocsIcon) },
+  { id: 'scheduling', label: 'Pickup Scheduling', icon: markRaw(CalendarIcon) },
   { id: 'audit_logs', label: 'Audit Logs', icon: markRaw(HistoryIcon) },
   { id: 'admin_settings', label: 'Settings', icon: markRaw(CogIcon) },
 ];
