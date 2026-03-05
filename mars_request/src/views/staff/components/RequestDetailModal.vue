@@ -99,7 +99,7 @@
                           <input 
                             v-model="enteredPasskey" 
                             type="text" 
-                            placeholder="SHS-2026-XXXX" 
+                            placeholder="SHS-2026-XXXX / PASS-2026-XXXX" 
                             class="w-full text-center text-5xl font-black tracking-[0.2em] text-[#333] focus:outline-none placeholder:text-slate-200 uppercase bg-transparent"
                             autofocus
                           />
@@ -168,7 +168,9 @@ const enteredPasskey = ref('');
 const passkeyError = ref('');
 
 const isPasskeyValid = computed(() => {
-  return enteredPasskey.value.trim().toUpperCase() === props.request.request_code?.toUpperCase();
+  const entered = enteredPasskey.value.trim().toUpperCase();
+  return entered === props.request.request_code?.toUpperCase() || 
+         entered === props.request.passkey?.toUpperCase();
 });
 
 const startCompletion = () => {
