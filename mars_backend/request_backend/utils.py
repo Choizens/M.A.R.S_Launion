@@ -97,12 +97,15 @@ def send_request_notification(file_request):
         
         def send_update_thread():
             try:
+                print(f"DEBUG: (Thread) Attempting STATUS UPDATE send to {file_request.email}...")
                 email.send(fail_silently=False)
-                print(f"Successfully sent {file_request.status} notification to {file_request.email}")
+                print(f"DEBUG: (Thread) SUCCESS: Status update ({file_request.status}) sent to {file_request.email}")
             except Exception as thread_err:
-                print(f"ERROR in status update thread: {thread_err}")
+                import traceback
+                print(f"DEBUG: (Thread) CRITICAL ERROR in status update for {file_request.email}: {thread_err}")
+                traceback.print_exc()
 
-        threading.Thread(target=send_update_thread, daemon=True).start()
+        threading.Thread(target=send_update_thread, daemon=False).start()
     except Exception as e:
         print(f"ERROR: Failed to prepare status update email: {e}")
 
@@ -145,6 +148,7 @@ M.A.R.S Automated System
     try:
         def notify_staff_thread():
             try:
+                print(f"DEBUG: (Thread) Attempting STAFF NOTIFICATION to {len(staff_emails)} recipients...")
                 send_mail(
                     subject,
                     message,
@@ -152,10 +156,12 @@ M.A.R.S Automated System
                     list(staff_emails),
                     fail_silently=False,
                 )
-                print(f"Successfully notified {len(staff_emails)} staff members about new request.")
+                print(f"DEBUG: (Thread) SUCCESS: Staff members notified about new request.")
             except Exception as thread_err:
-                print(f"ERROR in notify staff thread: {thread_err}")
+                import traceback
+                print(f"DEBUG: (Thread) CRITICAL ERROR in staff notification: {thread_err}")
+                traceback.print_exc()
 
-        threading.Thread(target=notify_staff_thread, daemon=True).start()
+        threading.Thread(target=notify_staff_thread, daemon=False).start()
     except Exception as e:
         print(f"ERROR: Failed to prepare staff notification: {e}")
