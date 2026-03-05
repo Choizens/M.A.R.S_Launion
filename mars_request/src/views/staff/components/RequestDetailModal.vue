@@ -217,7 +217,7 @@ const handlePrintAndSave = async () => {
         <div class="footer">
           Processed via M.A.R.S System • ${new Date().toLocaleString()}
         </div>
-        <script>window.print(); window.onload = function() { setTimeout(function() { window.close(); }, 500); }</script>
+        <script>window.print(); window.onload = function() { setTimeout(function() { window.close(); }, 500); }<\/script>
       </body>
     </html>
   `);
