@@ -68,13 +68,9 @@ class FileRequestCreateView(generics.CreateAPIView):
         request_code = self.generate_unique_code()
         instance = serializer.save(request_code=request_code)
         
-        # Send notifications after transaction commit
-        def send_notifications():
-            from .utils import send_submission_confirmation, notify_staff_new_request
-            send_submission_confirmation(instance)
-            notify_staff_new_request(instance)
-
-        transaction.on_commit(send_notifications)
+        # Call directly for now to ensure visibility in logs and immediate execution
+        send_submission_confirmation(instance)
+        notify_staff_new_request(instance)
 
 
 class FileRequestLookupView(APIView):
@@ -91,10 +87,6 @@ class FileRequestLookupView(APIView):
         except FileRequest.DoesNotExist:
             return Response({'error': 'No matching request found for this Passkey.'}, status=status.HTTP_404_NOT_FOUND)
 
-    def perform_create(self, serializer):
-        instance = serializer.save()
-        # Send confirmation email immediately after the request is created
-        send_submission_confirmation(instance)
 
 
 # ── Admin Views ────────────────────────────────────────────────────────────────
