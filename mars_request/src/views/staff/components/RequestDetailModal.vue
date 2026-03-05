@@ -159,7 +159,8 @@ import { ref, computed } from 'vue';
 import { adminService } from '@/services/api';
 import { X as XIcon, Clock as ClockIcon, Check as CheckIcon } from 'lucide-vue-next';
 import DocumentUploadRow from './DocumentUploadRow.vue';
-import html2pdf from 'html2pdf.js';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const props = defineProps(['request']);
 const emit = defineEmits(['close', 'refresh']);
@@ -186,62 +187,117 @@ const handlePrintAndSave = async () => {
     return;
   }
 
-  const docList = props.request.requested_files.map(f => `<li>${f}</li>`).join('');
-  
-  // Open physical print preview window immediately
-  const printWindow = window.open('', '_blank');
-  if (printWindow) {
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>MARS_Release_${props.request.last_name}</title>
-          <style>
-             @media print {
-               @page { margin: 0.5in; }
-               .print-instruction { display: none !important; }
-             }
-             body { font-family: sans-serif; padding: 40px; }
-             .print-instruction { text-align: center; padding: 15px; margin-bottom: 20px; background: #fffbeb; border: 2px dashed #f28e1c; color: #d97706; font-weight: bold; }
-             .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
-             .info { margin-bottom: 30px; line-height: 1.6; }
-             .info b { display: inline-block; width: 120px; }
-             .docs { margin-top: 20px; }
-             .footer { margin-top: 50px; font-size: 10px; border-top: 1px solid #ccc; padding-top: 10px; text-align: center; color: #666; }
-          </style>
-        </head>
-        <body>
-          <div class="print-instruction">
-            ⚠️ Change your printer destination to "Save as PDF" to download this document!
-          </div>
-          <div class="header">
-            <h1>M.A.R.S DOCUMENT REQUEST</h1>
-            <p>Request Key: ${props.request.request_code}</p>
-          </div>
-          <div class="info">
-            <p><b>Student:</b> ${props.request.first_name} ${props.request.last_name}</p>
-            <p><b>LRN:</b> ${props.request.lrn_number || 'N/A'}</p>
-            <p><b>Date:</b> ${new Date().toLocaleDateString()}</p>
-          </div>
-          <div class="docs">
-            <h3>Documents Issued:</h3>
-            <ul>${docList}</ul>
-          </div>
-          <div class="footer">
-            Processed via M.A.R.S System • ${new Date().toLocaleString()}
-          </div>
-          <script>
-            window.onload = function() { 
-              window.print(); 
-              setTimeout(function() { window.close(); }, 500); 
-            }
-          ${'</scr' + 'ipt>'}
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-  } else {
-    alert("Pop-up blocker prevented the Print/Save window from opening. Please allow pop-ups for this site.");
+  // UI feedback during generation
+  const originalBtnText = document.activeElement ? document.activeElement.innerText : 'PRINT & SAVE';
+  if (document.activeElement) document.activeElement.innerText = 'GENERATING PDF...';
+
+  try {
+    // 1. Generate PDF using jsPDF (NO Canvas/HTML rendering = No CORS issues)
+    const doc = new jsPDF({ format: 'letter', unit: 'pt' });
+    
+    // Header
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.text('M.A.R.S DOCUMENT REQUEST', 306, 50, { align: 'center' });
+    
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Request Key: ${props.request.request_code}`, 306, 70, { align: 'center' });
+    
+    doc.setLineWidth(1);
+    doc.line(40, 85, 572, 85);
+    
+    // Student Info
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Student:', 50, 120);
+    doc.text('LRN:', 50, 140);
+    doc.text('Date:', 50, 160);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.text(`${props.request.first_name} ${props.request.last_name}`, 150, 120);
+    doc.text(`${props.request.lrn_number || 'N/A'}`, 150, 140);
+    doc.text(`${new Date().toLocaleDateString()}`, 150, 160);
+    
+    // Documents List
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Documents Issued:', 50, 200);
+    
+    const tableData = props.request.requested_files.map(f => [f, 'Cleared']);
+    autoTable(doc, {
+      startY: 215,
+      head: [['Document Name', 'Status']],
+      body: tableData,
+      theme: 'striped',
+      headStyles: { fillColor: [16, 48, 89] }
+    });
+    
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text(`Processed via M.A.R.S System • ${new Date().toLocaleString()}`, 306, 750, { align: 'center' });
+    
+    // Auto Download
+    doc.save(`${props.request.last_name}_document.pdf`);
+    
+    // Give browser time to process download
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // 2. Open physical print preview window immediately
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>MARS_Release_${props.request.last_name}</title>
+            <style>
+               @media print { @page { margin: 0.5in; } }
+               body { font-family: sans-serif; padding: 40px; }
+               .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+               .info { margin-bottom: 30px; line-height: 1.6; }
+               .info b { display: inline-block; width: 120px; }
+               .docs { margin-top: 20px; }
+               .footer { margin-top: 50px; font-size: 10px; border-top: 1px solid #ccc; padding-top: 10px; text-align: center; color: #666; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>M.A.R.S DOCUMENT REQUEST</h1>
+              <p>Request Key: ${props.request.request_code}</p>
+            </div>
+            <div class="info">
+              <p><b>Student:</b> ${props.request.first_name} ${props.request.last_name}</p>
+              <p><b>LRN:</b> ${props.request.lrn_number || 'N/A'}</p>
+              <p><b>Date:</b> ${new Date().toLocaleDateString()}</p>
+            </div>
+            <div class="docs">
+              <h3>Documents Issued:</h3>
+              <ul>${props.request.requested_files.map(f => `<li>${f}</li>`).join('')}</ul>
+            </div>
+            <div class="footer">
+              Processed via M.A.R.S System • ${new Date().toLocaleString()}
+            </div>
+            <script>
+              window.onload = function() { 
+                window.print(); 
+                setTimeout(function() { window.close(); }, 500); 
+              }
+            ${'</scr' + 'ipt>'}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+    } else {
+      alert("Pop-up blocker prevented the Print window from opening.");
+    }
+    
+  } catch (err) {
+    console.error("PDF/Print Error:", err);
+    alert("An error occurred while generating the document.");
   }
+
+  if (document.activeElement) document.activeElement.innerText = originalBtnText;
 
   // Update status in DB
   try {
