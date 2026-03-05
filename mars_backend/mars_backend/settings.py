@@ -196,7 +196,7 @@ else:
     EMAIL_TIMEOUT = 60
     EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'xxeuccbldbugfwew').replace(' ', '')
 
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'knightcyberg@gmail.com')
 # Note: For SendGrid Single Sender, DEFAULT_FROM_EMAIL must be your verified Gmail.
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -11,7 +11,7 @@ class Staff(AbstractUser):
     department = models.CharField(max_length=100, blank=True, null=True)
     full_name = models.CharField(max_length=255, blank=True, default='')
 
-    REQUIRED_FIELDS = ['email', 'staff_id', 'full_name']
+    REQUIRED_FIELDS = ['email', 'full_name']
 
     def __str__(self):
         return self.username

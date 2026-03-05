@@ -13,9 +13,9 @@ def send_submission_confirmation(file_request):
     """
     subject = f"Request Received - M.A.R.S [Passkey: {file_request.passkey}]"
     
-    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', None) or getattr(settings, 'EMAIL_HOST_USER', None) or 'noreply@mars.gov.ph'
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'knightcyberg@gmail.com')
     print(f"DEBUG: Attempting to send confirmation to {file_request.email}")
-    print(f"DEBUG: Config - HOST: {settings.EMAIL_HOST}, PORT: {settings.EMAIL_PORT}, USER: {settings.EMAIL_HOST_USER}, FROM: {from_email}, TLS: {getattr(settings, 'EMAIL_USE_TLS', False)}, SSL: {getattr(settings, 'EMAIL_USE_SSL', False)}")
+    print(f"DEBUG: FROM: {from_email}, BACKEND: {settings.EMAIL_BACKEND}")
     
     try:
         print("DEBUG: Rendering template...")
@@ -61,7 +61,7 @@ def send_request_notification(file_request):
     Sends a professional HTML email to the student when their request status is updated.
     """
     subject = f"Update on your M.A.R.S Request - [Passkey: {file_request.passkey}]"
-    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', None) or getattr(settings, 'EMAIL_HOST_USER', None) or 'noreply@mars.gov.ph'
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'knightcyberg@gmail.com')
     
     status_msg = ""
     if file_request.status == 'Approved':
@@ -141,7 +141,7 @@ Best regards,
 M.A.R.S Automated System
     """
 
-    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', None) or getattr(settings, 'EMAIL_HOST_USER', None) or 'noreply@mars.gov.ph'
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'knightcyberg@gmail.com')
     
     print(f"DEBUG: Notifying staff of new request {file_request.passkey}. Recipients found: {len(staff_emails)}")
     
