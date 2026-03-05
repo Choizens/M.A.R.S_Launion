@@ -175,19 +175,28 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# ── Email Configuration (Gmail SMTP) ──────────────────────────────────────────
-# To enable: replace the values below with your Gmail address and an App Password.
-# Generate an App Password at: https://myaccount.google.com/apppasswords
-# (Requires 2-Step Verification enabled on your Google account)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.googlemail.com')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False') == 'True'
-EMAIL_TIMEOUT = 60  # Increased to 60 seconds
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'dummychan70@gmail.com')
-# Sanitize App Password by stripping any spaces often copied from Google dashboard
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'xxeuccbldbugfwew').replace(' ', '')
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# ── Email Configuration (Anymail + Resend or Gmail SMTP) ──────────────────────
+# Since Railway blocks SMTP, we prefer Resend (via HTTPS API) in production.
+# If RESEND_API_KEY is not set, it falls back to the Gmail SMTP settings.
+
+RESEND_API_KEY = os.getenv('RESEND_API_KEY')
+
+if RESEND_API_KEY:
+    EMAIL_BACKEND = 'anymail.backends.resend.EmailBackend'
+    ANYMAIL = {
+        'RESEND_API_KEY': RESEND_API_KEY,
+    }
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.googlemail.com')
+    EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+    EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+    EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False') == 'True'
+    EMAIL_TIMEOUT = 60
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'dummychan70@gmail.com')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'xxeuccbldbugfwew').replace(' ', '')
+
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER if not RESEND_API_KEY else 'onboarding@resend.dev')
+# Note: If using Resend with a custom domain, update DEFAULT_FROM_EMAIL to your verified domain.
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
