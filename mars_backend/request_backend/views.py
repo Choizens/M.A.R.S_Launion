@@ -467,7 +467,7 @@ class AdminAuditLogListView(generics.ListAPIView):
 class AdminPickupSlotListView(generics.ListCreateAPIView):
     queryset = PickupSlot.objects.all().order_by('date')
     serializer_class = PickupSlotSerializer
-    permission_classes = (IsAuthenticated, IsAdminUser)
+    permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
         slot = serializer.save()
@@ -477,7 +477,7 @@ class AdminPickupSlotListView(generics.ListCreateAPIView):
 class AdminPickupSlotDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PickupSlot.objects.all()
     serializer_class = PickupSlotSerializer
-    permission_classes = (IsAuthenticated, IsAdminUser)
+    permission_classes = (IsAuthenticated,)
 
     def perform_update(self, serializer):
         slot = serializer.save()
@@ -598,30 +598,40 @@ class PublicRecordCheckView(APIView):
         lrn = request.query_params.get('lrn', '').strip()
         first_name = request.query_params.get('first_name', '').strip()
         last_name = request.query_params.get('last_name', '').strip()
+        middle_name = request.query_params.get('middle_name', '').strip()
+        suffix = request.query_params.get('suffix', '').strip()
+        sex = request.query_params.get('sex', '').strip()
+        strand_id = request.query_params.get('strand', '').strip()
+        year_graduated = request.query_params.get('year_graduated', '').strip()
 
         student = None
+        # Try finding by LRN first if provided
         if lrn:
             student = Student.objects.filter(lrn_number=lrn).first()
         
+        # If not found by LRN, try exact match on all provided fields
         if not student and first_name and last_name:
-            student = Student.objects.filter(
-                first_name__iexact=first_name,
-                last_name__iexact=last_name
-            ).first()
+            filters = {
+                'first_name__iexact': first_name,
+                'last_name__iexact': last_name,
+            }
+            if middle_name: filters['middle_name__iexact'] = middle_name
+            if suffix: filters['suffix__iexact'] = suffix
+            if sex: filters['sex'] = sex
+            if strand_id and strand_id.isdigit(): filters['strand_type_id'] = strand_id
+            if year_graduated: filters['year_graduated'] = year_graduated
+            
+            student = Student.objects.filter(**filters).first()
 
         if not student:
             return Response({
                 'exists': False,
-                'message': 'No digital record found. Please visit the school office for manual processing.',
+                'message': 'No digital record found. Please ensure your details match your school records.',
                 'documents': []
             })
 
         # Check for existing requests (Pending, Approved, Processing, Needs Verification)
-        # Only 'Rejected' or 'Completed' requests allow a new submission.
-        # We use both email and LRN to ensure the check is student-specific 
-        # but also matches the notification context as requested.
         active_request = FileRequest.objects.filter(
-            email__iexact=student.email,
             lrn_number=student.lrn_number,
             status__in=['Pending', 'Approved', 'Processing', 'Needs Verification']
         ).first()
@@ -631,18 +641,21 @@ class PublicRecordCheckView(APIView):
                 'exists': True,
                 'has_active_request': True,
                 'active_request_id': active_request.passkey,
-                'message': f'You already have an active request being processed (Passkey: {active_request.passkey}). Please wait until it is Completed or Rejected before requesting again.',
+                'message': f'You already have an active request being processed (Passkey: {active_request.passkey}).',
                 'documents': []
             })
 
         # Get names of digitized documents
-        digitized_docs = student.documents.values_list('document_type', flat=True)
+        digitized_docs = list(student.documents.values_list('document_type', flat=True))
         
         return Response({
             'exists': True,
             'has_active_request': False,
             'student_id': student.id,
+            'lrn_number': student.lrn_number,
             'full_name': f"{student.first_name} {student.last_name}",
+            'strand_type': student.strand_type_id,
+            'documents': digitized_docs
         })
 
 import os

@@ -69,9 +69,11 @@ class StaffSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         email = validated_data.pop('email', '')
         password = validated_data.pop('password', None)
+        # Ensure registered staff have administrative access by default
         user = Staff.objects.create_user(
             email=email,
             password=password,
+            is_staff=True,
             **validated_data
         )
         return user

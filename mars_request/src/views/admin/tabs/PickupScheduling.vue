@@ -387,7 +387,8 @@ const handleSlotSubmit = async () => {
     showSlotModal.value = false;
     await loadSlots();
   } catch (err) {
-    alert('Failed to save pickup slot. Check your connection and try again.');
+    const errorMsg = err.response?.data ? Object.values(err.response.data).flat().join(' ') : 'Failed to save pickup slot. Check your connection and try again.';
+    alert(errorMsg);
     console.error(err);
   } finally {
     submitting.value = false;

@@ -339,7 +339,8 @@ const handleSlotSubmit = async () => {
     showSlotModal.value = false;
     await loadSlots();
   } catch (err) {
-    alert('Error saving pickup slot. Please try again.');
+    const errorMsg = err.response?.data ? Object.values(err.response.data).flat().join(' ') : 'Error saving pickup slot. Please try again.';
+    alert(errorMsg);
     console.error(err);
   } finally {
     submitting.value = false;

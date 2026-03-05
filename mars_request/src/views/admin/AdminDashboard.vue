@@ -912,6 +912,18 @@ const handleDeleteMasterDoc = async (docId) => {
   }
 };
 
+// ── Watches for Filters ────────────────────────────────────────────────────────
+watch([searchQuery, strandFilter, yearFilter, statusFilter], () => {
+  if (currentView.value === 'record_requests') {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(loadRequests, 350);
+  }
+  if (currentView.value === 'student_directory') {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(loadStudents, 350);
+  }
+});
+
 watch(() => route.params.tab, (v) => {
   if (v === 'record_requests') { loadRequests(); loadDocTypes(); loadStrands(); }
   if (v === 'staff_management' || v === 'admin_management') loadStaffList();
