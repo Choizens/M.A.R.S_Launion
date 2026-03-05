@@ -26,10 +26,11 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 
 # If ALLOWED_HOSTS is provided as an environment variable (comma separated), use it.
-if os.getenv('ALLOWED_HOSTS'):
-    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'marslaunion-production.up.railway.app,standalone.up.railway.app,localhost,127.0.0.1').split(',')
 
-CORS_ALLOWED_ORIGINS = [
+# ── Dynamic CORS/CSRF Configuration ──────────────────────────────────────────
+ENV_CORS = os.getenv('CORS_ALLOWED_ORIGINS')
+CORS_ALLOWED_ORIGINS = ENV_CORS.split(',') if ENV_CORS else [
     "https://marslaunion-production.up.railway.app",
     "https://standalone.up.railway.app",
     "http://localhost:5173",
@@ -38,7 +39,8 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = [
+ENV_CSRF = os.getenv('CSRF_TRUSTED_ORIGINS')
+CSRF_TRUSTED_ORIGINS = ENV_CSRF.split(',') if ENV_CSRF else [
     "https://marslaunion-production.up.railway.app",
     "https://standalone.up.railway.app",
 ]
