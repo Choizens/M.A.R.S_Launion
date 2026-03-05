@@ -175,17 +175,17 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# ── Email Configuration (Anymail + Resend or Gmail SMTP) ──────────────────────
-# Since Railway blocks SMTP, we prefer Resend (via HTTPS API) in production.
-# If RESEND_API_KEY is not set, it falls back to the Gmail SMTP settings.
-
+# ── Email Configuration (Anymail + SendGrid/Resend or Gmail SMTP) ──────────────
+# Priority: 1. SendGrid (Free single sender) | 2. Resend | 3. Gmail SMTP
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 RESEND_API_KEY = os.getenv('RESEND_API_KEY')
 
-if RESEND_API_KEY:
+if SENDGRID_API_KEY:
+    EMAIL_BACKEND = 'anymail.backends.sendgrid.EmailBackend'
+    ANYMAIL = {'SENDGRID_API_KEY': SENDGRID_API_KEY}
+elif RESEND_API_KEY:
     EMAIL_BACKEND = 'anymail.backends.resend.EmailBackend'
-    ANYMAIL = {
-        'RESEND_API_KEY': RESEND_API_KEY,
-    }
+    ANYMAIL = {'RESEND_API_KEY': RESEND_API_KEY}
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.googlemail.com')
@@ -196,7 +196,7 @@ else:
     EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'dummychan70@gmail.com')
     EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'xxeuccbldbugfwew').replace(' ', '')
 
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER if not RESEND_API_KEY else 'onboarding@resend.dev')
-# Note: If using Resend with a custom domain, update DEFAULT_FROM_EMAIL to your verified domain.
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+# Note: For SendGrid Single Sender, DEFAULT_FROM_EMAIL must be your verified Gmail.
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

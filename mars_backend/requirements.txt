@@ -12,5 +12,5 @@ python-decouple==3.8
 asgiref==3.9.1
 sqlparse==0.5.3
 tzdata==2025.2
-django-anymail[resend]>=14.0
+django-anymail[sendgrid,resend]>=14.0
 resend>=2.4.0
