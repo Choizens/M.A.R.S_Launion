@@ -910,6 +910,7 @@ const form = reactive({
   permanent_address: '',
   pickup_date: '',
   pickup_time: '',
+  student: null, // Linked student ID if found
 });
 
 const filteredDocTypes = computed(() => {
@@ -977,7 +978,10 @@ function removeAllFiles() {
 }
 
 function resetForm() {
-  Object.keys(form).forEach(k => { form[k] = ''; });
+  Object.keys(form).forEach(k => { 
+    if (k === 'student') form[k] = null;
+    else form[k] = ''; 
+  });
   selectedFiles.value = [];
   fileSelectValue.value = '';
   submitError.value = '';
@@ -1106,11 +1110,13 @@ async function handleRecordCheck() {
         recordStatus.value = 'found';
         availableDocs.value = res.data.documents;
         duplicateMessage.value = '';
+        form.student = res.data.student_id; // Store the student ID for linking
       }
     } else {
       recordStatus.value = 'not_found';
       availableDocs.value = [];
       duplicateMessage.value = '';
+      form.student = null;
     }
   } catch (err) {
     console.error('Check failed:', err);

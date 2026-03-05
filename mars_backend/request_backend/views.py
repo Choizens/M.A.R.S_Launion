@@ -631,8 +631,13 @@ class PublicRecordCheckView(APIView):
             })
 
         # Check for existing requests (Pending, Approved, Processing, Needs Verification)
+        # Use student directly or filter by non-empty LRN to avoid blocking different students
+        active_filters = Q(student=student)
+        if student.lrn_number and student.lrn_number.strip():
+            active_filters |= Q(lrn_number=student.lrn_number)
+            
         active_request = FileRequest.objects.filter(
-            lrn_number=student.lrn_number,
+            active_filters,
             status__in=['Pending', 'Approved', 'Processing', 'Needs Verification']
         ).first()
 

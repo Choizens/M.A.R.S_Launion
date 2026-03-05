@@ -143,17 +143,39 @@ class FileRequestSerializer(serializers.ModelSerializer):
     def validate(self, data):
         # Prevent duplicate active requests on creation
         if not self.instance:
-            lrn = data.get('lrn_number')
-            email = data.get('email')
+            lrn = data.get('lrn_number', '')
+            email = data.get('email', '')
+            student = data.get('student')
+            first_name = data.get('first_name', '')
+            last_name = data.get('last_name', '')
             
-            active_request = FileRequest.objects.filter(
-                email__iexact=email,
-                lrn_number=lrn,
-                status__in=['Pending', 'Approved', 'Processing', 'Needs Verification']
-            ).first()
+            from django.db.models import Q
+            active_filters = Q()
             
-            if active_request:
-                raise serializers.ValidationError(f"An active request already exists for this student (Passkey: {active_request.passkey}). Please wait for it to be completed or rejected.")
+            # 1. Check by Linked Student Record
+            if student:
+                active_filters |= Q(student=student)
+            
+            # 2. Check by LRN (only if provided and not empty)
+            if lrn and lrn.strip():
+                active_filters |= Q(lrn_number=lrn.strip())
+                
+            # 3. Check by Email + Name combination (to distinguish between different students using same email)
+            if email and first_name and last_name:
+                active_filters |= Q(
+                    email__iexact=email.strip(), 
+                    first_name__iexact=first_name.strip(), 
+                    last_name__iexact=last_name.strip()
+                )
+            
+            if active_filters:
+                active_request = FileRequest.objects.filter(
+                    active_filters,
+                    status__in=['Pending', 'Approved', 'Processing', 'Needs Verification']
+                ).first()
+                
+                if active_request:
+                    raise serializers.ValidationError(f"An active request already exists for this student (Passkey: {active_request.passkey}). Please wait for it to be completed or rejected.")
 
         pickup_date = data.get('pickup_date')
         pickup_time = data.get('pickup_time')
