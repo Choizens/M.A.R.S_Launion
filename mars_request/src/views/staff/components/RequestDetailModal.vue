@@ -138,7 +138,9 @@
                       </div>
                       
                       <!-- Error Floating -->
-                      <p v-if="enteredPasskey && !isPasskeyValid" class="absolute bottom-32 left-1/2 -translate-x-1/2 text-xs font-bold text-red-500 italic">Key does not match record</p>
+                      <p v-if="enteredPasskey.length >= 8 && !isPasskeyValid" class="absolute bottom-32 left-1/2 -translate-x-1/2 text-[0.6rem] font-black text-red-500 bg-red-50 px-3 py-1 rounded-full border border-red-100 shadow-sm uppercase tracking-tighter">
+                         INVALID REQUEST KEY • CHECK LOGS
+                      </p>
                     </div>
                  </div>
 
