@@ -174,8 +174,8 @@
                         <button @click="printDocument(getFullUrl(viewingDoc.file))" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1">
                           <PrinterIcon class="w-3 h-3" /> Print
                         </button>
-                        <button @click="downloadDocument(viewingDoc)" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1">
-                          <DownloadIcon class="w-3 h-3" /> Download
+                        <button @click="downloadDocument(viewingDoc)" :disabled="downloading" class="text-[#ffca28] hover:text-white transition-colors text-[0.65rem] font-black uppercase flex items-center gap-1 disabled:opacity-50">
+                          <DownloadIcon class="w-3 h-3" /> {{ downloading ? '...' : 'Download' }}
                         </button>
                         <div class="h-3 w-[1px] bg-white/20 mx-1"></div>
                         <a :href="getFullUrl(viewingDoc.file)" target="_blank" rel="noopener noreferrer" class="text-white hover:text-amber-300 transition-colors text-[0.65rem] font-black uppercase">↗ Full Screen</a>
@@ -241,6 +241,7 @@ const props = defineProps({
 
 const fileInput = ref(null);
 const viewingDoc = ref(null);
+const downloading = ref(false);
 defineExpose({ fileInput });
 
 const printDocument = (url) => {
@@ -254,6 +255,8 @@ const printDocument = (url) => {
 };
 
 const downloadDocument = async (doc) => {
+  if (!doc) return;
+  downloading.value = true;
   try {
     const url = adminService.getDownloadUrl('master', doc.id);
     const token = localStorage.getItem('token');
@@ -264,15 +267,17 @@ const downloadDocument = async (doc) => {
       }
     });
     
-    if (!response.ok) throw new Error('Download failed');
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Download failed (${response.status})`);
+    }
     
     const blob = await response.blob();
     const blobUrl = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = blobUrl;
     
-    // The backend provides the filename in Content-Disposition, 
-    // but if we want to be sure, we can still use the doc type.
+    // Use the backend-provided filename logic if possible, or fallback
     const extension = doc.file.split('.').pop().split(/[?#]/)[0] || 'pdf';
     link.download = `${doc.document_type}.${extension}`;
     
@@ -282,8 +287,11 @@ const downloadDocument = async (doc) => {
     window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.error('Download failed:', error);
+    alert(`Download Error: ${error.message}. The file might be missing on the server.`);
     // Fallback if fetch fails
     window.open(getFullUrl(doc.file), '_blank');
+  } finally {
+    downloading.value = false;
   }
 };
 

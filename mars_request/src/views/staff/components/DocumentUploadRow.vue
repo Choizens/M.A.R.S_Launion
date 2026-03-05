@@ -100,6 +100,8 @@ const deleteDoc = async (id) => {
 };
 
 const downloadDocument = async (type, doc) => {
+  if (!doc) return;
+  loading.value = true;
   try {
     const url = adminService.getDownloadUrl(type, doc.id);
     const token = localStorage.getItem('token');
@@ -110,7 +112,10 @@ const downloadDocument = async (type, doc) => {
       }
     });
     
-    if (!response.ok) throw new Error('Download failed');
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Download failed (${response.status})`);
+    }
     
     const blob = await response.blob();
     const blobUrl = window.URL.createObjectURL(blob);
@@ -127,7 +132,10 @@ const downloadDocument = async (type, doc) => {
     window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.error('Download failed:', error);
+    alert(`Download Error: ${error.message}`);
     window.open(getFullUrl(doc.file), '_blank');
+  } finally {
+    loading.value = false;
   }
 };
 </script>
