@@ -33,14 +33,24 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         if response.status_code == 200:
-            user = Staff.objects.get(username=request.data['username'])
+            user = Staff.objects.filter(username=request.data['username']).first()
+            if not user:
+                # This case shouldn't happen if TokenObtainPairView succeeded, 
+                # but it helps identify case-sensitivity or sync issues.
+                print(f"DEBUG: Login succeeded but Staff.objects.get failed for username: {request.data['username']}")
+                return response
+
             response.data['user'] = {
+                'id': user.id,
                 'username': user.username,
                 'full_name': user.full_name,
                 'staff_id': user.staff_id,
                 'department': user.department,
+                'is_staff': user.is_staff,
+                'is_superuser': user.is_superuser,
                 'is_admin': user.is_superuser or user.is_staff,
             }
+            print(f"DEBUG: Admin login successful for {user.username} (Admin: {response.data['user']['is_admin']})")
             record_log(user, "User Login", f"User {user.username} logged in successfully.")
         return response
 
