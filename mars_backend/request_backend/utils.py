@@ -42,7 +42,9 @@ def send_submission_confirmation(file_request):
                 email.send(fail_silently=False)
                 print(f"DEBUG: (Thread) Successfully sent confirmation email to {file_request.email}")
             except Exception as thread_err:
-                print(f"DEBUG: (Thread) ERROR sending email: {thread_err}")
+                import traceback
+                print(f"DEBUG: (Thread) CRITICAL ERROR sending email to {file_request.email}: {thread_err}")
+                traceback.print_exc()
 
         threading.Thread(target=send_email_thread, daemon=True).start()
         print(f"DEBUG: Background thread started for {file_request.email}")
