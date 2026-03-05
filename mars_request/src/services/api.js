@@ -16,7 +16,15 @@ const API_BASE_URL = base_url;
  */
 export const getFullUrl = (url) => {
     if (!url) return '';
-    if (url.startsWith('http')) return url;
+
+    // If the input is already an absolute URL
+    if (url.startsWith('http')) {
+        // Force HTTPS in production if it's an HTTP link from our own domain
+        if (import.meta.env.PROD && url.startsWith('http://')) {
+            return url.replace('http://', 'https://');
+        }
+        return url;
+    }
 
     // Use API_BASE_URL as a reference but strip the /api/ suffix for media
     let baseUrl = API_BASE_URL;
@@ -24,7 +32,12 @@ export const getFullUrl = (url) => {
     baseUrl = baseUrl.replace(/\/api\/?$/, '/');
 
     const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
-    return `${baseUrl}${cleanUrl}`;
+    const finalUrl = `${baseUrl}${cleanUrl}`;
+
+    // Final safety check for HTTPS in production
+    return (import.meta.env.PROD && finalUrl.startsWith('http://'))
+        ? finalUrl.replace('http://', 'https://')
+        : finalUrl;
 };
 
 const apiClient = axios.create({
