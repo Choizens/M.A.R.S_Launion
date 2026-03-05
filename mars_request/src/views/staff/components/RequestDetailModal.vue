@@ -242,7 +242,6 @@ const refreshRequestData = async () => {
 };
 
 const updateStatus = async (status) => {
-  if (status === 'Completed' && !confirm('Mark as COMPLETED?')) return;
   try {
     const res = await adminService.updateRequest(props.request.id, { status });
     props.request.status = res.data.status;
