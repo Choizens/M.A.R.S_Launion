@@ -68,9 +68,13 @@ class FileRequestCreateView(generics.CreateAPIView):
         request_code = self.generate_unique_code()
         instance = serializer.save(request_code=request_code)
         
-        # Call directly for now to ensure visibility in logs and immediate execution
-        send_submission_confirmation(instance)
-        notify_staff_new_request(instance)
+        # Send notifications after transaction commit
+        def send_notifications():
+            from .utils import send_submission_confirmation, notify_staff_new_request
+            send_submission_confirmation(instance)
+            notify_staff_new_request(instance)
+
+        transaction.on_commit(send_notifications)
 
 
 class FileRequestLookupView(APIView):
@@ -87,6 +91,14 @@ class FileRequestLookupView(APIView):
         except FileRequest.DoesNotExist:
             return Response({'error': 'No matching request found for this Passkey.'}, status=status.HTTP_404_NOT_FOUND)
 
+    @transaction.atomic
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        # Use transaction.on_commit to ensure the request is saved before sending email
+        # Adding an explicit log here to confirm perform_create finished
+        print(f"DEBUG: FileRequest created with id {instance.id}, passkey {instance.passkey}. Queuing emails...")
+        transaction.on_commit(lambda: send_submission_confirmation(instance))
+        transaction.on_commit(lambda: notify_staff_new_request(instance))
 
 
 # ── Admin Views ────────────────────────────────────────────────────────────────

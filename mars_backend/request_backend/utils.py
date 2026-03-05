@@ -37,24 +37,19 @@ def send_submission_confirmation(file_request):
         )
         email.attach_alternative(html_content, "text/html")
         
-        try:
-            from django.core.mail import get_connection
-            print(f"DEBUG: Opening explicit connection to {settings.EMAIL_HOST}:{settings.EMAIL_PORT}...")
-            connection = get_connection(fail_silently=False)
-            
-            print(f"DEBUG: Email sending started for {file_request.email}...")
-            email.connection = connection
-            email.send(fail_silently=False)
-            print(f"DEBUG: Successfully sent confirmation email to {file_request.email}")
-        except Exception as e:
-            import traceback
-            print(f"DEBUG: CRITICAL ERROR sending email to {file_request.email}: {e}")
-            traceback.print_exc()
+        def send_email_thread():
+            try:
+                print(f"DEBUG: (Thread) Attempting SMTP send to {file_request.email}...")
+                email.send(fail_silently=False)
+                print(f"DEBUG: (Thread) SUCCESS: Confirmation email sent to {file_request.email}")
+            except Exception as thread_err:
+                import traceback
+                print(f"DEBUG: (Thread) CRITICAL ERROR sending email to {file_request.email}: {thread_err}")
+                traceback.print_exc()
 
-    except Exception as e:
-        import traceback
-        print(f"ERROR: Failed to prepare or send confirmation email: {str(e)}")
-        traceback.print_exc()
+        # Use daemon=False to ensure the thread has a better chance of finishing in cloud environments
+        threading.Thread(target=send_email_thread, daemon=False).start()
+        print(f"DEBUG: Email thread started for {file_request.email}")
 
     except Exception as e:
         import traceback
@@ -100,11 +95,14 @@ def send_request_notification(file_request):
         )
         email.attach_alternative(html_content, "text/html")
         
-        try:
-            email.send(fail_silently=False)
-            print(f"Successfully sent {file_request.status} notification to {file_request.email}")
-        except Exception as e:
-            print(f"ERROR sending status update email: {e}")
+        def send_update_thread():
+            try:
+                email.send(fail_silently=False)
+                print(f"Successfully sent {file_request.status} notification to {file_request.email}")
+            except Exception as thread_err:
+                print(f"ERROR in status update thread: {thread_err}")
+
+        threading.Thread(target=send_update_thread, daemon=True).start()
     except Exception as e:
         print(f"ERROR: Failed to prepare status update email: {e}")
 
@@ -145,16 +143,19 @@ M.A.R.S Automated System
     print(f"DEBUG: Notifying staff of new request {file_request.passkey}. Recipients found: {len(staff_emails)}")
     
     try:
-        try:
-            send_mail(
-                subject,
-                message,
-                from_email,
-                list(staff_emails),
-                fail_silently=False,
-            )
-            print(f"Successfully notified {len(staff_emails)} staff members about new request.")
-        except Exception as e:
-            print(f"ERROR notifying staff: {e}")
+        def notify_staff_thread():
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    from_email,
+                    list(staff_emails),
+                    fail_silently=False,
+                )
+                print(f"Successfully notified {len(staff_emails)} staff members about new request.")
+            except Exception as thread_err:
+                print(f"ERROR in notify staff thread: {thread_err}")
+
+        threading.Thread(target=notify_staff_thread, daemon=True).start()
     except Exception as e:
         print(f"ERROR: Failed to prepare staff notification: {e}")

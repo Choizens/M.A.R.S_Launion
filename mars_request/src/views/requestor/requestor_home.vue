@@ -410,8 +410,11 @@
                     <input v-model="form.phone_number" type="text" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
                   </div>
                   <div class="flex flex-col text-left">
-                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Active Email <span class="text-red-500">*</span></label>
-                    <input v-model="form.email" type="email" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                    <div class="flex items-center justify-between mb-1.5">
+                      <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest">Active Email <span class="text-red-500">*</span></label>
+                      <span class="text-[0.55rem] font-black text-amber-500 animate-pulse bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">Notification will be sent here</span>
+                    </div>
+                    <input v-model="form.email" type="email" required class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" placeholder="e.g. name@gmail.com" />
                   </div>
 
                   <div class="flex flex-col sm:col-span-2 text-left mt-2">
