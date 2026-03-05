@@ -81,38 +81,64 @@
                     <button @click="updateStatus('Rejected')" class="px-6 py-4 bg-red-50 text-red-600 font-black uppercase rounded-lg border-2 border-red-200 hover:bg-red-100 transition-all">Reject</button>
                  </div>
 
-                 <!-- Passkey Verification for Completion -->
-                 <div v-else class="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                    <div class="p-4 bg-purple-50 border-2 border-purple-200 rounded-lg">
-                      <h4 class="text-sm font-black text-purple-700 uppercase tracking-tight mb-2">Final Review: Requested Documents</h4>
-                      <ul class="flex flex-col gap-1.5">
-                        <li v-for="f in request.requested_files" :key="f" class="flex items-center gap-2 text-xs font-bold text-purple-900 bg-white/50 px-2 py-1 rounded">
-                          <CheckIcon class="w-3 h-3 text-purple-500" />
-                          {{ f }}
-                        </li>
-                      </ul>
-                    </div>
+                 <!-- Redesigned Verification for Completion (Mockup Style) -->
+                 <div v-else class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-purple-600/20 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div class="bg-[#fff9e6] w-full max-w-xl rounded-sm border-[3px] border-purple-400 p-8 relative flex flex-col gap-8 shadow-2xl">
+                      <!-- Mockup Header -->
+                      <div class="flex justify-between items-start">
+                        <div>
+                          <h2 class="text-3xl font-bold text-[#333] tracking-tight">Releasing a Document....</h2>
+                          <p class="text-sm font-bold text-slate-500 mt-1">Enter the given Request Key of the Graduates.</p>
+                        </div>
+                        <button @click="isVerifyingPasskey = false" class="bg-[#f04e5d] text-white px-4 py-1.5 rounded font-black text-xs uppercase hover:bg-red-600 transition-colors">Close</button>
+                      </div>
 
-                    <div class="flex flex-col gap-2">
-                       <label class="text-[0.65rem] font-black text-slate-500 uppercase tracking-widest">Verify Student Passkey</label>
-                       <input 
-                         v-model="enteredPasskey" 
-                         type="text" 
-                         placeholder="Type Passkey here (e.g. PASS-2026-001)" 
-                         class="w-full py-4 px-4 bg-slate-50 border-2 border-slate-200 rounded-lg text-lg font-black tracking-widest focus:border-purple-500 focus:outline-none transition-all placeholder:text-slate-300 uppercase"
-                       />
-                       <p v-if="passkeyError" class="text-[0.6rem] font-bold text-red-500 italic">{{ passkeyError }}</p>
-                    </div>
+                      <!-- Large Input Box -->
+                      <div class="flex flex-col gap-3">
+                        <div class="bg-white border-[2px] border-slate-900 p-12 flex items-center justify-center">
+                          <input 
+                            v-model="enteredPasskey" 
+                            type="text" 
+                            placeholder="SHS-2026-XXXX" 
+                            class="w-full text-center text-5xl font-black tracking-[0.2em] text-[#333] focus:outline-none placeholder:text-slate-200 uppercase bg-transparent"
+                            autofocus
+                          />
+                        </div>
+                        <p class="text-center font-bold text-slate-700 text-sm">Enter the Request key here</p>
+                      </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                       <button @click="isVerifyingPasskey = false" class="py-3 bg-slate-100 text-slate-500 font-bold uppercase rounded-lg hover:bg-slate-200 transition-all">Cancel</button>
-                       <button 
-                         @click="handlePrintAndSave" 
-                         :disabled="!isPasskeyValid"
-                         :class="['py-3 font-black uppercase rounded-lg shadow-lg transition-all', isPasskeyValid ? 'bg-[#8b5cf6] text-white hover:bg-purple-700' : 'bg-slate-200 text-slate-400 cursor-not-allowed']"
-                       >
-                         Print & Save
-                       </button>
+                      <!-- Reminder Section -->
+                      <div class="flex flex-col gap-2">
+                        <h4 class="text-lg font-black text-[#f28e1c] uppercase tracking-wide">Reminder:</h4>
+                        <div class="flex flex-col gap-3">
+                          <p class="text-sm font-medium text-slate-800 leading-relaxed">
+                            Please ensure all documents listed below are prepared and physically verified before finalizing the release. This action cannot be undone.
+                          </p>
+                          <!-- Document List inside Reminder area -->
+                          <div class="flex flex-wrap gap-2">
+                            <span v-for="f in request.requested_files" :key="f" class="text-[0.65rem] font-black uppercase px-2 py-1 bg-white border border-slate-200 rounded text-slate-600">
+                              {{ f }}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Action Buttons -->
+                      <div class="grid grid-cols-2 gap-8 mt-4">
+                        <button @click="isVerifyingPasskey = false" class="py-4 border-2 border-slate-900 bg-white text-slate-900 font-bold uppercase tracking-wider hover:bg-slate-50 transition-all">
+                          Cancel
+                        </button>
+                        <button 
+                          @click="handlePrintAndSave" 
+                          :disabled="!isPasskeyValid"
+                          :class="['py-4 font-black uppercase tracking-wider transition-all shadow-md', isPasskeyValid ? 'bg-[#0a4a6b] text-white hover:bg-[#083a54]' : 'bg-slate-300 text-slate-500 cursor-not-allowed opacity-50']"
+                        >
+                          Print & Save
+                        </button>
+                      </div>
+                      
+                      <!-- Error Floating -->
+                      <p v-if="enteredPasskey && !isPasskeyValid" class="absolute bottom-32 left-1/2 -translate-x-1/2 text-xs font-bold text-red-500 italic">Key does not match record</p>
                     </div>
                  </div>
 
@@ -140,7 +166,7 @@ const enteredPasskey = ref('');
 const passkeyError = ref('');
 
 const isPasskeyValid = computed(() => {
-  return enteredPasskey.value.trim().toUpperCase() === props.request.passkey?.toUpperCase();
+  return enteredPasskey.value.trim().toUpperCase() === props.request.request_code?.toUpperCase();
 });
 
 const startCompletion = () => {
@@ -162,7 +188,7 @@ const handlePrintAndSave = async () => {
   printWindow.document.write(`
     <html>
       <head>
-        <title>MARS - Request Summary [${props.request.passkey}]</title>
+        <title>MARS - Request Summary [${props.request.request_code}]</title>
         <style>
           body { font-family: sans-serif; padding: 40px; }
           .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
@@ -175,7 +201,7 @@ const handlePrintAndSave = async () => {
       <body>
         <div class="header">
           <h1>M.A.R.S DOCUMENT REQUEST</h1>
-          <p>Passkey: ${props.request.passkey}</p>
+          <p>Request Key: ${props.request.request_code}</p>
         </div>
         <div class="info">
           <p><b>Student:</b> ${props.request.first_name} ${props.request.last_name}</p>
