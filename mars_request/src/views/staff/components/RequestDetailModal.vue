@@ -188,107 +188,69 @@ const handlePrintAndSave = async () => {
 
   const docList = props.request.requested_files.map(f => `<li>${f}</li>`).join('');
   
-  // Create shared HTML template
-  const contentHtml = `
-    <div style="font-family: sans-serif; padding: 40px; background: white;">
-      <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px;">
-        <h1>M.A.R.S DOCUMENT REQUEST</h1>
-        <p>Request Key: ${props.request.request_code}</p>
-      </div>
-      <div style="margin-bottom: 30px; line-height: 1.6;">
-        <p><b style="display: inline-block; width: 120px;">Student:</b> ${props.request.first_name} ${props.request.last_name}</p>
-        <p><b style="display: inline-block; width: 120px;">LRN:</b> ${props.request.lrn_number || 'N/A'}</p>
-        <p><b style="display: inline-block; width: 120px;">Date:</b> ${new Date().toLocaleDateString()}</p>
-      </div>
-      <div style="margin-top: 20px;">
-        <h3>Documents Issued:</h3>
-        <ul>${docList}</ul>
-      </div>
-      <div style="margin-top: 50px; font-size: 10px; border-top: 1px solid #ccc; padding-top: 10px; text-align: center; color: #666;">
-        Processed via M.A.R.S System • ${new Date().toLocaleString()}
-      </div>
-    </div>
-  `;
-
-  // UI feedback during generation
-  const originalBtnText = document.activeElement ? document.activeElement.innerText : 'PRINT & SAVE';
-  if (document.activeElement) document.activeElement.innerText = 'GENERATING PDF...';
-
-  // 1. Auto-download PDF using html2pdf
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = contentHtml;
-  
-  const opt = {
-    margin:       0.5,
-    filename:     `${props.request.last_name}_document.pdf`,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2 },
-    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-  };
-  
-  try {
-     // Generate PDF as base64 string
-     const pdfBase64 = await html2pdf().set(opt).from(tempDiv).outputPdf('datauristring');
-     
-     // Strip the meta prefix to get pure base64
-     const base64Data = pdfBase64.split(',')[1];
-     const byteCharacters = atob(base64Data);
-     const byteNumbers = new Array(byteCharacters.length);
-     for (let i = 0; i < byteCharacters.length; i++) {
-         byteNumbers[i] = byteCharacters.charCodeAt(i);
-     }
-     const byteArray = new Uint8Array(byteNumbers);
-     
-     // Create a blob and force download securely
-     const blob = new Blob([byteArray], { type: 'application/pdf' });
-     const blobUrl = URL.createObjectURL(blob);
-     
-     const downloadLink = document.createElement('a');
-     downloadLink.href = blobUrl;
-     downloadLink.download = `${props.request.last_name}_document.pdf`;
-     document.body.appendChild(downloadLink);
-     downloadLink.click();
-     
-     setTimeout(() => {
-        document.body.removeChild(downloadLink);
-        URL.revokeObjectURL(blobUrl);
-     }, 1000);
-     
-     // Give the browser a moment to process the download click
-     await new Promise(resolve => setTimeout(resolve, 800));
-  } catch (err) {
-     console.error('PDF Generation Failed', err);
-     alert('PDF failed to generate. Continuing to Print preview.');
-  }
-
-  if (document.activeElement) document.activeElement.innerText = originalBtnText;
-
-  // 2. Open physical print preview window
+  // Open physical print preview window immediately
   const printWindow = window.open('', '_blank');
   if (printWindow) {
     printWindow.document.write(`
       <html>
         <head>
-          <title>MARS - Request Summary [${props.request.request_code}]</title>
+          <title>MARS_Release_${props.request.last_name}</title>
+          <style>
+             @media print {
+               @page { margin: 0.5in; }
+               .print-instruction { display: none !important; }
+             }
+             body { font-family: sans-serif; padding: 40px; }
+             .print-instruction { text-align: center; padding: 15px; margin-bottom: 20px; background: #fffbeb; border: 2px dashed #f28e1c; color: #d97706; font-weight: bold; }
+             .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+             .info { margin-bottom: 30px; line-height: 1.6; }
+             .info b { display: inline-block; width: 120px; }
+             .docs { margin-top: 20px; }
+             .footer { margin-top: 50px; font-size: 10px; border-top: 1px solid #ccc; padding-top: 10px; text-align: center; color: #666; }
+          </style>
         </head>
         <body>
-          ${contentHtml}
-          <script>window.print(); window.onload = function() { setTimeout(function() { window.close(); }, 500); }${'</scr' + 'ipt>'}
+          <div class="print-instruction">
+            ⚠️ Change your printer destination to "Save as PDF" to download this document!
+          </div>
+          <div class="header">
+            <h1>M.A.R.S DOCUMENT REQUEST</h1>
+            <p>Request Key: ${props.request.request_code}</p>
+          </div>
+          <div class="info">
+            <p><b>Student:</b> ${props.request.first_name} ${props.request.last_name}</p>
+            <p><b>LRN:</b> ${props.request.lrn_number || 'N/A'}</p>
+            <p><b>Date:</b> ${new Date().toLocaleDateString()}</p>
+          </div>
+          <div class="docs">
+            <h3>Documents Issued:</h3>
+            <ul>${docList}</ul>
+          </div>
+          <div class="footer">
+            Processed via M.A.R.S System • ${new Date().toLocaleString()}
+          </div>
+          <script>
+            window.onload = function() { 
+              window.print(); 
+              setTimeout(function() { window.close(); }, 500); 
+            }
+          ${'</scr' + 'ipt>'}
         </body>
       </html>
     `);
+    printWindow.document.close();
   } else {
-    alert("Pop-up blocker prevented the Print window from opening. The PDF was still saved.");
+    alert("Pop-up blocker prevented the Print/Save window from opening. Please allow pop-ups for this site.");
   }
 
-  // 3. Update status in DB
+  // Update status in DB
   try {
     const res = await adminService.updateRequest(props.request.id, { status: 'Completed' });
     props.request.status = res.data.status;
     emit('refresh');
     isVerifyingPasskey.value = false;
   } catch (err) {
-    alert('Failed to update status, but documents were generated.');
+    alert('Failed to update status in the database.');
   }
 };
 
