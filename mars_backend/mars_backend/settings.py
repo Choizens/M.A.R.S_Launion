@@ -179,13 +179,17 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# ── Email Configuration (Anymail + SendGrid/Resend or Gmail SMTP) ──────────────
-# Priority: 1. SendGrid (Free single sender) | 2. Resend | 3. Gmail SMTP
+# ── Email Configuration (Anymail + Brevo/SendGrid/Resend or Gmail SMTP) ────────
+# Priority: 1. Brevo | 2. SendGrid | 3. Resend | 4. Gmail SMTP
+BREVO_API_KEY = os.getenv('BREVO_API_KEY')
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 RESEND_API_KEY = os.getenv('RESEND_API_KEY')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'knightcyberg@gmail.com')
 
-if SENDGRID_API_KEY:
+if BREVO_API_KEY:
+    EMAIL_BACKEND = 'anymail.backends.brevo.EmailBackend'
+    ANYMAIL = {'BREVO_API_KEY': BREVO_API_KEY}
+elif SENDGRID_API_KEY:
     EMAIL_BACKEND = 'anymail.backends.sendgrid.EmailBackend'
     ANYMAIL = {'SENDGRID_API_KEY': SENDGRID_API_KEY}
 elif RESEND_API_KEY:
