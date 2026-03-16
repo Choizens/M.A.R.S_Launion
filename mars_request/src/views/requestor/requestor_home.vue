@@ -398,6 +398,11 @@
               <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 <h3 class="text-xs font-black text-[#154252] uppercase tracking-widest mb-5 pb-2 border-b border-slate-100">Contact Information</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div class="flex flex-col text-left">
+                    <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">LRN Number <span class="text-[0.55rem] normal-case text-slate-400 font-normal tracking-normal">(Optional)</span></label>
+                    <input v-model="form.lrn_number" type="text" class="w-full bg-white border border-slate-300 rounded-md px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-[#154252] focus:ring-1 focus:ring-[#154252] transition-colors" />
+                  </div>
+                  <div class="hidden sm:block"></div> <!-- Empty column beside LRN -->
 
                   <div class="flex flex-col text-left">
                     <label class="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Phone No. <span class="text-red-500">*</span></label>
@@ -898,6 +903,7 @@ const form = reactive({
   sex: '',
   year_graduated: '',
   strand_type: '',
+  lrn_number: '',
   email: '',
   phone_number: '',
   permanent_address: '',
@@ -1080,7 +1086,7 @@ const initials = (f, l) => {
 
 let checkTimeout = null;
 async function handleRecordCheck() {
-  if (!form.first_name || !form.last_name) {
+  if ((!form.first_name || !form.last_name) && !form.lrn_number) {
     recordStatus.value = 'idle';
     availableDocs.value = [];
     return;
@@ -1089,6 +1095,7 @@ async function handleRecordCheck() {
   checkingRecord.value = true;
   try {
     const params = {};
+    if (form.lrn_number) params.lrn = form.lrn_number;
     if (form.first_name) params.first_name = form.first_name;
     if (form.last_name) params.last_name = form.last_name;
 
@@ -1119,7 +1126,7 @@ async function handleRecordCheck() {
 }
 
 // Watchers for real-time checking
-watch(() => [form.first_name, form.last_name], () => {
+watch(() => [form.first_name, form.last_name, form.lrn_number], () => {
   clearTimeout(checkTimeout);
   checkTimeout = setTimeout(handleRecordCheck, 800);
 });
