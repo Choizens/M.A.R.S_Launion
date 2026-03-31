@@ -1,14 +1,24 @@
 import axios from 'axios';
 
-let base_url = import.meta.env.VITE_API_URL ||
-    (import.meta.env.PROD ? 'https://marslaunion-production.up.railway.app/api/' : 'http://localhost:8000/api/');
+// ── Dynamic API Base URL Detection ──────────────────────────────────────────
+// This ensures that if you access via Railway, it uses the Railway backend,
+// and if you access via Localhost, it uses the local backend.
+const getBaseUrl = () => {
+    // If an explicit URL is provided in .env, use it
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
 
-// Ensure base_url ends with /api/ for consistency
-if (!base_url.includes('/api/')) {
-    base_url = base_url.endsWith('/') ? `${base_url}api/` : `${base_url}/api/`;
-}
+    const host = window.location.hostname;
+    const isLocal = host === 'localhost' || host === '127.0.0.1';
 
-const API_BASE_URL = base_url;
+    if (isLocal) {
+        return 'http://localhost:8000/api/';
+    }
+    
+    // Default to production Railway URL
+    return 'https://marslaunion-production.up.railway.app/api/';
+};
+
+const API_BASE_URL = getBaseUrl();
 
 /**
  * Resolves a backend media URL to a full absolute URL suitable for the browser.

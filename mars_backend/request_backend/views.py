@@ -77,14 +77,24 @@ class FileRequestCreateView(generics.CreateAPIView):
     @transaction.atomic
     def perform_create(self, serializer):
         request_code = self.generate_unique_code()
+        # Save the initial instance which triggers the model's custom save() for passkey
         instance = serializer.save(request_code=request_code)
-        print(f"DEBUG: FileRequest created (ID: {instance.id}, Passkey: {instance.passkey}). Sending email to {instance.email}...")
+        
+        # Log to console for development troubleshooting
+        print(f"\n[NEW REQUEST] ID: {instance.id}")
+        print(f"[NEW REQUEST] Name: {instance.first_name} {instance.last_name}")
+        print(f"[NEW REQUEST] Passkey: {instance.passkey}")
+        print(f"[NEW REQUEST] Email: {instance.email}\n")
         
         # Send notifications after transaction commit
         def send_notifications():
-            from .utils import send_submission_confirmation, notify_staff_new_request
-            send_submission_confirmation(instance)
-            notify_staff_new_request(instance)
+            try:
+                from .utils import send_submission_confirmation, notify_staff_new_request
+                send_submission_confirmation(instance)
+                notify_staff_new_request(instance)
+                print(f"[SUCCESS] Notifications sent for Request #{instance.id}")
+            except Exception as e:
+                print(f"[WARNING] Notification error for Request #{instance.id}: {str(e)}")
 
         transaction.on_commit(send_notifications)
 
