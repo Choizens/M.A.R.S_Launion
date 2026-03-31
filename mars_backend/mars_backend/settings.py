@@ -12,10 +12,15 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
+<<<<<<< HEAD
 from dotenv import load_dotenv
 import dj_database_url
 
 load_dotenv()
+=======
+import dj_database_url
+from datetime import timedelta
+>>>>>>> a40035b (Update design: yellow tracking section and environment fixes)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -54,7 +59,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware'
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -143,7 +148,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-CORS_ALLOW_ALL_ORIGINS = True  # For development only
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'https://launion.up.railway.app',
+    'https://marslaunion-production.up.railway.app',
+]
+
+CORS_ALLOW_ALL_ORIGINS = True  # For development and cross-environment accessibility
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -151,10 +162,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-import dj_database_url
 
-
-from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -171,6 +179,13 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+<<<<<<< HEAD
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+=======
+EMAIL_HOST_USER = 'dummychan70@gmail.com'
+EMAIL_HOST_PASSWORD = 'xxeu ccbl dbug fwew'
+DEFAULT_FROM_EMAIL = 'dummychan70@gmail.com'
+
+>>>>>>> a40035b (Update design: yellow tracking section and environment fixes)

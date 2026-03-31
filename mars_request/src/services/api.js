@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ||
-    (import.meta.env.PROD ? 'https://mars-launion.onrender.com/api/' : 'http://127.0.0.1:8000/api/');
+const API_BASE_URL = import.meta.env.DEV 
+    ? 'http://127.0.0.1:8000/api/' 
+    : 'https://marslaunion-production.up.railway.app/api/';
 
 const apiClient = axios.create({
     baseURL: API_BASE_URL,
@@ -188,8 +189,8 @@ export const adminService = {
 
 export const publicService = {
     // Student checks their own request status + downloads ready docs
-    getMyRequest(email, passkey) {
-        return apiClient.get('public/my-request/', { params: { email, passkey } });
+    getMyRequest(passkey) {
+        return apiClient.get('public/my-request/', { params: { passkey } });
     },
     checkRecord(params) {
         return apiClient.get('public/check-record/', { params });

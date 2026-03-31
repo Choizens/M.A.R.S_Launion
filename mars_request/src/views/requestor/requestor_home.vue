@@ -57,26 +57,25 @@
 
     </div>
 
-    <!-- Tracking Section -->
-    <div id="track-request" class="bg-[#f8fafc] border-b">
-      <div class="max-w-7xl mx-auto px-6 md:px-12 py-6 md:py-10">
-        <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl -mt-10 md:-mt-20 relative z-20 border border-slate-100">
-          <div class="flex flex-col md:flex-row items-center gap-6">
-            <div class="flex-1">
-              <h2 class="text-xl font-black text-[#154252] mb-1">Track Your Request</h2>
-              <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Enter your details to check status & download files</p>
-            </div>
-            <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-              <input v-model="trackId" type="text" placeholder="Passkey (e.g. 15)" class="w-full sm:w-40 border border-slate-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-[#154252] outline-none font-bold" />
-              <input v-model="trackEmail" type="email" placeholder="Your Email Address" class="w-full sm:w-64 border border-slate-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-[#154252] outline-none font-bold" />
-              <button @click="handleTrack" :disabled="tracking" class="w-full sm:w-auto px-8 py-3 bg-[#154252] text-white font-black rounded-lg hover:bg-[#0d2a35] transition-all disabled:opacity-50 shadow-lg shadow-[#154252]/20">
-                {{ tracking ? 'Checking...' : 'Track Now' }}
-              </button>
-            </div>
-          </div>
-          <p v-if="trackError" class="text-red-500 text-[0.7rem] font-bold mt-3 text-center md:text-left">{{ trackError }}</p>
+    <div id="track-request" class="max-w-7xl mx-auto px-6 md:px-12 py-10">
+      <div class="bg-yellow-400 p-6 md:p-8 rounded-xl border-4 border-[#154252] flex flex-col md:flex-row items-center gap-6 shadow-xl">
+        <div class="flex-1">
+          <h2 class="text-xl font-black text-[#154252] mb-1">Track Your Request</h2>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Enter your Passkey to check status & download files</p>
+        </div>
+        <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+          <input 
+            v-model="trackId" 
+            type="text" 
+            placeholder="e.g. PASS-2026-001" 
+            class="w-full sm:w-80 border-2 border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-[#154252] outline-none font-bold placeholder:text-slate-300 transition-all focus:border-[#154252]" 
+          />
+          <button @click="handleTrack" :disabled="tracking" class="w-full sm:w-auto px-10 py-3 bg-[#154252] text-white font-black rounded-lg hover:bg-[#0d2a35] transition-all disabled:opacity-50 shadow-md">
+            {{ tracking ? 'Checking...' : 'Track Now' }}
+          </button>
         </div>
       </div>
+      <p v-if="trackError" class="text-red-500 text-[0.7rem] font-bold mt-3 text-center md:text-left">{{ trackError }}</p>
     </div>
 
     <!-- Content Sections -->
@@ -974,8 +973,8 @@ async function loadStrands() {
 }
 
 async function handleTrack() {
-  if (!trackId.value || !trackEmail.value) {
-    trackError.value = 'Please provide both Passkey and Email.';
+  if (!trackId.value) {
+    trackError.value = 'Please provide your Passkey.';
     return;
   }
   
@@ -984,11 +983,11 @@ async function handleTrack() {
   trackedRequest.value = null;
 
   try {
-    const res = await publicService.getMyRequest(trackEmail.value, trackId.value);
+    const res = await publicService.getMyRequest(trackId.value.trim());
     trackedRequest.value = res.data;
     showTrackModal.value = true;
   } catch (err) {
-    trackError.value = err.response?.data?.error || 'No matching request found. Please check your Passkey and Email.';
+    trackError.value = err.response?.data?.error || 'No matching request found. Please check your Passkey.';
   } finally {
     tracking.value = false;
   }

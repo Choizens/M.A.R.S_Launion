@@ -581,16 +581,15 @@ class PublicRequestStatusView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        email = request.query_params.get('email', '').strip()
         passkey = request.query_params.get('passkey', '').strip()
-        if not email or not passkey:
-            return Response({'error': 'Provide both email and Passkey.'}, status=400)
+        if not passkey:
+            return Response({'error': 'Provide your Passkey.'}, status=400)
         try:
-            fr = FileRequest.objects.prefetch_related('processed_documents').get(passkey__iexact=passkey, email__iexact=email)
+            fr = FileRequest.objects.prefetch_related('processed_documents').get(passkey__iexact=passkey)
             serializer = FileRequestSerializer(fr)
             return Response(serializer.data)
         except FileRequest.DoesNotExist:
-            return Response({'error': 'No matching request found. Please check your Passkey and Email.'}, status=404)
+            return Response({'error': 'No matching request found. Please check your Passkey.'}, status=404)
 
 class PublicRecordCheckView(APIView):
     """Check if a student's record exists and what documents are digitized."""
