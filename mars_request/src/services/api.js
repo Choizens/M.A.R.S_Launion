@@ -4,18 +4,20 @@ import axios from 'axios';
 // This ensures that if you access via Railway, it uses the Railway backend,
 // and if you access via Localhost, it uses the local backend.
 const getBaseUrl = () => {
-    // If an explicit URL is provided in .env, use it
-    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+    let url = import.meta.env.VITE_API_URL;
 
-    const host = window.location.hostname;
-    const isLocal = host === 'localhost' || host === '127.0.0.1';
+    if (!url) {
+        const host = window.location.hostname;
+        const isLocal = host === 'localhost' || host === '127.0.0.1';
+        url = isLocal ? 'http://localhost:8000/' : 'https://marslaunion-production.up.railway.app/';
+    }
 
-    if (isLocal) {
-        return 'http://localhost:8000/api/';
+    // Ensure the URL ends with /api/
+    if (!url.includes('/api')) {
+        url = url.endsWith('/') ? `${url}api/` : `${url}/api/`;
     }
     
-    // Default to production Railway URL
-    return 'https://marslaunion-production.up.railway.app/api/';
+    return url;
 };
 
 const API_BASE_URL = getBaseUrl();
